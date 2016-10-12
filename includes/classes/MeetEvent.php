@@ -317,4 +317,14 @@ class MeetEvent {
 		return $eventCourse;
 		
 	}
+
+    /**
+     * @return discipline database id
+     */
+    public function getDiscipline()
+    {
+        return $this->discipline;
+    }
+
+
 }
