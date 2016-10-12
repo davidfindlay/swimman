@@ -1,0 +1,764 @@
+<?php
+
+class MeetEntry {
+
+	private $id;
+	private $memberId;
+	private $entrantName;
+	private $clubId;
+	private $meetId;
+	private $ageGroupId;
+	private $meals;
+	private $medical;
+	private $cost;
+	private $notes;
+	private $status = 0;
+	private $cancelled = false;
+	
+	private $events;
+	
+	public function __construct($member = '', $club = '', $meet = '') {
+	
+		$this->memberId = mysql_real_escape_string($member);
+		$this->clubId = mysql_real_escape_string($club);
+		$this->meetId = mysql_real_escape_string($meet);
+	
+	}
+	
+	// Used for Entry Checker, not stored in database
+	public function setEntrantName($eName) {
+		
+		$this->entrantName = $eName;
+		
+	}
+	
+	public function getEntrantName() {
+		
+		return $this->entrantName;
+		
+	}
+	
+	public function loadId($eId) {
+		
+		$this->id = mysql_real_escape_string($eId);
+		$entryDetails = $GLOBALS['db']->getRow("SELECT * FROM meet_entries WHERE id = '$this->id';");
+		db_checkerrors($entryDetails);
+		
+		if (!isset($entryDetails)) {
+		
+			$this->status = 0;
+			return false;
+		
+		} else {
+		
+			$this->memberId = $entryDetails[2];
+			$this->clubId = $entryDetails[8];
+			$this->meetId = $entryDetails[1];
+			$this->id = $entryDetails[0];
+			$this->meals = $entryDetails[4];
+			$this->medical = $entryDetails[5];
+			$this->cost = $entryDetails[6];
+			$this->notes = $entryDetails[7];
+				
+			$eventEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_events_entries WHERE meet_entry_id = '$this->id'
+					ORDER BY id DESC;");
+			db_checkerrors($eventEntries);
+						
+			foreach ($eventEntries as $e) {
+						
+					$this->events[] = new MeetEntryEvent;
+					$eventsIndex = count($this->events) - 1;
+					$this->events[$eventsIndex]->setRow($e);
+					$this->events[$eventsIndex]->loadStatus();
+						
+			}
+			
+			return true;
+		
+		}
+		
+	}
+	
+	public function load() {
+	
+		$entryDetails = $GLOBALS['db']->getRow("SELECT * FROM meet_entries WHERE meet_id = '$this->meetId'
+												AND club_id = '$this->clubId'
+												AND member_id = '$this->memberId';");
+		db_checkerrors($entryDetails);
+		
+		if (!isset($entryDetails)) {
+		
+			$this->status = 0;
+			return false;
+		
+		} else {
+		
+			$this->id = $entryDetails[0];
+			$this->meals = $entryDetails[4];
+			$this->medical = $entryDetails[5];
+			$this->cost = $entryDetails[6];
+			$this->notes = $entryDetails[7];
+			
+			$eventEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_events_entries WHERE meet_entry_id = '$this->id'
+					ORDER BY id DESC;");
+			db_checkerrors($eventEntries);
+			
+			foreach ($eventEntries as $e) {
+			
+				$this->events[] = new MeetEntryEvent;
+				$eventsIndex = count($this->events) - 1;
+				$this->events[$eventsIndex]->setRow($e);
+				$this->events[$eventsIndex]->loadStatus();				
+			
+			}
+			
+			return true;
+
+		}
+	
+	}
+	
+	// Inserts Meet Entry into system and returns entry id number
+	public function create() {
+	
+		$memDetails = new Member;
+		$memDetails->loadId($this->memberId);	
+		$this->ageGroupId = $memDetails->getAgeGroupId();
+		
+		$this->calcCost(); // Calculate and update entry cost before creating
+		
+		// Prevent null entries
+		if (isset($this->meetId) && $this->meetId != 0 && isset($this->clubId) && $this->clubId != 0) {
+		
+			$insert = $GLOBALS['db']->query("INSERT INTO meet_entries (meet_id, member_id, 
+					age_group_id, club_id, meals, medical, cost, notes) VALUES
+					('$this->meetId', '$this->memberId', '$this->ageGroupId', '$this->clubId',
+					'$this->meals', '$this->medical', '$this->cost', '$this->notes');");
+			db_checkerrors($insert);
+			
+			$this->id = mysql_insert_id();
+			
+			$insert = $GLOBALS['db']->query("INSERT INTO meet_entry_statuses (entry_id, code) VALUES
+					('$this->id', '$this->status');");
+			db_checkerrors($insert);
+			
+			if (count($this->events) > 0) {
+			
+				foreach ($this->events as $e) {
+				
+					$e->setEntryId($this->id);
+					$e->create();
+				
+				}
+				
+			}
+			
+		} else {
+			
+			addlog("MeetEntry.php", "MeetId Unset!", "meetId was 0 when trying to insert meet entry", "");
+			
+		}
+	
+	}
+	
+	public function addEvent($eventId, $seedtime, $status = 0) {
+	
+		$this->events[] = new MeetEntryEvent($this->memberId, $eventId, $seedtime);
+		$newIndex = sizeof($this->events) - 1;
+		$this->events[$newIndex]->setEntryId($this->id);
+		
+		// echo "Status = $status<br />\n";
+		
+		if ($status != 0 ) {
+			
+			$this->events[$newIndex]->setStatus($status);
+			
+		}
+		
+	}
+	
+	// Update event
+	public function updateEvent($eventId, $seedTime, $status = 0) {
+		
+		//echo "update event fucntion $eventId<br />\n";
+	
+		foreach ($this->events as $e) {
+			
+			//echo "e id = ";
+			//echo $e->getEventId;
+			//echo "<br />\n";
+		
+			if ($e->getEventId() == $eventId) {
+			
+				$e->setSeedTime($seedTime);
+				
+				// echo "Status = $status<br />\n";
+				
+				if ($status != 0) {
+					
+					$e->setStatus($status);
+					
+				}
+			
+			}
+			
+			$e->update();
+		
+		}
+	
+	}
+	
+	public function checkMeetGroups() {
+		
+		$meetId = mysql_real_escape_string($this->meetId);		
+		$eventGroups = $GLOBALS['db']->getAll("SELECT * FROM meet_events_groups WHERE meet_id = '$meetId';");
+		db_checkerrors($eventGroups);
+		
+		$failGroups = '';
+		$eventList = $this->getArrayEventId();
+		
+		foreach ($eventGroups as $g) {
+			
+			$gid = $g[0];
+			$maxInGroup = $g[2];
+			$inThisGroup = 0;
+			
+			$eventGroupItems = $GLOBALS['db']->getAll("SELECT * FROM meet_events_groups_items WHERE group_id = '$gid';");
+			db_checkerrors($eventGroupItems);
+			
+			foreach ($eventGroupItems as $e) {
+				
+				$gEid = $e[2];
+				
+				if (in_array($gEid, $eventList)) {
+					
+					$inThisGroup++;
+					
+				}
+				
+			}
+			
+			if ($inThisGroup > $maxInGroup) {
+				
+				$failGroups[] = $gid;
+
+			}
+			
+		}
+		
+		if ($failGroups == '') {
+			
+			return true;
+			
+		} else {
+			
+			return $failGroups;
+			
+		}
+		
+	}
+	
+	public function getArrayEventId() {
+		
+		$eventArray = array();
+		
+			if (isset($this->events)) {
+			
+			foreach ($this->events as $v) {
+				
+				$eventArray[] = $v->getEventId();
+				
+			}
+			
+		}
+		
+		return $eventArray;
+		
+	}
+	
+	public function getNumEntries() {
+	
+		$count = 0;
+		
+		if (isset($this->events)) {
+	
+			foreach($this->events as $e) {
+				
+				$eventId = $e->getEventId();
+				
+				// Check that the entry isn't cancelled
+				if (!$e->getCancelled()) {
+				
+					$eventDet = new MeetEvent();
+					$eventDet->load($eventId);
+								
+					if ($eventDet->getLegs() == 1) {
+						
+						$count++;
+						
+					}
+					
+				}
+
+			}
+			
+			return $count;
+			
+		} else {
+		
+			return 0;
+			
+		}
+	
+	}
+	
+	// Sets the status of the Meet Entry
+	public function setStatus($status) {
+	
+		$this->status = mysql_real_escape_string($status);
+		
+		// Check if this status cancels the entry
+		$cancelled = $GLOBALS['db']->getOne("SELECT cancelled FROM meet_entry_status_codes WHERE id = ?", 
+			array($status));
+		db_checkerrors($cancelled);
+		
+		if (intval($cancelled) == 1) {
+			
+			$this->cancelled = true;
+			
+		} else {
+			
+			$this->cancelled = false;
+			
+		}
+	
+	}
+	
+	// Applies status change to database
+	public function updateStatus() {
+		
+		$insert = $GLOBALS['db']->query("INSERT INTO meet_entry_statuses (entry_id, code) VALUES
+				('$this->id', '$this->status');");
+		db_checkerrors($insert);
+		
+		if (isset($this->cancelled)) {
+		
+			$updateCan = $GLOBALS['db']->query("UPDATE meet_entries SET cancelled = ? WHERE id = ?",
+				array($this->cancelled, $this->id));
+			db_checkerrors($updateCan);
+			
+		}
+		
+	}
+	
+	// Steps through each event in the entry and sets the status of the event entry
+	public function setEventStatuses($status) {
+		
+		foreach ($this->events as $e) {
+		
+			$e->setStatus($status);
+		
+		}
+		
+	}
+	
+	public function getStatus() {
+		
+		$status = $GLOBALS['db']->getOne("SELECT meet_entry_status_codes.label FROM meet_entry_status_codes, 
+				meet_entry_statuses WHERE meet_entry_status_codes.id = meet_entry_statuses.code AND 
+				entry_id = '$this->id' ORDER BY changed DESC LIMIT 1;");
+		db_checkerrors($status);
+		
+		return $status;			
+		
+	}
+	
+	public function getStatusDesc() {
+		
+		$statusDesc = $GLOBALS['db']->getOne("SELECT meet_entry_status_codes.description FROM meet_entry_status_codes,
+				meet_entry_statuses WHERE meet_entry_status_codes.id = meet_entry_statuses.code AND
+				entry_id = '$this->id' ORDER BY changed DESC LIMIT 1;");
+		db_checkerrors($statusDesc);
+		
+		return $statusDesc;
+		
+	}
+	
+	public function getEvents() {
+		
+		return $this->events;
+		
+	}
+	
+	// Calculates if any event fees are payable for this entry
+	public function calcEventFees() {
+
+		$feeTotal = 0;
+		
+		if (isset($this->events)) {
+		
+			foreach($this->events as $e) {
+				
+				$eventId = $e->getEventId();
+				
+				$fee = $GLOBALS['db']->getOne("SELECT eventfee FROM meet_events WHERE id = '$eventId';");
+				db_checkerrors($fee);
+				
+				$feeTotal += floatval($fee);
+				
+			}
+			
+		}
+		
+		return $feeTotal;
+	}
+	
+	// Calculate total cost of entry
+	public function calcCost() {
+		
+		$meetDet = new Meet();
+		$meetDet->loadMeet($this->meetId);
+		
+		$this->cost = $meetDet->getMeetFee() + ($meetDet->getMealFee() * ($this->meals - $meetDet->getMealsIncluded())) + $this->calcEventFees();
+		
+	}
+	
+	// Set number of meals
+	public function setNumMeals($num) {
+		
+		$this->meals = mysql_real_escape_string($num);
+		
+	}
+	
+	// Get number of meals
+	public function getNumMeals() {
+		
+		return $this->meals;
+		
+	}
+	
+	// Set medical certificate
+	public function setMedical($m) {
+		
+		$this->medical = mysql_real_escape_string($m);
+		
+	}
+	
+	// Get Medical certificate
+	public function getMedical() {
+		
+		return $this->medical;
+		
+	}
+	
+	// Set notes
+	public function setNotes($n) {
+		
+		$this->notes = mysql_real_escape_string($n);
+		
+	}
+	
+	// Get notes
+	public function getNotes() {
+		
+		return $this->notes;
+		
+	}
+	
+	// Completely delete entry
+	public function delete() {
+		
+		// Delete events
+		if (isset($this->events)) {
+		
+			foreach($this->events as $e) {
+		
+				$e->delete();
+				
+			}
+			
+		}
+		
+		// Delete entry status
+		$delete1 = $GLOBALS['db']->query("DELETE FROM meet_entry_statuses WHERE entry_id = '$this->id';");
+		db_checkerrors($delete1);
+		
+		// Delete entry
+		$delete2 = $GLOBALS['db']->query("DELETE FROM meet_entries WHERE id = '$this->id';");
+		db_checkerrors($delete2);
+		
+	}
+	
+	// Gets the amount that's been paid so far for this entry
+	public function getPaid() {
+
+		$paidAmount = $GLOBALS['db']->getOne("SELECT sum(amount) FROM meet_entry_payments 
+				WHERE entry_id = '$this->id';");
+		db_checkerrors($paidAmount);
+		
+		return $paidAmount;
+	
+	}
+	
+	// Receive payment
+	public function makePayment($amount, $method) {
+		
+		$payCol = $method;
+		$paid = $amount;
+		
+		$method = $GLOBALS['db']->getOne("SELECT id FROM payment_types 
+				WHERE colname = ?;", array($method));
+		db_checkerrors($method);
+		
+		// Don't accept payment if already fully paid
+		if ($this->calcCost() >= $this->getPaid()) {
+		
+			$query = $GLOBALS['db']->query("INSERT INTO meet_entry_payments (entry_id, member_id, 
+				amount, method) VALUES (?, ?, ?, ?);",
+				array($this->id, $this->memberId, $paid, $method));
+			db_checkerrors($query);
+		
+		}
+		
+		// If full amount has been paid, update status
+		if ($this->calcCost() <= $this->getPaid()) {
+			
+			$this->setStatus(2);		// Change status to Accepted
+			$this->updateStatus();
+			
+			foreach ($this->events as $e) {
+				
+				$eventId = $e->getEventId();
+				$eventDet = new MeetEvent();
+				
+				if ($eventDet->getLegs() > 1) {
+				
+					$e->setStatus(1);
+					$e->update();
+					
+				} else {
+
+					$e->setStatus(2);
+					$e->update();
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	public function cancel() {
+		
+		// Update status to 11 and commit
+		$this->setStatus(11);
+		$this->updateStatus();
+		
+		// Set statuses of each event in entry
+		if (isset($this->events)) {
+			
+			foreach ($this->events as $e) {
+			
+				$eventId = $e->getEventId();
+				$eventDet = new MeetEvent();
+			
+				// Update status and commit
+				$e->setStatus(11);
+				$e->update();
+			
+			}
+			
+		}
+			
+	}
+	
+	public function getMemberId() {
+		
+		return $this->memberId;
+		
+	}
+	
+	public function getMeetId() {
+		
+		return $this->meetId;
+		
+	}
+	
+	public function getClubId() {
+		
+		return $this->clubId;
+		
+	}
+	
+	// Checks to see if the member has any previous entries for this meet
+	public function checkConflicting() {
+		
+		$otherEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_entries WHERE member_id = '$this->memberId'
+				AND meet_id = '$this->meetId';");
+		db_checkerrors($otherEntries);
+		
+		if (count($otherEntries) > 0) {
+			
+			return true;
+			
+		} else {
+			
+			return false;
+			
+		}
+		
+	}
+	
+	// Updates the existing entry with these details 
+	public function updateExisting() {
+		
+		$existingId = $GLOBALS['db']->getOne("SELECT id FROM meet_entries 
+				WHERE member_id = '$this->memberId'
+				AND meet_id = '$this->meetId';");
+		db_checkerrors($existingId);
+		
+		$existEntry = new MeetEntry();
+		$existEntry->loadId($existingId);
+		
+		$existEntry->setStatus(5);
+		$existEntry->updateStatus();
+		$existEntry->updateEvents($this->getEvents(), 5, 11);
+		
+	}
+	
+	// Gets a list of all events entered
+	public function getEventList() {
+		
+		$eventList = "";
+		
+		if (count($this->events) > 0) {
+		
+			foreach ($this->events as $v) {
+				
+				if ($eventList == "") {
+					
+					$eventList = $v->getEventNum();
+					
+				} else {
+				
+					$eventList = $eventList . ', ' . $v->getEventNum();
+					
+				}
+				
+			}
+			
+		}
+		
+		return $eventList;
+		
+	}
+	
+	public function update($foundStatus, $notFoundStatus) {
+		
+		// Load the existing entry
+		$existingEntry = new MeetEntry();
+		$existId = $GLOBALS['db']->getOne("SELECT id FROM meet_entries WHERE member_id = '$this->memberId'
+				AND meet_id = '$this->meetId' LIMIT 1;");
+		db_checkerrors($existId);
+		$existingEntry->loadId($existId);
+		
+		$existingEntry->calcCost();
+		$existingEntry->updateEvents($existingEntry->events, $foundStatus, $notFoundStatus);
+		
+		addlog("Meet Entry", "Updated entry $existId");
+		
+		//print_r($this->events);
+		
+		$update = $GLOBALS['db']->query("UPDATE meet_entries SET meals = ?, medical = ?, cost = ?, 
+				notes = ? WHERE id = ?", array($this->meals, $this->medical, $this->cost, $this->notes,
+				$this->id));
+		db_checkerrors($update);
+		
+	}
+	
+	// Updates events based on events array
+	public function updateEvents($eventsArray, $foundStatus, $notFoundStatus) {
+		
+		// Set status of events that are found
+		foreach ($this->events as $tEvents) {
+			
+			$eventId = $tEvents->getEventId();
+			$found = 0;
+			
+			foreach ($eventsArray as $nEvents) {
+				
+				$nId = $nEvents->getEventId();
+				
+				if ($nId == $eventId) {
+					
+					$tEvents->setStatus($foundStatus);
+					$na = $nEvents->getId();
+					$nSeed = $nEvents->getSeedTime();
+					$tEvents->setSeedTime($nSeed);
+					$tEvents->update();
+					
+					addlog("Meet Entry", "Updated event $nId entry $na with seed time $nSeed");
+					
+					$found = 1;
+					
+				}
+				
+			}
+			
+			// Update the ones that aren't found
+			if ($found == 0) {
+				
+				$tEvents->setStatus($notFoundStatus);
+				$tEvents->update();
+				
+			}
+			
+		}
+		
+		// Set status of events that are not found
+		foreach ($eventsArray as $nEvents) {
+			
+			//echo $this->entrantName;
+			
+			$newEvent = $nEvents->getEventId();
+			//echo "<br />newEvent = $newEvent<br />\n";
+			$newExists = 0;
+			
+			foreach ($this->events as $tEvents) {
+				
+				//echo $tEvents->getEventId() . "<br />\n";
+				
+				if ($newEvent == $tEvents->getEventId()) {
+					
+					$newExists = 1;
+					
+					//echo "new Exists!";
+					
+				}
+				
+			}
+			
+			if ($newExists == 0) {
+				
+				$this->addEvent($newEvent, $nEvents->getSeedTime(), $foundStatus);
+				$this->events[count($this->events) - 1]->create();
+				
+				//echo "add event $newEvent $foundStatus";
+				//echo count($this->events);
+				
+			}
+			
+		}
+		
+	}
+	
+	// Checks if this entry is cancelled
+	public function isCancelled() {
+		
+		return $this->cancelled;
+		
+	}
+
+}
+

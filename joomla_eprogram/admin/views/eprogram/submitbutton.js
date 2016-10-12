@@ -1,0 +1,46 @@
+/**
+ * @version		$Id: submitbutton.js 74 2010-12-01 22:04:52Z chdemko $
+ * @package		Joomla16.Tutorials
+ * @subpackage	Components
+ * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
+ * @author		Christophe Demko
+ * @link		http://joomlacode.org/gf/project/entrymanager_1_6/
+ * @license		License GNU General Public License version 2 or later
+ */
+
+Joomla.submitbutton = function(task)
+{
+	if (task == '')
+	{
+		return false;
+	}
+	else
+	{
+		var isValid=true;
+		var action = task.split('.');
+		if (action[1] != 'cancel' && action[1] != 'close')
+		{
+			var forms = $$('form.form-validate');
+			for (var i=0;i<forms.length;i++)
+			{
+				if (!document.formvalidator.isValid(forms[i]))
+				{
+					isValid = false;
+					break;
+				}
+			}
+		}
+	
+		if (isValid)
+		{
+			Joomla.submitform(task);
+			return true;
+		}
+		else
+		{
+			alert(Joomla.JText._('COM_EPROGRAM_EPROGRAM_ERROR_UNACCEPTABLE','Some values are unacceptable'));
+			return false;
+		}
+	}
+}
+

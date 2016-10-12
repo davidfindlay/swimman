@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d603ce7d-0829-421c-a1b3-bb7ddc14d882" name="MAMP" url="http://localhost:8888/">
+        <fileTransfer port="0" mountedRoot="/Applications/MAMP/htdocs" accessType="MOUNT" />
+      </webServer>
+      <webServer id="ef910aea-ae49-4ea8-bf28-4f79b907323f" name="Quadrahosting" url="http://forum.mastersswimmingqld.org.au">
+        <fileTransfer host="forum.mastersswimmingqld.org.au" port="8022" rootFolder="/hsphere/local/home/davsoft" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="8022" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

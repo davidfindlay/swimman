@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="profile">
+		<fieldset name="profile"
+			label="Membership Details"
+		>
+			<field
+				name="msanumber"
+				type="text"
+				description="Please enter your membership number, if you have one."
+				filter="string"
+				label="MSA Membership Number:"
+				message="If you are a registered MSQ or MSA branch member, please supply your membership number here."
+				size="10"
+			/>
+			<field
+				name="club"
+				type="text"
+				description="Please enter the name of the club you're a member of, or associated with."
+				filter="string"
+				label="Club Name:"
+				message="Please enter the name of the club you're a member of, or associated with."
+				size="30"
+			/>
+			<field
+				name="dob"
+				type="calendar"
+				label="Date of Birth(YYYY-MM-DD):"
+				description="Please enter your date of birth."
+			/>
+			<field
+				name="tos"
+				type="tos"
+				label="Site Rules:"
+				description="Please read the MSQ Members Community."
+			/>
+				<option value="1">I Agree</option>
+			
+		</fieldset>
+	</fields>
+</form>

@@ -1,0 +1,303 @@
+@CHARSET "UTF-8";
+
+
+@media only screen and (max-width: 700px) {
+
+html {
+	
+	padding: 0;
+	
+}	
+
+body {
+
+	font-family: sans-serif;
+	margin: 0;
+	background-color: #000000;
+
+}
+
+#appContainer {
+	
+	width: 100%;
+/* 	height: 100%; */
+/* 	position: absolute; */
+/* 	overflow: hidden; */
+	
+}
+
+#resultSelector {
+	
+	background-color: #ffffff;
+	color: #000000;
+	margin-top: 0;
+	margin-left: 0;
+	margin-right: 0;
+	width: 100%;
+	float: left;
+	position: relative;
+	z-position: 1;
+
+}
+
+#resultSelector h1 {
+	
+	background-color: #000000;
+	text-align: center;
+	color: #ffffff;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0.2em;
+	padding-bottom: 0.5em;
+		
+}
+
+#resultSelector h2 {
+	
+	font-size: 1.2em;
+	background-color: #000000;
+	color: #ffffff;
+	margin-top: 0;
+		
+}
+
+#resultDisplay {
+
+	width: 100%;
+	background-color: #ffffff;
+	float: left;
+	display: none;
+	z-position: 100;
+
+}
+
+#heatDetails {
+	
+	width: 100%;
+	margin-top: 42px;
+	
+}
+
+.controlSelect {
+
+	background-color: #000000;
+	color: #ffffff;
+	margin-top: 0;
+	margin-left: 0;
+	margin-right: 0;
+	
+}
+
+.backToResultSelector {
+	
+	background-color: #000000;
+	color: #ffffff;
+	text-decoration: none;
+	
+}
+
+.backToResultSelector a:link {
+	
+	color: #ffffff;
+	text-decoration: none;
+	
+}
+
+.backToResultSelector a:visited {
+	
+	color: #ffffff;
+	text-decoration: none;
+	
+}
+
+#heatLabel {
+
+	float: left;
+	clear: right;
+	width: 100%;
+	margin-left: 0;
+	margin-right: 0;
+	padding: 5px 5px 5px 5px;
+	background-color: #000000;
+	color: #ffffff;
+	font-size: 2em;
+	font-weight: bold;
+	text-decoration: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+
+}
+
+#heatLabel a:link {
+	
+	color: #ffffff;
+	text-decoration: none;
+	
+}
+
+#heatLabel a:visited {
+	
+	color: #ffffff;
+	text-decoration: none;
+	
+}
+
+.dataTable {
+
+	clear: both;
+	border-collapse: collapse;
+
+}
+
+.dataTable td {
+
+	padding: 5px 5px 5px 5px;
+
+}
+
+.lblLane {
+
+	text-align: center;
+	font-size: 0.5em;
+
+}
+
+.numLane {
+
+	text-align: center;
+	font-size: 2em;
+	font-weight: bold;
+	
+}
+
+.swimmerName {
+
+	float: left;
+	font-size: 1em;
+	font-weight: bold;
+
+}
+
+.swimmerAge {
+
+	font-size: 0.8em;
+	float: left;
+	margin-left: 0;
+
+}
+
+.clubName {
+
+	clear: both;
+	font-size: 0.8em;
+	
+}
+
+.ageGroup {
+
+	float: left;
+	clear: left;
+	font-size: 0.8em;
+	margin-left: 0;
+
+}
+
+.finalTime {
+
+	clear: both;
+	font-size: 1.5em;
+	font-weight: bold;
+	text-align: right;
+	padding-right: 5px;
+
+}
+
+.placeCell {
+	
+	text-align: center;
+	font-size: 0.8em;
+	
+}
+
+.resultRow {
+	
+	border-width: 1px 0 0 0;
+	border-color: #cccccc;
+	border-style: solid;
+	
+}
+
+.lblHeatPlace {
+	
+	width: 3em;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	display: inline;
+	
+}
+
+.heatPlace {
+
+	width: 3em;
+	font-size: 0.8em;
+	font-weight: normal;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	display: inline;
+
+}
+
+.lblAgePlace {
+
+	width: 3em;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	display: inline;
+
+}
+
+.agePlace {
+
+	width: 3em;
+	font-size: 0.8em;
+	font-weight: normal;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	display: inline;
+
+}
+
+.lblPoints {
+
+	width: 3em;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	display: inline;
+
+}
+
+.points {
+
+	width: 3em;
+	text-align: center;
+	font-size: 0.8em;
+	font-weight: normal;
+	margin: 0;
+	padding: 0;
+	display: inline;
+
+}
+}

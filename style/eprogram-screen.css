@@ -1,0 +1,357 @@
+@CHARSET "UTF-8";
+
+@media (min-width: 700px) {
+
+html {
+	
+	padding: 0;
+	
+}
+
+body {
+
+	font-family: sans-serif;
+	margin-top: 0;
+	margin-left: 0;
+	margin-right: 0;
+
+}
+
+#appContainer {
+	
+	margin: 0 auto;
+	
+}
+
+#resultDisplay {
+	
+	float: right;
+	/*overflow: hidden;*/
+	width: 50%;
+	
+}
+
+#resultSelector {
+	
+	float: left;
+	/* overflow: hidden;*/
+	background-color: #000000;
+	color: #ffffff;
+	margin-top: 0;
+	margin-left: 0;
+	width: 50%;
+	min-height: 400px;
+
+}
+
+#leftarrow {
+	display: none;
+}
+
+.controlSelect {
+
+
+}
+
+.wrapper-dropdown {
+    /* Size & position */
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+    padding: 12px 15px;
+
+    /* Styles */
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    cursor: pointer;
+    outline: none;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    
+    color: black;
+    z-index: 1;
+}
+
+.wrapper-dropdown:after { /* Little arrow */
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    margin-top: -3px;
+    border-width: 6px 6px 0 6px;
+    border-style: solid;
+    border-color: #4cbeff transparent;
+}
+
+.wrapper-dropdown .dropdown {
+    /* Size & position */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    /* Styles */
+    background: #fff;
+    border-radius: 0 0 5px 5px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-top: none;
+    border-bottom: none;
+    list-style: none;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+
+    /* Hiding */
+    max-height: 0;
+    overflow: hidden;
+    margin-top: 0;
+    
+}
+
+.wrapper-dropdown .dropdown li {
+    padding: 0 10px ;
+}
+
+.wrapper-dropdown .dropdown li a {
+    display: block;
+    text-decoration: none;
+    color: #333;
+    padding: 10px 0;
+    transition: all 0.3s ease-out;
+    border-bottom: 1px solid #e6e8ea;
+}
+
+.wrapper-dropdown .dropdown li:last-of-type a {
+    border: none;
+}
+
+.wrapper-dropdown .dropdown li i {
+    margin-right: 5px;
+    color: inherit;
+    vertical-align: middle;
+}
+
+/* Hover state */
+
+.wrapper-dropdown .dropdown li:hover a {
+    color: #57a9d9;
+}
+
+/* Active state */
+
+.wrapper-dropdown.active {
+    border-radius: 5px 5px 0 0;
+    background: #4cbeff;
+    box-shadow: none;
+    border-bottom: none;
+    color: black;
+    z-index: 10;
+}
+
+.wrapper-dropdown.active:after {
+    border-color: #82d1ff transparent;
+}
+
+.wrapper-dropdown.active .dropdown {
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    max-height: 400px;
+    z-index: 10;
+    margin-top: 0;
+}
+
+#heatLabel {
+
+	clear: both;
+	margin-left: 0;
+	margin-right: 0;
+	padding: 5px 5px 5px 5px;
+	background-color: #000000;
+	color: #ffffff;
+	font-size: 1.5em;
+	font-weight: bold;
+
+}
+
+#heatLabel a:link {
+	
+	text-decoration: none;
+	color: #ffffff;	
+	
+}
+
+#heatLabel a:visited {
+	
+	text-decoration: none;
+	color: #ffffff;	
+	
+}
+
+#heatDetails {
+
+	width: 100%;
+
+}
+
+.dataTable {
+
+	clear: both;
+	border-collapse: collapse;
+
+}
+
+.dataTable td {
+
+	padding: 5px 5px 5px 5px;
+
+}
+
+.resultRow {
+	
+	border-width: 1px 0 0 0;
+	border-color: #cccccc;
+	border-style: solid;
+	
+}
+
+.lblLane {
+
+	text-align: center;
+	font-size: 0.8em;
+
+}
+
+.numLane {
+
+	text-align: center;
+	font-size: 2em;
+	font-weight: bold;
+	
+}
+
+.swimmerName {
+
+	float: left;
+	font-size: 1.5em;
+	font-weight: bold;
+
+}
+
+.swimmerAge {
+
+	font-size: 0.8em;
+	float: left;
+	margin-left: 1em;
+	margin-top: 0.5em;
+
+}
+
+.clubName {
+
+	clear: both;
+	font-style: italic;
+	
+}
+
+.ageGroup {
+
+	font-size: 0.8em;
+	float: left;
+	margin-left: 1em;
+	margin-top: 0.5em;
+	
+}
+
+.finalTime {
+
+	clear: both;
+	font-size: 1.5em;
+	font-weight: bold;
+	text-align: right;
+	padding-right: 1em;
+
+}
+
+.lblHeatPlace {
+
+	float: left;
+	clear: left;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-align: right;
+	margin-left: 1em;
+	width: 10em;
+
+}
+
+.placeCell {
+	
+	text-align: center;
+	font-size: 0.8em;
+	
+}
+
+.heatPlace {
+
+	float: left;
+	font-size: 0.8em;
+	font-weight: normal;
+	text-align: center;
+	margin-left: 0.5em;
+	margin-right: 1em;
+
+}
+
+.lblAgePlace {
+
+	float: left;
+	clear: left;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-align: right;
+	margin-left: 1em;
+	width: 10em;
+
+}
+
+.agePlace {
+
+	float: left;
+	font-size: 0.8em;
+	font-weight: normal;
+	text-align: center;
+	margin-left: 0.5em;
+	margin-right: 1em;
+
+}
+
+.lblPoints {
+
+	float: left;
+	clear: left;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-align: right;
+	margin-left: 1em;
+	width: 10em;
+
+}
+
+.points {
+
+	float: left;
+	font-size: 0.8em;
+	font-weight: normal;
+	text-align: center;
+	margin-left: 0.5em;
+	margin-right: 1em;
+
+}
+}

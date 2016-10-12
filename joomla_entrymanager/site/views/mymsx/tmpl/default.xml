@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: default.xml 74 2010-12-01 22:04:52Z chdemko $ -->
+<metadata>
+	<layout title="COM_ENTRYMANAGER_MYMSX_VIEW_DEFAULT_TITLE">
+		<message>COM_ENTRYMANAGER_MYMSX_VIEW_DEFAULT_DESC</message>
+	</layout>
+</metadata>
+

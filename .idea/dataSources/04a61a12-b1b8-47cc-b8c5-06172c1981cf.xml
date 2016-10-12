@@ -1,0 +1,2627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="MAMP">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="2.6">
+    <schema id="1" name="msqold">
+      <visible>1</visible>
+    </schema>
+    <schema id="2" name="information_schema"/>
+    <schema id="3" name="mysql"/>
+    <schema id="4" name="performance_schema"/>
+    <table id="5" parent="1" name="addresses"/>
+    <table id="6" parent="1" name="age_groups"/>
+    <table id="7" parent="1" name="bak_j_assets"/>
+    <table id="8" parent="1" name="branch_regions"/>
+    <table id="9" parent="1" name="branches"/>
+    <table id="10" parent="1" name="cache_personalbest"/>
+    <table id="11" parent="1" name="club_payment_types"/>
+    <table id="12" parent="1" name="club_role_types"/>
+    <table id="13" parent="1" name="club_roles"/>
+    <table id="14" parent="1" name="clubs"/>
+    <table id="15" parent="1" name="clubs_captains"/>
+    <table id="16" parent="1" name="countries"/>
+    <table id="17" parent="1" name="email_types"/>
+    <table id="18" parent="1" name="emails"/>
+    <table id="19" parent="1" name="eprogram_athletes">
+      <comment>Maps member_ids to athlete numbers in MM database</comment>
+    </table>
+    <table id="20" parent="1" name="eprogram_entry"/>
+    <table id="21" parent="1" name="eprogram_events">
+      <comment>Maps events from events table to event_ptr numbers in MM dat</comment>
+    </table>
+    <table id="22" parent="1" name="eprogram_relay"/>
+    <table id="23" parent="1" name="eprogram_relaynames"/>
+    <table id="24" parent="1" name="eprogram_teams"/>
+    <table id="25" parent="1" name="event_disciplines"/>
+    <table id="26" parent="1" name="event_distances"/>
+    <table id="27" parent="1" name="event_types"/>
+    <table id="28" parent="1" name="j_entrymanager"/>
+    <table id="29" parent="1" name="j_eprogram"/>
+    <table id="30" parent="1" name="j_user_profiles">
+      <comment>Simple user profile storage table</comment>
+    </table>
+    <table id="31" parent="1" name="j_users"/>
+    <table id="32" parent="1" name="log"/>
+    <table id="33" parent="1" name="log_type"/>
+    <table id="34" parent="1" name="meet"/>
+    <table id="35" parent="1" name="meet_access"/>
+    <table id="36" parent="1" name="meet_check_in"/>
+    <table id="37" parent="1" name="meet_entries"/>
+    <table id="38" parent="1" name="meet_entries_relays"/>
+    <table id="39" parent="1" name="meet_entries_relays_members"/>
+    <table id="40" parent="1" name="meet_entry_files"/>
+    <table id="41" parent="1" name="meet_entry_payments"/>
+    <table id="42" parent="1" name="meet_entry_status_codes"/>
+    <table id="43" parent="1" name="meet_entry_statuses"/>
+    <table id="44" parent="1" name="meet_events"/>
+    <table id="45" parent="1" name="meet_events_entries"/>
+    <table id="46" parent="1" name="meet_events_entries_statuses"/>
+    <table id="47" parent="1" name="meet_events_groups"/>
+    <table id="48" parent="1" name="meet_events_groups_items"/>
+    <table id="49" parent="1" name="meet_file_types"/>
+    <table id="50" parent="1" name="meet_files"/>
+    <table id="51" parent="1" name="meet_jobs"/>
+    <table id="52" parent="1" name="meet_links"/>
+    <table id="53" parent="1" name="meet_organiser_roles"/>
+    <table id="54" parent="1" name="meet_organisers"/>
+    <table id="55" parent="1" name="meet_programs"/>
+    <table id="56" parent="1" name="meet_rules"/>
+    <table id="57" parent="1" name="meet_rules_groups"/>
+    <table id="58" parent="1" name="member"/>
+    <table id="59" parent="1" name="member_access"/>
+    <table id="60" parent="1" name="member_clubs"/>
+    <table id="61" parent="1" name="member_emails"/>
+    <table id="62" parent="1" name="member_emerg"/>
+    <table id="63" parent="1" name="member_emerg_phones"/>
+    <table id="64" parent="1" name="member_memberships"/>
+    <table id="65" parent="1" name="member_msqsite"/>
+    <table id="66" parent="1" name="member_phones"/>
+    <table id="67" parent="1" name="member_users"/>
+    <table id="68" parent="1" name="membership_statuses"/>
+    <table id="69" parent="1" name="membership_types"/>
+    <table id="70" parent="1" name="payment_types"/>
+    <table id="71" parent="1" name="performance_programs">
+      <comment>Defines names and periods of performance programs</comment>
+    </table>
+    <table id="72" parent="1" name="performance_programs_awards"/>
+    <table id="73" parent="1" name="performance_programs_events"/>
+    <table id="74" parent="1" name="performance_programs_levels"/>
+    <table id="75" parent="1" name="performance_programs_results"/>
+    <table id="76" parent="1" name="performance_programs_statuscodes"/>
+    <table id="77" parent="1" name="performance_programs_stds"/>
+    <table id="78" parent="1" name="phone_types"/>
+    <table id="79" parent="1" name="phones"/>
+    <table id="80" parent="1" name="states"/>
+    <table id="81" parent="1" name="suburbs"/>
+    <table id="82" parent="1" name="training_disciplines"/>
+    <table id="83" parent="1" name="training_disciplines_groups"/>
+    <table id="84" parent="1" name="training_disciplines_groups_links"/>
+    <table id="85" parent="1" name="training_set_types"/>
+    <table id="86" parent="1" name="training_sets"/>
+    <table id="87" parent="1" name="training_sets_items"/>
+    <table id="88" parent="1" name="user_groups"/>
+    <table id="89" parent="1" name="user_groups_map"/>
+    <table id="90" parent="1" name="users"/>
+    <table id="91" parent="1" name="venue_surveys"/>
+    <table id="92" parent="1" name="venue_types"/>
+    <table id="93" parent="1" name="venues"/>
+    <table id="94" parent="1" name="PPMG_meets"/>
+    <table id="95" parent="1" name="PPMG_meetevent"/>
+    <column id="96" parent="5" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="97" parent="5" name="address1">
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="98" parent="5" name="address2">
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="99" parent="5" name="suburb">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="100" parent="5" name="state">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="101" parent="5" name="country">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="102" parent="5" name="postcode">
+      <mandatory>1</mandatory>
+      <data-type>varchar(8)|0</data-type>
+    </column>
+    <key id="103" parent="5" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="104" parent="6" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="105" parent="6" name="set">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="106" parent="6" name="min">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="107" parent="6" name="max">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="108" parent="6" name="gender">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(3) unsigned|0</data-type>
+    </column>
+    <column id="109" parent="6" name="groupname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <column id="110" parent="6" name="swimmers">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <key id="111" parent="6" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="112" parent="7" name="id">
+      <comment>Primary Key</comment>
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="113" parent="7" name="parent_id">
+      <comment>Nested set parent.</comment>
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="114" parent="7" name="lft">
+      <comment>Nested set lft.</comment>
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="115" parent="7" name="rgt">
+      <comment>Nested set rgt.</comment>
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="116" parent="7" name="level">
+      <comment>The cached level in the nested tree.</comment>
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="117" parent="7" name="name">
+      <comment>The unique name for the asset.
+</comment>
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="118" parent="7" name="title">
+      <comment>The descriptive title for the asset.</comment>
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+    </column>
+    <column id="119" parent="7" name="rules">
+      <comment>JSON encoded access control.</comment>
+      <mandatory>1</mandatory>
+      <data-type>varchar(5120)|0</data-type>
+    </column>
+    <index id="120" parent="7" name="idx_asset_name">
+      <columns>name</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <index id="121" parent="7" name="idx_lft_rgt">
+      <columns>lft
+rgt</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="122" parent="7" name="idx_parent_id">
+      <columns>parent_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="123" parent="7" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="124" parent="7" name="idx_asset_name">
+      <columns>name</columns>
+      <underlying-index>idx_asset_name</underlying-index>
+    </key>
+    <column id="125" parent="8" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="126" parent="8" name="branch">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="127" parent="8" name="regionname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <key id="128" parent="8" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="129" parent="9" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="130" parent="9" name="branchcode">
+      <mandatory>1</mandatory>
+      <data-type>varchar(4)|0</data-type>
+    </column>
+    <column id="131" parent="9" name="branchname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <key id="132" parent="9" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="133" parent="10" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="134" parent="10" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="135" parent="10" name="discipline">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="136" parent="10" name="distance">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="137" parent="10" name="date">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="138" parent="10" name="agegroup">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="139" parent="11" name="club_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="140" parent="11" name="cash">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="141" parent="11" name="banktransfer">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="142" parent="11" name="PRIMARY">
+      <columns>club_id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="143" parent="12" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="144" parent="12" name="rolename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <key id="145" parent="12" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="146" parent="13" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="147" parent="13" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="148" parent="13" name="club_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="149" parent="13" name="role_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <index id="150" parent="13" name="club_id">
+      <columns>club_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="151" parent="13" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="152" parent="13" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="153" parent="14" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="154" parent="14" name="code">
+      <mandatory>1</mandatory>
+      <data-type>varchar(4)|0</data-type>
+    </column>
+    <column id="155" parent="14" name="clubname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="156" parent="14" name="postal">
+      <comment>Only use if postal address is club owned, e.g Club P.O. Box</comment>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="157" parent="14" name="region">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <index id="158" parent="14" name="clubname">
+      <columns>clubname</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="159" parent="14" name="code">
+      <columns>code</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="160" parent="14" name="code_clubname">
+      <columns>code
+clubname</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="161" parent="14" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <key id="162" parent="14" name="code_clubname">
+      <columns>code
+clubname</columns>
+      <underlying-index>code_clubname</underlying-index>
+    </key>
+    <column id="163" parent="15" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="164" parent="15" name="club_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="165" parent="15" name="member_id">
+      <comment>Member ID of Club Captain</comment>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="166" parent="15" name="email_id">
+      <comment>Email address to send entry details to Club Captain</comment>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="167" parent="15" name="daysprior">
+      <comment>How many days prior to meet deadline club captain requires entries</comment>
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <key id="168" parent="15" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="169" parent="16" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="170" parent="16" name="abbrev">
+      <mandatory>1</mandatory>
+      <data-type>varchar(6)|0</data-type>
+    </column>
+    <column id="171" parent="16" name="countryname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <column id="172" parent="16" name="countrycode">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(3) unsigned|0</data-type>
+    </column>
+    <key id="173" parent="16" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="174" parent="17" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="175" parent="17" name="typename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <key id="176" parent="17" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="177" parent="18" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="178" parent="18" name="email_type">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="179" parent="18" name="address">
+      <mandatory>1</mandatory>
+      <data-type>varchar(60)|0</data-type>
+    </column>
+    <key id="180" parent="18" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="181" parent="19" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="182" parent="19" name="member_id">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="183" parent="19" name="ath_no">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="184" parent="19" name="team_no">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="185" parent="19" name="firstname">
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <column id="186" parent="19" name="surname">
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <column id="187" parent="19" name="dob">
+      <data-type>date|0</data-type>
+    </column>
+    <column id="188" parent="19" name="msanumber">
+      <data-type>int(6)|0</data-type>
+    </column>
+    <column id="189" parent="19" name="gender">
+      <data-type>tinyint(4)|0</data-type>
+    </column>
+    <column id="190" parent="19" name="age">
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <index id="191" parent="19" name="ath_no">
+      <columns>ath_no</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="192" parent="19" name="meet_id">
+      <columns>meet_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="193" parent="19" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="194" parent="19" name="team_no">
+      <columns>team_no</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <column id="195" parent="20" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="196" parent="20" name="event_ptr">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="197" parent="20" name="ath_no">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="198" parent="20" name="heatnumber">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="199" parent="20" name="lanenumber">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="200" parent="20" name="seedtime">
+      <data-type>float unsigned|0</data-type>
+    </column>
+    <column id="201" parent="20" name="heatplace">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="202" parent="20" name="finalplace">
+      <mandatory>1</mandatory>
+      <data-type>float unsigned|0</data-type>
+    </column>
+    <column id="203" parent="20" name="finaltime">
+      <data-type>float unsigned|0</data-type>
+    </column>
+    <column id="204" parent="20" name="ev_score">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="205" parent="21" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="206" parent="21" name="event_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="207" parent="21" name="event_ptr">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="208" parent="21" name="numheats">
+      <mandatory>1</mandatory>
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <index id="209" parent="21" name="event_ptr">
+      <columns>event_ptr</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="210" parent="21" name="meet_id">
+      <columns>meet_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="211" parent="21" name="PRIMARY">
+      <columns>event_id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="212" parent="22" name="event_ptr">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="213" parent="22" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="214" parent="22" name="relay_no">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="215" parent="22" name="team_no">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="216" parent="22" name="team_ltr">
+      <mandatory>1</mandatory>
+      <data-type>varchar(2)|0</data-type>
+    </column>
+    <column id="217" parent="22" name="rel_age">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="218" parent="22" name="rel_sex">
+      <mandatory>1</mandatory>
+      <data-type>varchar(2)|0</data-type>
+    </column>
+    <column id="219" parent="22" name="seedtime">
+      <mandatory>1</mandatory>
+      <data-type>float unsigned|0</data-type>
+    </column>
+    <column id="220" parent="22" name="heatnumber">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="221" parent="22" name="lanenumber">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="222" parent="22" name="finaltime">
+      <mandatory>1</mandatory>
+      <data-type>float unsigned|0</data-type>
+    </column>
+    <column id="223" parent="22" name="heatplace">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="224" parent="22" name="finalplace">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="225" parent="22" name="ev_score">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="226" parent="23" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="227" parent="23" name="event_ptr">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="228" parent="23" name="relay_no">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="229" parent="23" name="team_no">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="230" parent="23" name="ath_no">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="231" parent="23" name="pos_no">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(10) unsigned|0</data-type>
+    </column>
+    <column id="232" parent="23" name="team_ltr">
+      <mandatory>1</mandatory>
+      <data-type>varchar(2)|0</data-type>
+    </column>
+    <column id="233" parent="24" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="234" parent="24" name="club_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="235" parent="24" name="team_no">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="236" parent="24" name="clubcode">
+      <comment>Used for clubs not listed in DB</comment>
+      <data-type>varchar(5)|0</data-type>
+    </column>
+    <column id="237" parent="24" name="clubname">
+      <comment>Used for clubs not listed in DB</comment>
+      <data-type>varchar(60)|0</data-type>
+    </column>
+    <index id="238" parent="24" name="club_id">
+      <columns>club_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="239" parent="24" name="meet_id">
+      <columns>meet_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="240" parent="24" name="team_no">
+      <columns>team_no</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <column id="241" parent="25" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="242" parent="25" name="discipline">
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="243" parent="25" name="abrev">
+      <mandatory>1</mandatory>
+      <data-type>varchar(3)|0</data-type>
+    </column>
+    <key id="244" parent="25" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="245" parent="26" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="246" parent="26" name="distance">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="247" parent="26" name="splits">
+      <comment>Number of splits in this distance</comment>
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="248" parent="26" name="metres">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="249" parent="26" name="course">
+      <mandatory>1</mandatory>
+      <data-type>varchar(3)|0</data-type>
+    </column>
+    <key id="250" parent="26" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="251" parent="27" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="252" parent="27" name="typename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="253" parent="27" name="relay">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(1)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="254" parent="27" name="gender">
+      <data-type>tinyint(4)|0</data-type>
+    </column>
+    <key id="255" parent="27" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="256" parent="28" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="257" parent="28" name="greeting">
+      <mandatory>1</mandatory>
+      <data-type>varchar(25)|0</data-type>
+    </column>
+    <column id="258" parent="28" name="catid">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="259" parent="28" name="params">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <key id="260" parent="28" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="261" parent="29" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="262" parent="29" name="greeting">
+      <mandatory>1</mandatory>
+      <data-type>varchar(25)|0</data-type>
+    </column>
+    <column id="263" parent="29" name="catid">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="264" parent="29" name="params">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <key id="265" parent="29" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="266" parent="30" name="user_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="267" parent="30" name="profile_key">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+    </column>
+    <column id="268" parent="30" name="profile_value">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="269" parent="30" name="ordering">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <index id="270" parent="30" name="idx_user_id_profile_key">
+      <columns>user_id
+profile_key</columns>
+      <desc-columns></desc-columns>
+      <unique>1</unique>
+    </index>
+    <key id="271" parent="30" name="idx_user_id_profile_key">
+      <columns>user_id
+profile_key</columns>
+      <underlying-index>idx_user_id_profile_key</underlying-index>
+    </key>
+    <column id="272" parent="31" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="273" parent="31" name="name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+      <default-expression>&apos;&apos;</default-expression>
+    </column>
+    <column id="274" parent="31" name="username">
+      <mandatory>1</mandatory>
+      <data-type>varchar(150)|0</data-type>
+      <default-expression>&apos;&apos;</default-expression>
+    </column>
+    <column id="275" parent="31" name="email">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+      <default-expression>&apos;&apos;</default-expression>
+    </column>
+    <column id="276" parent="31" name="password">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+      <default-expression>&apos;&apos;</default-expression>
+    </column>
+    <column id="277" parent="31" name="usertype">
+      <mandatory>1</mandatory>
+      <data-type>varchar(25)|0</data-type>
+      <default-expression>&apos;&apos;</default-expression>
+    </column>
+    <column id="278" parent="31" name="block">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(4)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="279" parent="31" name="sendEmail">
+      <data-type>tinyint(4)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="280" parent="31" name="registerDate">
+      <mandatory>1</mandatory>
+      <data-type>datetime|0</data-type>
+      <default-expression>&apos;0000-00-00 00:00:00&apos;</default-expression>
+    </column>
+    <column id="281" parent="31" name="lastvisitDate">
+      <mandatory>1</mandatory>
+      <data-type>datetime|0</data-type>
+      <default-expression>&apos;0000-00-00 00:00:00&apos;</default-expression>
+    </column>
+    <column id="282" parent="31" name="activation">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+      <default-expression>&apos;&apos;</default-expression>
+    </column>
+    <column id="283" parent="31" name="params">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <column id="284" parent="31" name="lastResetTime">
+      <comment>Date of last password reset</comment>
+      <mandatory>1</mandatory>
+      <data-type>datetime|0</data-type>
+      <default-expression>&apos;0000-00-00 00:00:00&apos;</default-expression>
+    </column>
+    <column id="285" parent="31" name="resetCount">
+      <comment>Count of password resets since lastResetTime</comment>
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <index id="286" parent="31" name="email">
+      <columns>email</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="287" parent="31" name="idx_block">
+      <columns>block</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="288" parent="31" name="idx_name">
+      <columns>name</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="289" parent="31" name="username">
+      <columns>username</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="290" parent="31" name="usertype">
+      <columns>usertype</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="291" parent="31" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="292" parent="32" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="293" parent="32" name="log_type">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="294" parent="32" name="time">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="295" parent="32" name="adminuser">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="296" parent="32" name="member">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="297" parent="32" name="juser">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="298" parent="32" name="short">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+    </column>
+    <column id="299" parent="32" name="text">
+      <data-type>text|0</data-type>
+    </column>
+    <key id="300" parent="32" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="301" parent="33" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="302" parent="33" name="logname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <key id="303" parent="33" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="304" parent="34" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="305" parent="34" name="meetname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(150)|0</data-type>
+    </column>
+    <column id="306" parent="34" name="startdate">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="307" parent="34" name="enddate">
+      <data-type>date|0</data-type>
+    </column>
+    <column id="308" parent="34" name="deadline">
+      <data-type>date|0</data-type>
+    </column>
+    <column id="309" parent="34" name="contactname">
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="310" parent="34" name="contactemail">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="311" parent="34" name="contactphone">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="312" parent="34" name="meetfee">
+      <data-type>float|0</data-type>
+    </column>
+    <column id="313" parent="34" name="mealfee">
+      <data-type>float|0</data-type>
+    </column>
+    <column id="314" parent="34" name="location">
+      <mandatory>1</mandatory>
+      <data-type>varchar(60)|0</data-type>
+    </column>
+    <column id="315" parent="34" name="status">
+      <data-type>tinyint(4)|0</data-type>
+    </column>
+    <column id="316" parent="34" name="maxevents">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="317" parent="34" name="mealsincluded">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(4)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <key id="318" parent="34" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="319" parent="35" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="320" parent="35" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="321" parent="35" name="member_id">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="322" parent="35" name="juser">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="323" parent="35" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="324" parent="36" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="325" parent="36" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="326" parent="36" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="327" parent="36" name="in">
+      <data-type>timestamp|0</data-type>
+    </column>
+    <column id="328" parent="36" name="out">
+      <data-type>timestamp|0</data-type>
+    </column>
+    <key id="329" parent="36" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="330" parent="37" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="331" parent="37" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="332" parent="37" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="333" parent="37" name="age_group_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="334" parent="37" name="meals">
+      <data-type>smallint(6)|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="335" parent="37" name="medical">
+      <data-type>tinyint(1)|0</data-type>
+    </column>
+    <column id="336" parent="37" name="cost">
+      <data-type>float|0</data-type>
+    </column>
+    <column id="337" parent="37" name="notes">
+      <data-type>text|0</data-type>
+    </column>
+    <column id="338" parent="37" name="club_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="339" parent="37" name="cancelled">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(1)|0</data-type>
+    </column>
+    <index id="340" parent="37" name="age_group_id">
+      <columns>age_group_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="341" parent="37" name="cancelled">
+      <columns>cancelled</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="342" parent="37" name="club_id">
+      <columns>club_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="343" parent="37" name="meet_id">
+      <columns>meet_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="344" parent="37" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="345" parent="37" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="346" parent="38" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="347" parent="38" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11) unsigned|0</data-type>
+    </column>
+    <column id="348" parent="38" name="club_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="349" parent="38" name="meetevent_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="350" parent="38" name="teamname">
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="351" parent="38" name="letter">
+      <mandatory>1</mandatory>
+      <data-type>varchar(1)|0</data-type>
+    </column>
+    <column id="352" parent="38" name="agegroup">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="353" parent="38" name="seedtime">
+      <data-type>float|0</data-type>
+    </column>
+    <key id="354" parent="38" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="355" parent="39" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="356" parent="39" name="relay_team">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="357" parent="39" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="358" parent="39" name="leg">
+      <mandatory>1</mandatory>
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <index id="359" parent="39" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="360" parent="39" name="relay_team">
+      <columns>relay_team</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="361" parent="39" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="362" parent="40" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="363" parent="40" name="filename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+    </column>
+    <column id="364" parent="40" name="uploaded">
+      <mandatory>1</mandatory>
+      <data-type>datetime|0</data-type>
+    </column>
+    <column id="365" parent="40" name="juser">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="366" parent="40" name="member">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="367" parent="40" name="clubid">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="368" parent="40" name="meetid">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="369" parent="40" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="370" parent="41" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="371" parent="41" name="entry_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="372" parent="41" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="373" parent="41" name="received">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="374" parent="41" name="amount">
+      <mandatory>1</mandatory>
+      <data-type>float|0</data-type>
+    </column>
+    <column id="375" parent="41" name="method">
+      <data-type>int(10) unsigned|0</data-type>
+      <default-expression>&apos;0&apos;</default-expression>
+    </column>
+    <column id="376" parent="41" name="comment">
+      <data-type>text|0</data-type>
+    </column>
+    <index id="377" parent="41" name="entry_id">
+      <columns>entry_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="378" parent="41" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="379" parent="41" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="380" parent="42" name="id">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(3) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="381" parent="42" name="label">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="382" parent="42" name="description">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <column id="383" parent="42" name="cancelled">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(1)|0</data-type>
+    </column>
+    <key id="384" parent="42" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="385" parent="43" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="386" parent="43" name="entry_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="387" parent="43" name="code">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(4)|0</data-type>
+      <default-expression>&apos;1&apos;</default-expression>
+    </column>
+    <column id="388" parent="43" name="changed">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <index id="389" parent="43" name="entry_id">
+      <columns>entry_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="390" parent="43" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="391" parent="44" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="392" parent="44" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="393" parent="44" name="type">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="394" parent="44" name="discipline">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="395" parent="44" name="legs">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+      <default-expression>&apos;1&apos;</default-expression>
+    </column>
+    <column id="396" parent="44" name="distance">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="397" parent="44" name="eventname">
+      <data-type>varchar(150)|0</data-type>
+    </column>
+    <column id="398" parent="44" name="prognumber">
+      <mandatory>1</mandatory>
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <column id="399" parent="44" name="progsuffix">
+      <comment>Event number suffix</comment>
+      <data-type>varchar(2)|0</data-type>
+    </column>
+    <column id="400" parent="44" name="eventfee">
+      <comment>Is there a fee for this event on top of the meet fee?</comment>
+      <mandatory>1</mandatory>
+      <data-type>float|0</data-type>
+    </column>
+    <index id="401" parent="44" name="meet_id">
+      <columns>meet_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="402" parent="44" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="403" parent="45" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="404" parent="45" name="meet_entry_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="405" parent="45" name="event_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="406" parent="45" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="407" parent="45" name="relay_id">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="408" parent="45" name="leg">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+      <default-expression>&apos;1&apos;</default-expression>
+    </column>
+    <column id="409" parent="45" name="seedtime">
+      <data-type>float|0</data-type>
+    </column>
+    <index id="410" parent="45" name="event_id">
+      <columns>event_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="411" parent="45" name="meet_entry_id">
+      <columns>meet_entry_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="412" parent="45" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="413" parent="45" name="relay_id">
+      <columns>relay_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="414" parent="45" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="415" parent="46" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="416" parent="46" name="meet_event_entries_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="417" parent="46" name="status">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="418" parent="46" name="changed">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <key id="419" parent="46" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="420" parent="47" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="421" parent="47" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="422" parent="47" name="max_choices">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="423" parent="47" name="groupname">
+      <data-type>varchar(150)|0</data-type>
+    </column>
+    <index id="424" parent="47" name="meet_id">
+      <columns>meet_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="425" parent="47" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="426" parent="48" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="427" parent="48" name="group_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="428" parent="48" name="event_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <index id="429" parent="48" name="event_id">
+      <columns>event_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="430" parent="48" name="group_id">
+      <columns>group_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="431" parent="48" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="432" parent="49" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="433" parent="49" name="type_name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <column id="434" parent="49" name="description">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <column id="435" parent="49" name="sort">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <key id="436" parent="49" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="437" parent="50" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="438" parent="50" name="type">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="439" parent="50" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="440" parent="50" name="filename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(80)|0</data-type>
+    </column>
+    <column id="441" parent="50" name="shorttitle">
+      <mandatory>1</mandatory>
+      <data-type>varchar(80)|0</data-type>
+    </column>
+    <column id="442" parent="50" name="uploadedby">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="443" parent="50" name="updated">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <key id="444" parent="50" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="445" parent="51" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="446" parent="51" name="re1sent">
+      <data-type>date|0</data-type>
+    </column>
+    <column id="447" parent="51" name="recsent">
+      <data-type>date|0</data-type>
+    </column>
+    <column id="448" parent="52" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="449" parent="52" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="450" parent="52" name="title">
+      <mandatory>1</mandatory>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <column id="451" parent="52" name="url">
+      <mandatory>1</mandatory>
+      <data-type>varchar(120)|0</data-type>
+    </column>
+    <column id="452" parent="52" name="sort">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(4)|0</data-type>
+    </column>
+    <key id="453" parent="52" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="454" parent="53" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="455" parent="53" name="title">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="456" parent="53" name="description">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <key id="457" parent="53" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="458" parent="54" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="459" parent="54" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="460" parent="54" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="461" parent="54" name="role_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="462" parent="54" name="surname">
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="463" parent="54" name="firstname">
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="464" parent="54" name="address">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="465" parent="54" name="email">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="466" parent="54" name="phone">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="467" parent="54" name="mobile">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <index id="468" parent="54" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="469" parent="54" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="470" parent="55" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="471" parent="55" name="filename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(60)|0</data-type>
+    </column>
+    <column id="472" parent="55" name="updated">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <column id="473" parent="55" name="version">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="474" parent="55" name="PRIMARY">
+      <columns>meet_id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="475" parent="56" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="476" parent="56" name="rule">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <column id="477" parent="56" name="priority">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <key id="478" parent="56" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="479" parent="57" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="480" parent="57" name="rule_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="481" parent="57" name="meet_events_groups_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <key id="482" parent="57" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="483" parent="58" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="484" parent="58" name="number">
+      <data-type>varchar(12)|0</data-type>
+    </column>
+    <column id="485" parent="58" name="surname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="486" parent="58" name="firstname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="487" parent="58" name="othernames">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="488" parent="58" name="dob">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="489" parent="58" name="gender">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(4) unsigned|0</data-type>
+    </column>
+    <column id="490" parent="58" name="address">
+      <data-type>int(11) unsigned|0</data-type>
+    </column>
+    <column id="491" parent="58" name="postal">
+      <data-type>int(11) unsigned|0</data-type>
+    </column>
+    <index id="492" parent="58" name="firstname">
+      <columns>firstname</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="493" parent="58" name="membersearch">
+      <columns>surname
+firstname
+othernames</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="494" parent="58" name="number">
+      <columns>number</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="495" parent="58" name="number_2">
+      <columns>number</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="496" parent="58" name="othernames">
+      <columns>othernames</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="497" parent="58" name="surname">
+      <columns>surname</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="498" parent="58" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="499" parent="59" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="500" parent="59" name="member">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="501" parent="59" name="nominee">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="502" parent="59" name="startdate">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="503" parent="59" name="enddate">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <key id="504" parent="59" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="505" parent="60" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="506" parent="60" name="membership_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="507" parent="60" name="club_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="508" parent="60" name="priority">
+      <comment>For members of multiple clubs, first claim = 1, second claim = 2, etc</comment>
+      <data-type>tinyint(4)|0</data-type>
+    </column>
+    <key id="509" parent="60" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="510" parent="61" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="511" parent="61" name="email_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <index id="512" parent="61" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <column id="513" parent="62" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="514" parent="62" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="515" parent="62" name="surname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="516" parent="62" name="firstname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="517" parent="62" name="address">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="518" parent="62" name="email">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="519" parent="62" name="priority">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(4)|0</data-type>
+    </column>
+    <key id="520" parent="62" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="521" parent="63" name="member_emerg_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="522" parent="63" name="phone_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="523" parent="64" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="524" parent="64" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="525" parent="64" name="club_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="526" parent="64" name="type">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="527" parent="64" name="status">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="528" parent="64" name="startdate">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="529" parent="64" name="enddate">
+      <data-type>date|0</data-type>
+    </column>
+    <index id="530" parent="64" name="club_id">
+      <columns>club_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="531" parent="64" name="enddate">
+      <columns>enddate</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="532" parent="64" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="533" parent="64" name="status">
+      <columns>status</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="534" parent="64" name="type">
+      <columns>type</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="535" parent="64" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="536" parent="65" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="537" parent="65" name="joomla_uid">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="538" parent="65" name="joomla_user">
+      <data-type>varchar(150)|0</data-type>
+    </column>
+    <index id="539" parent="65" name="joomla_user">
+      <columns>joomla_user</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <index id="540" parent="65" name="member_id">
+      <columns>member_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <column id="541" parent="66" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="542" parent="66" name="phone_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="543" parent="67" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="544" parent="67" name="user_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="545" parent="68" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="546" parent="68" name="desc">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <key id="547" parent="68" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="548" parent="69" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="549" parent="69" name="typename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="550" parent="69" name="startdate">
+      <data-type>date|0</data-type>
+    </column>
+    <column id="551" parent="69" name="enddate">
+      <data-type>date|0</data-type>
+    </column>
+    <column id="552" parent="69" name="months">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="553" parent="69" name="weeks">
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <column id="554" parent="69" name="status">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(4)|0</data-type>
+    </column>
+    <key id="555" parent="69" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="556" parent="70" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="557" parent="70" name="type_name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <column id="558" parent="70" name="colname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <key id="559" parent="70" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="560" parent="71" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="561" parent="71" name="shortname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <column id="562" parent="71" name="longname">
+      <data-type>varchar(100)|0</data-type>
+    </column>
+    <column id="563" parent="71" name="agegroupset">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="564" parent="71" name="startdate">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="565" parent="71" name="enddate">
+      <data-type>date|0</data-type>
+    </column>
+    <column id="566" parent="71" name="status">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="567" parent="71" name="timesrequired">
+      <comment>How many times do you have to meet a performance std to qualify at that level.</comment>
+      <mandatory>1</mandatory>
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <key id="568" parent="71" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="569" parent="72" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="570" parent="72" name="perf_prog_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="571" parent="72" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="572" parent="72" name="level">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="573" parent="72" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="574" parent="73" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="575" parent="73" name="perf_prog_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="576" parent="73" name="discipline">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="577" parent="73" name="distance">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="578" parent="73" name="sort">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <key id="579" parent="73" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="580" parent="74" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="581" parent="74" name="perf_prog_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="582" parent="74" name="levelname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(15)|0</data-type>
+    </column>
+    <column id="583" parent="74" name="description">
+      <data-type>text|0</data-type>
+    </column>
+    <column id="584" parent="74" name="sort">
+      <comment>Orders levels by priority</comment>
+      <mandatory>1</mandatory>
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <key id="585" parent="74" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="586" parent="75" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="587" parent="75" name="perf_prog_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="588" parent="75" name="perf_prog_event">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="589" parent="75" name="perf_prog_std">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="590" parent="75" name="member_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="591" parent="75" name="age_group">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="592" parent="75" name="level">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="593" parent="75" name="meet_id">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="594" parent="75" name="time">
+      <mandatory>1</mandatory>
+      <data-type>float|0</data-type>
+    </column>
+    <column id="595" parent="75" name="meet_name">
+      <comment>Temporary Name</comment>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <key id="596" parent="75" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="597" parent="76" name="id">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="598" parent="76" name="sort">
+      <mandatory>1</mandatory>
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <column id="599" parent="76" name="status">
+      <mandatory>1</mandatory>
+      <data-type>varchar(10)|0</data-type>
+    </column>
+    <column id="600" parent="76" name="desc">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <column id="601" parent="76" name="eprogram">
+      <comment>If this flag is set to 1 eProgram will show times that meet a standard in this program</comment>
+      <mandatory>1</mandatory>
+      <data-type>tinyint(1)|0</data-type>
+    </column>
+    <key id="602" parent="76" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="603" parent="77" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="604" parent="77" name="perf_prog_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11) unsigned|0</data-type>
+    </column>
+    <column id="605" parent="77" name="age_group">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="606" parent="77" name="level">
+      <mandatory>1</mandatory>
+      <data-type>int(11) unsigned|0</data-type>
+    </column>
+    <column id="607" parent="77" name="perf_prog_event">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="608" parent="77" name="hightime">
+      <mandatory>1</mandatory>
+      <data-type>float unsigned|0</data-type>
+    </column>
+    <column id="609" parent="77" name="lowtime">
+      <comment>If low time not included any time under the high time will qualify at this standard.</comment>
+      <data-type>float unsigned|0</data-type>
+    </column>
+    <key id="610" parent="77" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="611" parent="78" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="612" parent="78" name="typename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <key id="613" parent="78" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="614" parent="79" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="615" parent="79" name="phonetype">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="616" parent="79" name="countrycode">
+      <data-type>varchar(4)|0</data-type>
+    </column>
+    <column id="617" parent="79" name="areacode">
+      <data-type>varchar(6)|0</data-type>
+    </column>
+    <column id="618" parent="79" name="phonenumber">
+      <mandatory>1</mandatory>
+      <data-type>varchar(16)|0</data-type>
+    </column>
+    <key id="619" parent="79" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="620" parent="80" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="621" parent="80" name="country_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="622" parent="80" name="abbrev">
+      <mandatory>1</mandatory>
+      <data-type>varchar(6)|0</data-type>
+    </column>
+    <column id="623" parent="80" name="statename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <key id="624" parent="80" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="625" parent="81" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="626" parent="81" name="state_id">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="627" parent="81" name="suburbname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <key id="628" parent="81" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="629" parent="82" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="630" parent="82" name="discname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="631" parent="82" name="desc">
+      <data-type>text|0</data-type>
+    </column>
+    <column id="632" parent="82" name="url">
+      <data-type>varchar(150)|0</data-type>
+    </column>
+    <key id="633" parent="82" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="634" parent="83" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="635" parent="83" name="group_name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="636" parent="83" name="group_desc">
+      <data-type>text|0</data-type>
+    </column>
+    <key id="637" parent="83" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="638" parent="84" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="639" parent="84" name="group_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="640" parent="84" name="disc_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="641" parent="84" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="642" parent="85" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="643" parent="85" name="typename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <column id="644" parent="85" name="desc">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <key id="645" parent="85" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="646" parent="86" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="647" parent="86" name="author">
+      <comment>Member ID of author</comment>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="648" parent="86" name="datecreated">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="649" parent="86" name="title">
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <column id="650" parent="86" name="description">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <column id="651" parent="86" name="published">
+      <comment>Indicates whether or not the set is to be published to members other than it&apos;s author</comment>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="652" parent="86" name="type">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <key id="653" parent="86" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="654" parent="87" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="655" parent="87" name="training_set">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="656" parent="87" name="reps">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="657" parent="87" name="discipline">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="658" parent="87" name="distance">
+      <mandatory>1</mandatory>
+      <data-type>smallint(5) unsigned|0</data-type>
+    </column>
+    <column id="659" parent="87" name="short_instruction">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+    </column>
+    <column id="660" parent="87" name="long_instruction">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <column id="661" parent="87" name="rest_time">
+      <mandatory>1</mandatory>
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <column id="662" parent="87" name="cycle_time">
+      <mandatory>1</mandatory>
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <column id="663" parent="87" name="variant">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="664" parent="87" name="parent">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="665" parent="87" name="order">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="666" parent="87" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="667" parent="88" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="668" parent="88" name="groupname">
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="669" parent="88" name="joomla_group">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="670" parent="88" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="671" parent="89" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="672" parent="89" name="user_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="673" parent="89" name="group_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <key id="674" parent="89" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="675" parent="90" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="676" parent="90" name="member">
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="677" parent="90" name="username">
+      <mandatory>1</mandatory>
+      <data-type>varchar(20)|0</data-type>
+    </column>
+    <column id="678" parent="90" name="passwordhash">
+      <mandatory>1</mandatory>
+      <data-type>varchar(100)|0</data-type>
+    </column>
+    <column id="679" parent="90" name="lastupdated">
+      <mandatory>1</mandatory>
+      <data-type>timestamp|0</data-type>
+      <default-expression>CURRENT_TIMESTAMP</default-expression>
+    </column>
+    <key id="680" parent="90" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="681" parent="91" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="682" parent="91" name="venue_id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="683" parent="91" name="startdate">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="684" parent="91" name="enddate">
+      <data-type>date|0</data-type>
+    </column>
+    <column id="685" parent="91" name="filename">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <key id="686" parent="91" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="687" parent="92" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="688" parent="92" name="typename">
+      <mandatory>1</mandatory>
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <column id="689" parent="92" name="description">
+      <mandatory>1</mandatory>
+      <data-type>text|0</data-type>
+    </column>
+    <key id="690" parent="92" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="691" parent="93" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="692" parent="93" name="venue_name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(50)|0</data-type>
+    </column>
+    <column id="693" parent="93" name="address">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="694" parent="93" name="lat">
+      <data-type>float|0</data-type>
+    </column>
+    <column id="695" parent="93" name="lon">
+      <data-type>float|0</data-type>
+    </column>
+    <column id="696" parent="93" name="altitude">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="697" parent="93" name="type">
+      <mandatory>1</mandatory>
+      <data-type>int(10) unsigned|0</data-type>
+    </column>
+    <column id="698" parent="93" name="primarylength">
+      <mandatory>1</mandatory>
+      <data-type>mediumint(9)|0</data-type>
+    </column>
+    <column id="699" parent="93" name="secondarylength">
+      <data-type>mediumint(9)|0</data-type>
+    </column>
+    <column id="700" parent="93" name="recordsapproved">
+      <mandatory>1</mandatory>
+      <data-type>tinyint(1)|0</data-type>
+    </column>
+    <key id="701" parent="93" name="PRIMARY">
+      <columns>id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="702" parent="94" name="meet_year">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="703" parent="94" name="meet_id">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="704" parent="94" name="datafile">
+      <data-type>varchar(60)|0</data-type>
+    </column>
+    <index id="705" parent="94" name="PPMG_meets_meet_id_index">
+      <columns>meet_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="706" parent="94" name="PRIMARY">
+      <columns>meet_year</columns>
+      <primary>1</primary>
+    </key>
+    <column id="707" parent="95" name="meet_year">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="708" parent="95" name="meet_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="709" parent="95" name="meet_event_id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="710" parent="95" name="ppmg_name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(40)|0</data-type>
+    </column>
+    <column id="711" parent="95" name="ppmg_column">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+    </column>
+    <index id="712" parent="95" name="PPMG_meetevent_meet_id_meet_event_id_index">
+      <columns>meet_id
+meet_event_id</columns>
+      <desc-columns></desc-columns>
+    </index>
+    <key id="713" parent="95" name="PRIMARY">
+      <columns>meet_year</columns>
+      <primary>1</primary>
+    </key>
+  </database-model>
+</dataSource>

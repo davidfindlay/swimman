@@ -1,0 +1,31 @@
+
+--This line, and those below, will be ignored--
+
+A    eprogram-new.php
+A    gettmentries.php
+AM   images/down.png
+AM   images/left.png
+AM   images/right.png
+AM   images/up.png
+M    includes/classes/EntryChecker.php
+M    includes/classes/Meet.php
+M    includes/classes/MeetEntry.php
+M    includes/classes/MeetEvent.php
+A    includes/classes/RelayEntry.php
+A    includes/classes/RelayEntryMember.php
+A    includes/classes/TMEntryFile.php
+M    includes/setup.php
+M    joomla_entrymanager/site/controller.php
+M    joomla_entrymanager/site/views/clubentries/tmpl/default.php
+A    joomla_entrymanager/site/views/createrelay
+AM   joomla_entrymanager/site/views/createrelay/index.html
+A    joomla_entrymanager/site/views/createrelay/tmpl
+A    joomla_entrymanager/site/views/createrelay/tmpl/default.php
+AM   joomla_entrymanager/site/views/createrelay/tmpl/default.xml
+AM   joomla_entrymanager/site/views/createrelay/tmpl/index.html
+A    joomla_entrymanager/site/views/createrelay/view.html.php
+M    joomla_entrymanager/site/views/entrymanager/tmpl/default.php
+M    joomla_entrymanager/site/views/entrytool/tmpl/default.php
+M    joomla_entrymanager/site/views/meetentries/tmpl/default.php
+A    test-tmfile.php
+M    xmltest.php

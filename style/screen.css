@@ -1,0 +1,254 @@
+body {
+	
+	font-family: sans-serif;
+	font-size: 14px;
+	margin: 0;
+
+}
+
+th {
+	
+	text-align: left;
+	
+}
+
+.smalltext {
+	
+	font-size: 10px;
+	
+}
+
+.leftlabel {
+
+	width: 20%;
+	text-align: right;
+	float: left;
+	margin-right: 0.5%;
+	display: block;
+	font-weight: bold;
+	
+}
+
+.submit textarea input {
+
+	margin-left: 20.5%;	
+
+}
+
+h3 {
+
+
+		
+}
+
+#eventAdd {
+
+
+	
+}
+
+#meetDateRangeEntry {
+
+	display: none;
+	
+}
+
+#sidebar {
+
+	position: fixed;
+	float: left;
+	top: 0;
+	left: 0;
+	width: 10em;
+	height: 100%;
+	
+}
+
+#headerbar {
+	
+	display: block;
+	background-color: black;
+	color: white;
+	width: 100%;
+	padding: 5px 5px 5px 5px;
+	margin: 0;
+	
+}
+
+
+@media only screen and (min-width: 768px){
+
+	#main {
+
+		margin-left: 20em; 
+	
+	}
+	
+	
+	#navigation {
+	
+		width: 19em;
+		float: left;
+	
+	}
+	
+	li#navigation {
+	
+		margin-top: 10px;
+		margin-bottom: 10px;
+	
+	}
+	
+	#mobile-menu-button {
+	
+		display: none;
+	
+	}
+
+}
+
+	@media only screen and (max-width: 767px){
+		
+		#mobile-menu-button {
+		
+			float: left;
+			background-color: black;
+			color: white;
+			font-size: 20;
+			font-weight: bold;
+			
+		}
+		
+		a:visited#mobile-menu-button {
+		
+			color: white;
+		
+		}
+		
+		#navigation {
+		
+			display: none
+			
+		}
+		
+	}
+
+.error {
+
+	color: red;
+	font-weight: bold;
+	
+}
+
+.entrytool_error {
+
+	margin-left: 2em;
+	margin-right: 2em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	pading-left: 1em;
+	pading-right: 1em;
+	pading-top: 1em;
+	pading-bottom: 1em;
+	border-style: solid;
+	border-width: 2px;
+	border-color: black;
+	background-color: #FFFFCC;
+	font-size: -1;
+	
+}
+
+.entrytool_reason {
+	
+	clear: both;
+	
+}
+
+.entrytool_sign {
+	
+	float: left;
+	
+}
+
+h3.entrytool_error {
+	
+	margin-top: 5px;
+}
+
+.programCentre {
+	
+	text-align: center;
+	
+}
+
+.programTime {
+	
+	text-align: right;
+	
+}
+
+table {
+	
+	font-size: 14px;
+	
+}
+
+thead.list {
+	
+	background-color: #C2C2C2;
+	
+}
+
+tr.list:nth-child(odd) {
+	
+	background-color: #FEFFD9;
+	
+}
+
+td.short {
+	
+	text-align: center;
+	
+}
+
+th {
+	
+	padding: 0 5px 0 5px; 
+	
+}
+
+td {
+	
+	padding: 0 5px 0 5px;
+	
+}
+
+label {
+	
+	float: left;
+	display: block;
+	width: 20%;
+	
+}
+
+input {
+
+	
+			
+}
+
+.eProgramTitle {
+	
+	background-color: #FEFFD9;
+	font-weight: bold;
+	font-size: 20;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	
+}
+
+a {
+	
+	text-decoration: none;
+	
+}
