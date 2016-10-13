@@ -1,6 +1,6 @@
 <?php
 
-require_once("../setup.php");
+require_once("includes/setup.php");
 
 /**
  * Created by PhpStorm.

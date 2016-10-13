@@ -1,5 +1,5 @@
 <?php
-require_once("../setup.php");
+require_once("includes/setup.php");
 require_once("Meet.php");
 require_once("MeetEvent.php");
 
