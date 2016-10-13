@@ -46,6 +46,16 @@ if (isset($_POST['ppmgupload'])) {
 
 }
 
+// Handle Match Events
+if (isset($_POST['matchevents'])) {
+
+    $year = intval($_POST['year']);
+    $ppmgMeet = new PPMGMeet();
+    $ppmgMeet->load($year);
+    $ppmgMeet->matchEvents();
+
+}
+
 htmlHeaders("Pan Pacific Masters Games");
 
 sidebarMenu();

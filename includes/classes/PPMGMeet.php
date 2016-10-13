@@ -28,6 +28,15 @@ class PPMGMeet
         $this->meetObj->loadMeet($this->meetId);
     }
 
+    function load($year) {
+        $ppmgMeet = $GLOBALS['db']->getRow("SELECT * FROM PPMG_meets WHERE meetyear = ?", array($year));
+        db_checkerrors($ppmgMeet);
+
+        $this->year = $ppmgMeet[0];
+        $this->meetId = $ppmgMeet[1];
+        $this->datafile = $ppmgMeet[2];
+    }
+
     /**
      * Loads the PPMG Data File, finds the event columns and matches them
      * to entry manager events for this meet

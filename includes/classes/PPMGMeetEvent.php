@@ -1,5 +1,7 @@
 <?php
 
+require_once("../setup.php");
+
 /**
  * Created by PhpStorm.
  * User: david
@@ -32,6 +34,12 @@ class PPMGMeetEvent
 
     // Stores this event in the database
     public function store() {
+
+        $insert = $GLOBALS['db']->query("INSERT INTO PPMG_meetevent (meet_year, meet_id, meet_event_id, 
+                                        ppmg_name, ppmg_column) 
+                                        VALUES (?, ? ,?, ?, ?)",
+            array($this->year, $this->meetId, $this->meetEventId, $this->PPMGName, $this->PPMGcolumn));
+        db_checkerrors($insert);
 
     }
 
