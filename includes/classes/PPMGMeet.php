@@ -20,21 +20,19 @@ class PPMGMeet
 
     private $events;    // Array of PPMGMeetEvents
 
-    function __construct($year, $meetId) {
-        $this->year = $year;
-        $this->meetId = $meetId;
-
-        $this->meetObj = new Meet();
-        $this->meetObj->loadMeet($this->meetId);
-    }
 
     function load($year) {
-        $ppmgMeet = $GLOBALS['db']->getRow("SELECT * FROM PPMG_meets WHERE meetyear = ?", array($year));
+        $ppmgMeet = $GLOBALS['db']->getRow("SELECT * FROM PPMG_meets WHERE meet_year = ?", array($year));
         db_checkerrors($ppmgMeet);
 
         $this->year = $ppmgMeet[0];
         $this->meetId = $ppmgMeet[1];
         $this->datafile = $ppmgMeet[2];
+
+        // Get an Entry Manager meet object
+        $this->meetObj = new Meet();
+        $this->meetObj->loadMeet($this->meetId);
+
     }
 
     /**

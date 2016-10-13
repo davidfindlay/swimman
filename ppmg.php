@@ -22,6 +22,7 @@ if (isset($_POST['create'])) {
 }
 
 // Handle PPMG data file upload
+$uploadStatus = "";
 if (isset($_POST['ppmgupload'])) {
 
     $uploaddir = $GLOBALS['home_dir'] . '/masters-data/';
@@ -29,7 +30,7 @@ if (isset($_POST['ppmgupload'])) {
 
     addlog("PPMG Module", "Upload PPMG Data", "PPMG Database has been uploaded.");
 
-    if (move_uploaded_file($_FILES['ppmgfile']['tmp_name'], basename($_FILES["ppmgfile"]["name"]))) {
+    if (move_uploaded_file($_FILES['ppmgfile']['tmp_name'], $uploaddir. basename($_FILES["ppmgfile"]["name"]))) {
 
         $uploadStatus = "Successfully uploaded.";
 
@@ -129,6 +130,8 @@ $meetId = $ppmgMeet[1];
 $currentPPMGfile = $ppmgMeet[2];
 
 echo $currentPPMGfile;
+echo "<br />\n";
+echo $uploadStatus;
 echo "</p>";
 
 echo "<p>\n";
