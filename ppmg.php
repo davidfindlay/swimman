@@ -4,6 +4,8 @@ require_once("includes/sidebar.php");
 
 require_once("includes/classes/Meet.php");
 require_once("includes/classes/MeetEvent.php");
+require_once("includes/classes/PPMGMeet.php");
+require_once("includes/classes/PPMGMeetEvent.php");
 
 checkLogin();
 
