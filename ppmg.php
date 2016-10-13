@@ -164,15 +164,15 @@ $listEvents = $GLOBALS['db']->getAll("SELECT * FROM PPMG_meetevent WHERE meet_ye
 db_checkerrors($listEvents);
 
 foreach ($listEvents as $e) {
-    $eventId = $e[2];
-    $ppmgEvent = $e[3];
-    $ppmgColumn = $e[4];
+    $eventId = $e[3];
+    $ppmgEvent = $e[4];
+    $ppmgColumn = $e[5];
     $event = new MeetEvent();
     $event->load($eventId);
 
     echo "<tr>\n";
     echo "<td>\n";
-    $event->getShortDetails();
+    echo $event->getShortDetails();
     echo "</td>\n";
     echo "<td>\n";
     echo $ppmgEvent .  "(" . $ppmgColumn . ")\n";

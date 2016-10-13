@@ -2594,33 +2594,38 @@ othernames</columns>
       <columns>meet_year</columns>
       <primary>1</primary>
     </key>
-    <column id="707" parent="95" name="meet_year">
+    <column id="707" parent="95" name="id">
+      <mandatory>1</mandatory>
+      <data-type>int(11)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="708" parent="95" name="meet_year">
       <mandatory>1</mandatory>
       <data-type>int(11)|0</data-type>
     </column>
-    <column id="708" parent="95" name="meet_id">
+    <column id="709" parent="95" name="meet_id">
       <mandatory>1</mandatory>
       <data-type>int(11)|0</data-type>
     </column>
-    <column id="709" parent="95" name="meet_event_id">
+    <column id="710" parent="95" name="meet_event_id">
       <mandatory>1</mandatory>
       <data-type>int(11)|0</data-type>
     </column>
-    <column id="710" parent="95" name="ppmg_name">
+    <column id="711" parent="95" name="ppmg_name">
       <mandatory>1</mandatory>
       <data-type>varchar(40)|0</data-type>
     </column>
-    <column id="711" parent="95" name="ppmg_column">
+    <column id="712" parent="95" name="ppmg_column">
       <mandatory>1</mandatory>
       <data-type>int(11)|0</data-type>
     </column>
-    <index id="712" parent="95" name="PPMG_meetevent_meet_id_meet_event_id_index">
+    <index id="713" parent="95" name="PPMG_meetevent_meet_id_meet_event_id_index">
       <columns>meet_id
 meet_event_id</columns>
       <desc-columns></desc-columns>
     </index>
-    <key id="713" parent="95" name="PRIMARY">
-      <columns>meet_year</columns>
+    <key id="714" parent="95" name="PRIMARY">
+      <columns>id</columns>
       <primary>1</primary>
     </key>
   </database-model>
