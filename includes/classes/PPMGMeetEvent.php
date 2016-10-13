@@ -10,6 +10,7 @@ require_once("includes/setup.php");
  */
 class PPMGMeetEvent
 {
+    private $id;
     private $year;
     private $meetId;
     private $meetEventId;
