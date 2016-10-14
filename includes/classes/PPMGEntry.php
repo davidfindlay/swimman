@@ -1,6 +1,7 @@
 <?php
 
 require_once("Member.php");
+require_once("Club.php");
 
 /**
  * Created by PhpStorm.
@@ -566,9 +567,49 @@ class PPMGEntry
                 // Get their Entry Manager member Id
                 $this->member_id = $emMember->getId();
 
+            } else {
+
+                // Possibly interstate member
+                // create a membership for them
+                $dob = date('Y-m-d', strtotime($this->dateOfBirth));
+                $gender = 0;
+
+                if ($this->gender == "Male") {
+                    $gender = 1;
+                } else {
+                    $gender = 2;
+                }
+
+                $insert = $GLOBALS['db']->query("INSERT INTO member (number, firstname, surname, dob, gender)
+                                              VALUES (?,?,?,?,?);", array(
+                                                  $this->msaId,
+                    $this->firstName,
+                    $this->lastName,
+                    $dob,
+                    $gender
+                ));
+                db_checkerrors($insert);
+
+                $emMember->loadNumber($this->msaId);
+                $this->member_id = $emMember->getId();
+                $emMember->applyMembership(20, $this->msaClubCode);
+
             }
 
+        } else {
+
+            // We need to create an Entry Manager member for this person
+            $this->createPPMGmember();
+
         }
+
+    }
+
+    /**
+     * Creates a guest membership for Pan Pacific Masters Games for this entry
+     *
+     */
+    public function createPPMGmember() {
 
     }
 

@@ -2,6 +2,7 @@
 require_once("includes/setup.php");
 require_once("Meet.php");
 require_once("MeetEvent.php");
+require_once("PPMGEntry.php");
 
 /**
  * Created by PhpStorm.
@@ -96,11 +97,16 @@ class PPMGMeet
                         $event = new MeetEvent();
                         $event->load($e);
 
-                        if (($event->getDistanceMetres() == $distance) && ($event->getDiscipline() == $stroke)) {
+                        // Exclude relays from matching
+                        if ($event->getLegs() == 1) {
 
-                            // We have a match, store it
-                            $ppmgMeetEvent = new PPMGMeetEvent($this->year, $this->meetId, $e, $t, $colNo);
-                            $ppmgMeetEvent->store();
+                            if (($event->getDistanceMetres() == $distance) && ($event->getDiscipline() == $stroke)) {
+
+                                // We have a match, store it
+                                $ppmgMeetEvent = new PPMGMeetEvent($this->year, $this->meetId, $e, $t, $colNo);
+                                $ppmgMeetEvent->store();
+
+                            }
 
                         }
 
@@ -112,6 +118,59 @@ class PPMGMeet
             $colNo++;
         }
 
+        fclose($csvFile);
+
     }
 
+    /**
+     * Loads the PPMG Data File and Creates PPMGEntry Objects
+     */
+    function matchMembers() {
+
+        // Open Datafile CSV
+        $uploaddir = $GLOBALS['home_dir'] . '/masters-data/';
+        $csvFile = fopen ( $uploaddir . $this->datafile, "r" );
+
+        // Get title line as discard it
+        $titleLine = fgetcsv ( $csvFile );
+
+        // Step through all records
+        while ($entryData = fgetcsv($csvFile)) {
+
+            $entry = new PPMGEntry();
+            $entry->setAccountNumber($entryData[0]);
+            $entry->setDateRegistered($entryData[1]);
+            $entry->setRecordType($entryData[2]);
+            $entry->setFirstName($entryData[3]);
+            $entry->setLastName($entryData[4]);
+            $entry->setGender($entryData[5]);
+            $entry->setMainCountry($entryData[6]);
+            $entry->setDateOfBirth($entryData[7]);
+            $entry->setAge($entryData[8]);
+            $entry->setPrimaryContactNumber($entryData[9]);
+            $entry->setSecondaryContactNumber($entryData[10]);
+            $entry->setEmail($entryData[11]);
+            $entry->setMainState($entryData[12]);
+            $entry->setEmergencyContactName($entryData[13]);
+            $entry->setEmergencyContactPhoneNumber($entryData[14]);
+            $entry->setEmergencyContactRelationship($entryData[15]);
+            $entry->setAgeGroup($entryData[16]);
+            $entry->setMsaMember($entryData[53]);
+            $entry->setNonAustralianMasterMember($entryData[54]);
+            $entry->setMsaId($entryData[55]);
+            $entry->setMsaClubCode($entryData[56]);
+            $entry->setOverseasMastersSwimmingMember($entryData[57]);
+            $entry->setOverseasMastersSwimmingCountry($entryData[58]);
+            $entry->setOverseasMastersSwimmingClubName($entryData[59]);
+            $entry->setOverseasMastersSwimmingClubCode($entryData[60]);
+            $entry->setDisability($entryData[61]);
+
+            $entry->findEntryManagerMember();
+
+            $entry->store();
+
+        }
+
+        fclose($csvFile);
+    }
 }

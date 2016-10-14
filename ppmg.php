@@ -59,6 +59,16 @@ if (isset($_POST['matchevents'])) {
 
 }
 
+// Handle Match Members
+if (isset($_POST['matchmembers'])) {
+
+    $year = intval($_POST['year']);
+    $ppmgMeet = new PPMGMeet();
+    $ppmgMeet->load($year);
+    $ppmgMeet->matchMembers();
+
+}
+
 htmlHeaders("Pan Pacific Masters Games");
 
 sidebarMenu();
@@ -151,8 +161,8 @@ echo "<label>Match Events:</label>\n";
 echo "<input type=\"submit\" name=\"matchevents\" value=\"Match Events\" />\n";
 echo "</p>\n";
 
-echo "<table>\n";
-echo "<thead>\n";
+echo "<table width='100%'>\n";
+echo "<thead class=\"list\">\n";
 echo "<tr>\n";
 echo "<th>Entry Manager Event</th>\n";
 echo "<th>PPMG Event</th>\n";
@@ -160,7 +170,8 @@ echo "<tr>\n";
 echo "</thead>\n";
 echo "<tbody>\n";
 
-$listEvents = $GLOBALS['db']->getAll("SELECT * FROM PPMG_meetevent WHERE meet_year = ?;", array($year));
+$listEvents = $GLOBALS['db']->getAll("SELECT * FROM PPMG_meetevent WHERE meet_year = ? 
+  ORDER BY meet_event_id;", array($year));
 db_checkerrors($listEvents);
 
 foreach ($listEvents as $e) {
@@ -170,9 +181,9 @@ foreach ($listEvents as $e) {
     $event = new MeetEvent();
     $event->load($eventId);
 
-    echo "<tr>\n";
+    echo "<tr class=\"list\">\n";
     echo "<td>\n";
-    echo $event->getShortDetails();
+    echo $event->getProgNumber() . " - " . $event->getShortDetails();
     echo "</td>\n";
     echo "<td>\n";
     echo $ppmgEvent .  "(" . $ppmgColumn . ")\n";
@@ -180,7 +191,66 @@ foreach ($listEvents as $e) {
     echo "</tr>\n";
 }
 
-echo "</tr>\n";
+echo "</tbody>\n";
+echo "</table>\n";
+
+echo "<h2>Entrants</h2>\n";
+
+echo "<label>Match Members:</label>\n";
+echo "<input type=\"submit\" name=\"matchmembers\" value=\"Match Members\" />\n";
+echo "</p>\n";
+
+echo "<table width='100%'>\n";
+echo "<thead class=\"list\">\n";
+echo "<tr>\n";
+echo "<th>Entry Manager Member</th>\n";
+echo "<th>PPMG Entrant</th>\n";
+echo "<th>Status</th>\n";
+echo "<tr>\n";
+echo "</thead>\n";
+echo "<tbody>\n";
+
+$entrantList = $GLOBALS['db']->getAll("SELECT PPMG_entry.first_name, PPMG_entry.last_name, PPMG_entry.gender, 
+    PPMG_entry.dob, PPMG_entry.msa_id, PPMG_entry.member_id, member.firstname, member.surname, member.gender,
+    member.dob, member.number
+    FROM member RIGHT JOIN PPMG_entry ON member.id = PPMG_entry.member_id ORDER BY PPMG_entry.date_registered;");
+db_checkerrors($entrantList);
+
+foreach ($entrantList as $e) {
+
+    echo "<tr class=\"list\">\n";
+
+    echo "<td>\n";
+
+    // Display entry manager details if a member is matched
+    if ($e[6] != "") {
+
+        echo $e[6] . " " . $e[7] . " - " . $e[9] . " - ";
+        if ($e[8] == 1) {
+            echo "M";
+        } else {
+            echo "F";
+        }
+        echo " (" . $e[10] . ")";
+
+    }
+    echo "</td>\n";
+
+    echo "<td>\n";
+    echo $e[0] . " " . $e[1] . " - " . $e[3] . " - " . $e[2] . " (" . $e[4] . ")";
+    echo "</td>\n";
+
+    echo "<td>\n";
+
+    if ($e[4] == $e[10]) {
+        echo "MSA ID Matched";
+    }
+
+    echo "</td>\n";
+    echo "</tr>\n";
+
+}
+
 echo "</tbody>\n";
 echo "</table>\n";
 
