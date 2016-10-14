@@ -568,21 +568,6 @@ class PPMGEntry
 
             }
 
-        } else {
-
-            $dob = date('Y-m-d', strtotime($this->dateOfBirth));
-            $club = new Club();
-
-            if ($this->firstName == "Helen" && $this->lastName == "Malar") {
-                $dob = $dob;
-            }
-
-            if ($emMember->find($this->firstName, $this->lastName, $dob, '')) {
-
-                $this->member_id = $emMember->getId();
-
-            }
-
         }
 
     }
