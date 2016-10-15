@@ -1,6 +1,7 @@
 <?php
 require_once("includes/setup.php");
 require_once("includes/sidebar.php");
+require_once("includes/classes/RE1File.php");
 checkLogin();
 
 // Handle form
@@ -42,6 +43,29 @@ if (isset($_POST['updateClubsSubmit'])) {
 
 }
 
+if (isset($_POST['re1clubimport'])) {
+
+    $uploaddir = $GLOBALS['home_dir'] . '/masters-data/';
+    $filename = basename($_FILES["re1club"]["name"]);
+
+    addlog("Clubs", "Upload RE1 File", "RE1 Database has been uploaded.");
+
+    if (move_uploaded_file($_FILES['re1club']['tmp_name'], $uploaddir. basename($_FILES["re1club"]["name"]))) {
+
+        $uploadStatus = "Successfully uploaded.";
+
+        $re1 = new RE1File();
+        $re1->setDatafile($filename);
+        $re1->importClubs();
+
+    } else {
+
+        $uploadStatus = "Unable to read upload file!\n";
+
+    }
+
+}
+
 htmlHeaders("Club List - Swimming Management System");
 
 sidebarMenu();
@@ -50,7 +74,7 @@ echo "<div id=\"main\">\n";
 
 echo "<h1>Club List</h1>\n";
 
-echo "<form method=\"post\">\n";
+echo "<form enctype=\"multipart/form-data\" method=\"post\">\n";
 
 echo "<div id=\"clubs\">\n";
 
@@ -202,6 +226,17 @@ echo "<input type=\"submit\" name=\"updateClubsSubmit\" id=\"updateClubsSubmit\"
 echo "<input type=\"reset\" value=\"Reset Selection\" />\n";
 echo "</p>\n";
 echo "</fieldset>\n";
+
+echo "<fieldset>\n";
+echo "<p>\n";
+echo "<label>Import Clubs from RE1 File:</label>\n";
+echo "<input type=\"file\" name=\"re1club\" />\n";
+echo "</p>\n";
+echo "<p>\n";
+echo "<input type=\"submit\" name=\"re1clubimport\" value=\"Import Clubs\" />\n";
+echo "</p>\n";
+echo "</fieldset>\n";
+
 echo "</form>\n";
 
 echo "</div>\n";

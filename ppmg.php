@@ -206,13 +206,14 @@ echo "<tr>\n";
 echo "<th>Entry Manager Member</th>\n";
 echo "<th>PPMG Entrant</th>\n";
 echo "<th>Status</th>\n";
+echo "<th>Controls</th>\n";
 echo "<tr>\n";
 echo "</thead>\n";
 echo "<tbody>\n";
 
 $entrantList = $GLOBALS['db']->getAll("SELECT PPMG_entry.first_name, PPMG_entry.last_name, PPMG_entry.gender, 
     PPMG_entry.dob, PPMG_entry.msa_id, PPMG_entry.member_id, member.firstname, member.surname, member.gender,
-    member.dob, member.number
+    member.dob, member.number, PPMG_entry.status, PPMG_entry.account_number
     FROM member RIGHT JOIN PPMG_entry ON member.id = PPMG_entry.member_id ORDER BY PPMG_entry.date_registered;");
 db_checkerrors($entrantList);
 
@@ -242,9 +243,12 @@ foreach ($entrantList as $e) {
 
     echo "<td>\n";
 
-    if ($e[4] == $e[10]) {
-        echo "MSA ID Matched";
-    }
+    echo $e[11];
+
+    echo "</td>\n";
+    echo "<td>\n";
+
+    echo "<a href=\"ppmgedit.php?account=$e[12]\">Edit</a>\n";
 
     echo "</td>\n";
     echo "</tr>\n";

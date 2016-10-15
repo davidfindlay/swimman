@@ -149,17 +149,44 @@ class Member {
 		return true;
 		
 	}
-	
+
+	public function store() {
+
+        if ($this->gender == 'M') {
+
+            $genderNum = 1;
+
+        } else {
+
+            $genderNum = 2;
+
+        }
+
+        $insert = $GLOBALS['db']->query("INSERT INTO member (number, surname, firstname, othernames, 
+				dob, gender) VALUES ('$this->number', '$this->surname', '$this->firstname', 
+				'$this->othernames', '$this->dob', '$genderNum');");
+        db_checkerrors($insert);
+
+        $this->id = mysql_insert_id();
+
+        return true;
+
+    }
 	
 	// Apply a membership to this member
 	public function applyMembership($newType, $club, $newStartDate = null) {
 		
 		// Check if member already has membership of this type
 		$type = mysql_real_escape_string($newType);
-		
+
 		$clubData = new Club();
 		$clubData->load($club);
 		$clubId = $clubData->getId();
+
+        // Check a club has been found
+        if ($clubId == 0) {
+            return false;
+        }
 		
 		if (isset($newStartDate)) {
 			

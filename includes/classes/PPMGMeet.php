@@ -138,36 +138,51 @@ class PPMGMeet
         while ($entryData = fgetcsv($csvFile)) {
 
             $entry = new PPMGEntry();
-            $entry->setAccountNumber($entryData[0]);
-            $entry->setDateRegistered($entryData[1]);
-            $entry->setRecordType($entryData[2]);
-            $entry->setFirstName($entryData[3]);
-            $entry->setLastName($entryData[4]);
-            $entry->setGender($entryData[5]);
-            $entry->setMainCountry($entryData[6]);
-            $entry->setDateOfBirth($entryData[7]);
-            $entry->setAge($entryData[8]);
-            $entry->setPrimaryContactNumber($entryData[9]);
-            $entry->setSecondaryContactNumber($entryData[10]);
-            $entry->setEmail($entryData[11]);
-            $entry->setMainState($entryData[12]);
-            $entry->setEmergencyContactName($entryData[13]);
-            $entry->setEmergencyContactPhoneNumber($entryData[14]);
-            $entry->setEmergencyContactRelationship($entryData[15]);
-            $entry->setAgeGroup($entryData[16]);
-            $entry->setMsaMember($entryData[53]);
-            $entry->setNonAustralianMasterMember($entryData[54]);
-            $entry->setMsaId($entryData[55]);
-            $entry->setMsaClubCode($entryData[56]);
-            $entry->setOverseasMastersSwimmingMember($entryData[57]);
-            $entry->setOverseasMastersSwimmingCountry($entryData[58]);
-            $entry->setOverseasMastersSwimmingClubName($entryData[59]);
-            $entry->setOverseasMastersSwimmingClubCode($entryData[60]);
-            $entry->setDisability($entryData[61]);
 
-            $entry->findEntryManagerMember();
+            // Check entry doesn't already exist
+            if (!$entry->load($entryData[0])) {
 
-            $entry->store();
+                $entry->setAccountNumber($entryData[0]);
+                $entry->setDateRegistered($entryData[1]);
+                $entry->setRecordType($entryData[2]);
+                $entry->setFirstName($entryData[3]);
+                $entry->setLastName($entryData[4]);
+                $entry->setGender($entryData[5]);
+                $entry->setMainCountry($entryData[6]);
+                $entry->setDateOfBirth($entryData[7]);
+                $entry->setAge($entryData[8]);
+                $entry->setPrimaryContactNumber($entryData[9]);
+                $entry->setSecondaryContactNumber($entryData[10]);
+                $entry->setEmail($entryData[11]);
+                $entry->setMainState($entryData[12]);
+                $entry->setEmergencyContactName($entryData[13]);
+                $entry->setEmergencyContactPhoneNumber($entryData[14]);
+                $entry->setEmergencyContactRelationship($entryData[15]);
+                $entry->setAgeGroup($entryData[16]);
+                $entry->setMsaMember($entryData[53]);
+                $entry->setNonAustralianMasterMember($entryData[54]);
+                $entry->setMsaId($entryData[55]);
+                $entry->setMsaClubCode($entryData[56]);
+                $entry->setOverseasMastersSwimmingMember($entryData[57]);
+                $entry->setOverseasMastersSwimmingCountry($entryData[58]);
+                $entry->setOverseasMastersSwimmingClubName($entryData[59]);
+                $entry->setOverseasMastersSwimmingClubCode($entryData[60]);
+                $entry->setDisability($entryData[61]);
+
+                $entry->findEntryManagerMember();
+
+                $entry->store();
+
+            } else {
+
+                // Entry already exists
+
+                // Match up member
+                $entry->findEntryManagerMember();
+
+                $entry->updateMemberEntry();
+
+            }
 
         }
 

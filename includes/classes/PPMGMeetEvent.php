@@ -36,11 +36,27 @@ class PPMGMeetEvent
     // Stores this event in the database
     public function store() {
 
-        $insert = $GLOBALS['db']->query("INSERT INTO PPMG_meetevent (meet_year, meet_id, meet_event_id, 
+        // Check the event doesn't already exist
+        $existingCheck = $GLOBALS['db']->getRow("SELECT * FROM PPMG_meetevent 
+            WHERE meet_year = ? AND meet_id = ? and meet_event_id = ?;",
+            array($this->year, $this->meetId, $this->meetEventId));
+        db_checkerrors($existingCheck);
+
+        if (count($existingCheck) == 0) {
+
+            $insert = $GLOBALS['db']->query("INSERT INTO PPMG_meetevent (meet_year, meet_id, meet_event_id, 
                                         ppmg_name, ppmg_column) 
                                         VALUES (?, ? ,?, ?, ?)",
-            array($this->year, $this->meetId, $this->meetEventId, $this->PPMGName, $this->PPMGcolumn));
-        db_checkerrors($insert);
+                array($this->year, $this->meetId, $this->meetEventId, $this->PPMGName, $this->PPMGcolumn));
+            db_checkerrors($insert);
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
 
     }
 

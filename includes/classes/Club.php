@@ -6,7 +6,8 @@ class Club {
 	private $code;
 	private $clubname;
 	private $region;
-	
+	private $branch;
+
 	public function load($cId) {
 		
 		$clubId = mysql_real_escape_string($cId);

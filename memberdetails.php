@@ -12,7 +12,7 @@ htmlHeaders("Member List - Swimming Management System");
 echo "<div id=\"main\">\n";
 
 echo "<h1>Member Details</h1>\n";
-$memberDetails->getQRCode();
+//$memberDetails->getQRCode();
 $msa = $memberDetails->getMSANumber();
 
 $memberFullName = $memberDetails->getFullname();
@@ -20,6 +20,9 @@ echo "<h2>$memberFullName</h2>\n";
 
 echo "<img src=\"temp/qrcode-$msa.png\" alt=\"QR Code\" id=\"qrcode\" />\n";
 echo "<p>\n";
+echo "<label>Member ID:</label>\n";
+echo $memberDetails->getSurname();
+echo "<br />\n";
 echo "<label>Surname:</label>\n";
 echo $memberDetails->getSurname();
 echo "<br />\n";
@@ -35,6 +38,13 @@ echo "<br />\n";
 echo "<label>Gender:</label>\n";
 echo $memberDetails->getGender();
 echo "<br />\n";
+
+echo "<h2>Membership Details</h2>\n";
+
+$memberships = $GLOBALS['db']->getAll("SELECT * FROM member_memberships WHERE member_id = ? ORDER BY enddate;",
+    array($memberId));
+db_checkerrors($memberships);
+
 
 
 echo "</p>\n";

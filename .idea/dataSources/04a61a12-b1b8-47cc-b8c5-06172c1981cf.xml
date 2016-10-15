@@ -2714,11 +2714,14 @@ meet_event_id</columns>
     <column id="743" parent="96" name="entry_id">
       <data-type>int(11)|0</data-type>
     </column>
-    <index id="744" parent="96" name="PPMG_entry_entry_id_index">
+    <column id="744" parent="96" name="status">
+      <data-type>varchar(30)|0</data-type>
+    </column>
+    <index id="745" parent="96" name="PPMG_entry_entry_id_index">
       <columns>entry_id</columns>
       <desc-columns></desc-columns>
     </index>
-    <key id="745" parent="96" name="PRIMARY">
+    <key id="746" parent="96" name="PRIMARY">
       <columns>account_number</columns>
       <primary>1</primary>
     </key>
