@@ -105,34 +105,40 @@ class RE1File
             $firstname = $member[2];
             $initial = $member[3];
             $gender = $member[4];
-            $dob = $member[5];
+
+            list($dobDay, $dobMon, $dobYear) = explode('/', $member[5]);
+            $dob = $dobYear . "-" . $dobMon . "-" . $dobDay;
+
             $clubcode = $member[6];
             $clubname = $member[7];
 
             $memberDetails = new Member();
-            $memberDetails->loadNumber($msaNumber);
 
-            if ($memberDetails->getFirstname() != $firstname) {
+            if ($memberDetails->loadNumber($msaNumber)) {
 
-                // Update first name
-                $memberDetails->setFirstname($firstname);
-                addlog("RE1 Import", "First Name Updated", "First Name updated for $msaNumber to $firstname");
+                if ($memberDetails->getFirstname() != $firstname) {
 
-            }
+                    // Update first name
+                    $memberDetails->setFirstname($firstname);
+                    addlog("RE1 Import", "First Name Updated", "First Name updated for $msaNumber to $firstname");
 
-            if ($memberDetails->getSurname() != $surname) {
+                }
 
-                // Update last name
-                $memberDetails->setSurname($surname);
-                addlog("RE1 Import", "Surname Updated", "Surname updated for $msaNumber to $surname");
+                if ($memberDetails->getSurname() != $surname) {
 
-            }
+                    // Update last name
+                    $memberDetails->setSurname($surname);
+                    addlog("RE1 Import", "Surname Updated", "Surname updated for $msaNumber to $surname");
 
-            if ($memberDetails->getDob() != $dob) {
+                }
 
-                // Update Date of Birth
-                $memberDetails->setDob($dob);
-                addlog("RE1 Import", "Date of Birth Updated", "Date of Birth updated for $msaNumber to $dob");
+                if ($memberDetails->getDob() != $dob) {
+
+                    // Update Date of Birth
+                    $memberDetails->setDob($dob);
+                    addlog("RE1 Import", "Date of Birth Updated", "Date of Birth updated for $msaNumber to $dob");
+
+                }
 
             }
 
