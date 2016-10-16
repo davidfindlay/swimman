@@ -727,7 +727,16 @@ class PPMGEntry
             if (strcasecmp($this->overseasMastersSwimmingMember, "Yes") == 0) {
 
                 // Overseas Masters Member
-                $this->createOverseasMember();
+                if ((strlen($this->overseasMastersSwimmingClubCode) <= 4) &&
+                    (strlen($this->overseasMastersSwimmingClubCode) > 0)) {
+
+                    $this->createOverseasMember();
+
+                } else {
+
+                    $this->status = "Overseas member - possible invalid club code";
+
+                }
 
                 return true;
 
@@ -826,15 +835,7 @@ class PPMGEntry
 
             if (!$clubDetails->load($this->overseasMastersSwimmingClubCode)) {
 
-                $clubId = $GLOBALS['db']->getOne("SELECT id FROM clubs WHERE clubname = ?",
-                    array($this->overseasMastersSwimmingClubName));
-                db_checkerrors($clubId);
-
-                if ($clubId == "") {
-
-                    $clubDetails->create($this->overseasMastersSwimmingClubCode, $this->overseasMastersSwimmingClubName);
-
-                }
+                $clubDetails->create($this->overseasMastersSwimmingClubCode, $this->overseasMastersSwimmingClubName);
 
             }
 
@@ -860,7 +861,8 @@ class PPMGEntry
             dob = ?,
             msa_member = ?,
             msa_id = ?,
-            msa_club_code = ?
+            msa_club_code = ?,
+            overseas_masters_clubcode = ?
             WHERE account_number = ?;",
             array($this->firstName,
                 $this->lastName,
@@ -868,6 +870,7 @@ class PPMGEntry
                 $this->msaMember,
                 $this->msaId,
                 $this->msaClubCode,
+                $this->overseasMastersSwimmingClubCode,
                 $this->accountNumber));
         db_checkerrors($update);
 

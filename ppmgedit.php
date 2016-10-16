@@ -28,6 +28,7 @@ if (isset($_POST['update'])) {
     $msaMember = $_POST['msaMember'];
     $msaId = $_POST['msaId'];
     $msaClubCode = $_POST['msaClubCode'];
+    $overseasMastersClubCode = $_POST['overseasMastersClubCode'];
 
     $entry->setFirstName($firstName);
     $entry->setLastName($lastName);
@@ -35,6 +36,7 @@ if (isset($_POST['update'])) {
     $entry->setMsaMember($msaMember);
     $entry->setMsaId($msaId);
     $entry->setMsaClubCode($msaClubCode);
+    $entry->overseasMastersClubCode($overseasMastersClubCode);
 
     $entry->updateEdit();
 
@@ -215,7 +217,7 @@ echo "</p>\n";
 echo "<p>\n";
 echo "<label>Overseas Masters Club Code:</label>\n";
 $overseasMastersClubCode = $entry->getOverseasMastersSwimmingClubCode();
-echo "$overseasMastersClubCode";
+echo "<input type=\"text\" name=\"overseasMastersClubCode\" value=\"$overseasMastersClubCode\" size=\"10\" />\n";
 echo "</p>\n";
 
 // Disability
