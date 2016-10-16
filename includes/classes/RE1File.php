@@ -106,7 +106,7 @@ class RE1File
             $initial = $member[3];
             $gender = $member[4];
 
-            list($dobDay, $dobMon, $dobYear) = explode('/', $member[5]);
+            list($dobMon, $dobDay, $dobYear) = explode('/', $member[5]);
             $dob = $dobYear . "-" . $dobMon . "-" . $dobDay;
 
             $clubcode = $member[6];
