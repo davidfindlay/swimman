@@ -107,8 +107,8 @@ class PPMGEntryEvent
 
     public function store() {
 
-        $insert = $GLOBALS['db']->query("INSERT INTO PPMG_entry (account_number, event_name, seed_time,
-          entry_id, entry_event_id) VALUES(?, ?, ?, ?, ?);");
+        $insert = $GLOBALS['db']->query("INSERT INTO PPMG_entryevent (account_number, event_name, seed_time,
+          entry_id, entry_event_id) VALUES (?, ?, ?, ?, ?);");
         db_checkerrors($insert);
 
         $this->id = $GLOBALS['db']->query("SELECT LAST_INSERT_ID();");

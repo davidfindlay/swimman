@@ -6,7 +6,7 @@ require_once("includes/classes/MeetEntry.php");
 require_once("includes/classes/MeetEntryEvent.php");
 require_once("includes/classes/PPMGEntry.php");
 require_once("includes/classes/PPMGMeetEvent.php");
-require_once("includes/classes/PPMGEntryEvents.php");
+require_once("includes/classes/PPMGEntryEvent.php");
 
 /**
  * Created by PhpStorm.
@@ -253,7 +253,7 @@ class PPMGMeet
 
                             // Store the PPMG event
                             $ppmgEntryEvent = new PPMGEntryEvent($entry->getAccountNumber(),
-                                $selectionCol[$selectionCol],$entryData[$timeCol]);
+                                $entryData[$selectionCol],$entryData[$timeCol]);
 
                             $ppmgEntryEvent->store();
 
