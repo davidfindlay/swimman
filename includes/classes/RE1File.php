@@ -101,8 +101,8 @@ class RE1File
         while($member = fgetcsv($csvFile, 250, ';')) {
 
             $msaNumber = $member[0];
-            $surname = $member[1];
-            $firstname = $member[2];
+            $surname = ucwords($member[1]);
+            $firstname = ucwords($member[2]);
             $initial = $member[3];
             $gender = $member[4];
 
