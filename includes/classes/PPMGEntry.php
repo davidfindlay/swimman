@@ -908,14 +908,13 @@ class PPMGEntry
         $update1 = $GLOBALS['db']->query("UPDATE PPMG_entry
             SET entry_id = ?
             WHERE account_number = ?;",
-            array($this->entry_id, $this->account_number));
+            array($this->entry_id, $this->accountNumber));
         db_checkerrors($update1);
 
         $update2 = $GLOBALS['db']->query("UPDATE PPMG_entryevent
-            SET entry_id = ?,
-            entry_event_id IN (SELECT id FROM meet_events_entries WHERE meet_id = ? AND member_id = ?)
+            SET entry_id = ?
             WHERE account_number = ?;",
-            array($this->entry_id, $meetId, $this->member_id, $this->account_number));
+            array($this->entry_id, $this->accountNumber));
         db_checkerrors($update2);
 
     }

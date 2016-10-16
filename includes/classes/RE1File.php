@@ -76,4 +76,68 @@ class RE1File
 
     }
 
+    /**
+     * Update names
+     */
+    public function updateDetails() {
+
+        // Open Datafile CSV
+        $uploaddir = $GLOBALS['home_dir'] . '/masters-data/';
+        $csvFile = fopen ( $uploaddir . $this->datafile, "r" );
+
+        // Check first line
+        $titleLine = fgetcsv ( $csvFile );
+
+        if (!preg_match("/AUSSI/", $titleLine[0])) {
+
+            fclose($csvFile);
+            addLog("RE1 Import", "Invalid RE1 File", "First line does not contain AUSSI!");
+            return false;
+
+        }
+
+        // Step through lines
+        while($member = fgetcsv($csvFile, 250, ';')) {
+
+            $msaNumber = $member[0];
+            $surname = $member[1];
+            $firstname = $member[2];
+            $initial = $member[3];
+            $gender = $member[4];
+            $dob = $member[5];
+            $clubcode = $member[6];
+            $clubname = $member[7];
+
+            $memberDetails = new Member();
+            $memberDetails->loadNumber($msaNumber);
+
+            if ($memberDetails->getFirstname() != $firstname) {
+
+                // Update first name
+                $memberDetails->setFirstname($firstname);
+                addlog("RE1 Import", "First Name Updated", "First Name updated for $msaNumber to $firstname");
+
+            }
+
+            if ($memberDetails->getSurname() != $surname) {
+
+                // Update last name
+                $memberDetails->setSurname($surname);
+                addlog("RE1 Import", "Surname Updated", "Surname updated for $msaNumber to $surname");
+
+            }
+
+            if ($memberDetails->getDob() != $dob) {
+
+                // Update Date of Birth
+                $memberDetails->setDob($dob);
+                addlog("RE1 Import", "Date of Birth Updated", "Date of Birth updated for $msaNumber to $dob");
+
+            }
+
+        }
+
+        fclose($csvFile);
+
+    }
 }

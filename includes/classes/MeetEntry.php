@@ -369,6 +369,16 @@ class MeetEntry {
 		}
 		
 	}
+
+	public function updateEventStatuses() {
+
+	    foreach ($this->events as $e) {
+
+	        $e->update();
+
+        }
+
+    }
 	
 	public function getStatus() {
 		

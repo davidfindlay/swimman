@@ -211,6 +211,11 @@ echo "<label>Match Members:</label>\n";
 echo "<input type=\"submit\" name=\"matchmembers\" value=\"Match Members\" />\n";
 echo "</p>\n";
 
+echo "<p>\n";
+echo "<label>Create Entries:</label>\n";
+echo "<input type=\"submit\" name=\"createentries\" value=\"Create Entries\" />\n";
+echo "</p>\n";
+
 echo "<table width='100%'>\n";
 echo "<thead class=\"list\">\n";
 echo "<tr>\n";
@@ -224,7 +229,7 @@ echo "<tbody>\n";
 
 $entrantList = $GLOBALS['db']->getAll("SELECT PPMG_entry.first_name, PPMG_entry.last_name, PPMG_entry.gender, 
     PPMG_entry.dob, PPMG_entry.msa_id, PPMG_entry.member_id, member.firstname, member.surname, member.gender,
-    member.dob, member.number, PPMG_entry.status, PPMG_entry.account_number
+    member.dob, member.number, PPMG_entry.status, PPMG_entry.account_number, PPMG_entry.entry_id
     FROM member RIGHT JOIN PPMG_entry ON member.id = PPMG_entry.member_id ORDER BY PPMG_entry.date_registered;");
 db_checkerrors($entrantList);
 
@@ -260,6 +265,8 @@ foreach ($entrantList as $e) {
     echo "<td>\n";
 
     echo "<a href=\"ppmgedit.php?account=$e[12]\">Edit</a>\n";
+    echo " | ";
+    echo "<a href=\"meetentry.php?entry=$e[13]\">Meet Entry</a>\n";
 
     echo "</td>\n";
     echo "</tr>\n";
@@ -267,27 +274,6 @@ foreach ($entrantList as $e) {
 }
 
 echo "</tbody>\n";
-echo "</table>\n";
-
-echo "<h2>Event Entries</h2>\n";
-
-echo "<p>\n";
-echo "<label>Create Entries:</label>\n";
-echo "<input type=\"submit\" name=\"createentries\" value=\"Create Entries\" />\n";
-echo "</p>\n";
-
-echo "<table width=\"100%\">\n";
-echo "<thead>\n";
-echo "<tr>\n";
-echo "<th>Swimmer</th>\n";
-echo "<th>Entry Details</th>\n";
-echo "</tr>\n";
-echo "</thead>\n";
-
-echo "<tbody>\n";
-
-echo "</tbody>\n";
-
 echo "</table>\n";
 
 echo "</form>\n";

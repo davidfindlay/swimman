@@ -270,6 +270,13 @@ class PPMGMeet
                     $entry->setEntryId($emEntryId);
                     $entry->updateEntryId($this->meetId);
 
+                    // Update status
+                    $meetEntry->setStatus(2);
+                    $meetEntry->setEventStatuses(2);
+
+                    $meetEntry->updateStatus();
+                    $meetEntry->updateEventStatuses();
+
                 }
 
             }

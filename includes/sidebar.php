@@ -67,6 +67,9 @@ function sidebarMenu() {
 	echo "<a href=\"importmembers.php\">Import IMG Members</a>\n";
 	echo "</li>\n";
 	echo "<li>\n";
+	echo "<a href=\"importre1.php\">Import RE1 Members</a>\n";
+	echo "</li>\n";
+	echo "<li>\n";
 	echo "<a href=\"userlist.php\">User List</a>\n";
 	echo "</li>\n";
 	echo "<li>\n";
