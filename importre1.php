@@ -20,7 +20,7 @@ if (isset($_POST['importmemberssubmit'])) {
 
 		$re1 = new RE1File();
 		$re1->setDatafile($filename);
-		$re1->importClubs();
+		$re1->updateDetails();
 
 	} else {
 
