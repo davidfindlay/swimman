@@ -2,6 +2,7 @@
 require_once("includes/setup.php");
 require_once("includes/sidebar.php");
 require_once("includes/imgfunctions.php");
+require_once("includes/classes/RE1File.php");
 
 checkLogin();
 
@@ -50,8 +51,6 @@ echo "<div id=\"main\">\n";
 <label> </label><input type="submit" name="importmemberssubmit" value="Import RE1 Member Data" />
 </p>
 </form>
-
-?>
 
 <?php 
 

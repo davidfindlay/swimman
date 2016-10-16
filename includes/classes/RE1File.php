@@ -1,6 +1,7 @@
 <?php
 
 require_once("Club.php");
+require_once("Member.php");
 
 /**
  * Created by PhpStorm.
