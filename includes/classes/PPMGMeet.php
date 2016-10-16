@@ -6,6 +6,7 @@ require_once("includes/classes/MeetEntry.php");
 require_once("includes/classes/MeetEntryEvent.php");
 require_once("includes/classes/PPMGEntry.php");
 require_once("includes/classes/PPMGMeetEvent.php");
+require_once("includes/classes/PPMGEntryEvents.php");
 
 /**
  * Created by PhpStorm.
