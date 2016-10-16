@@ -24,6 +24,14 @@ class MeetEntry {
 		$this->meetId = mysql_real_escape_string($meet);
 	
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 	
 	// Used for Entry Checker, not stored in database
 	public function setEntrantName($eName) {

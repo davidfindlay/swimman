@@ -60,4 +60,102 @@ class PPMGMeetEvent
 
     }
 
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getYear()
+    {
+        return $this->year;
+    }
+
+    /**
+     * @param mixed $year
+     */
+    public function setYear($year)
+    {
+        $this->year = $year;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMeetId()
+    {
+        return $this->meetId;
+    }
+
+    /**
+     * @param mixed $meetId
+     */
+    public function setMeetId($meetId)
+    {
+        $this->meetId = $meetId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMeetEventId()
+    {
+        return $this->meetEventId;
+    }
+
+    /**
+     * @param mixed $meetEventId
+     */
+    public function setMeetEventId($meetEventId)
+    {
+        $this->meetEventId = $meetEventId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPPMGName()
+    {
+        return $this->PPMGName;
+    }
+
+    /**
+     * @param mixed $PPMGName
+     */
+    public function setPPMGName($PPMGName)
+    {
+        $this->PPMGName = $PPMGName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPPMGcolumn()
+    {
+        return $this->PPMGcolumn;
+    }
+
+    /**
+     * @param mixed $PPMGcolumn
+     */
+    public function setPPMGcolumn($PPMGcolumn)
+    {
+        $this->PPMGcolumn = $PPMGcolumn;
+    }
+
+
+
 }

@@ -84,8 +84,8 @@ class PPMGEntry
             $this->overseasMastersSwimmingClubName = $entry[23];
             $this->overseasMastersSwimmingClubCode = $entry[24];
             $this->disability = $entry[25];
-            $this->entry_id = $entry[26];
-            $this->member_id = $entry[27];
+            $this->entry_id = $entry[27];
+            $this->member_id = $entry[26];
             $this->status = $entry[28];
 
             return true;
@@ -730,7 +730,15 @@ class PPMGEntry
                 if ((strlen($this->overseasMastersSwimmingClubCode) <= 4) &&
                     (strlen($this->overseasMastersSwimmingClubCode) > 0)) {
 
-                    $this->createOverseasMember();
+                    if (preg_match('/[a-zA-Z]/', $this->overseasMastersSwimmingClubCode)) {
+
+                        $this->createOverseasMember();
+
+                    } else {
+
+                        $this->status = "Overseas member - possible invalid club code";
+
+                    }
 
                 } else {
 
@@ -791,6 +799,9 @@ class PPMGEntry
             $newMember->store();
             $newMember->applyMembership(20, 'UNAT');
 
+            // Get the membership ID and put it in the record
+            $this->member_id = $newMember->getId();
+
             $this->status = "Created PPMG Unattached Member";
 
         } else {
@@ -841,6 +852,9 @@ class PPMGEntry
 
             $newMember->applyMembership(20, $this->overseasMastersSwimmingClubCode);
 
+            // Get the membership ID and put it in the record
+            $this->member_id = $newMember->getId();
+
             $this->status = "Created PPMG Overseas Member";
 
         } else {
@@ -886,6 +900,23 @@ class PPMGEntry
                 $this->status,
                 $this->accountNumber));
         db_checkerrors($update);
+
+    }
+
+    public function updateEntryId($meetId) {
+
+        $update1 = $GLOBALS['db']->query("UPDATE PPMG_entry
+            SET entry_id = ?
+            WHERE account_number = ?;",
+            array($this->entry_id, $this->account_number));
+        db_checkerrors($update1);
+
+        $update2 = $GLOBALS['db']->query("UPDATE PPMG_entryevent
+            SET entry_id = ?,
+            entry_event_id IN (SELECT id FROM meet_events_entries WHERE meet_id = ? AND member_id = ?)
+            WHERE account_number = ?;",
+            array($this->entry_id, $meetId, $this->member_id, $this->account_number));
+        db_checkerrors($update2);
 
     }
 

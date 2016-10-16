@@ -69,6 +69,16 @@ if (isset($_POST['matchmembers'])) {
 
 }
 
+// Handle Create Entries
+if (isset($_POST['createentries'])) {
+
+    $year = intval($_POST['year']);
+    $ppmgMeet = new PPMGMeet();
+    $ppmgMeet->load($year);
+    $ppmgMeet->createEntries();
+
+}
+
 htmlHeaders("Pan Pacific Masters Games");
 
 sidebarMenu();
@@ -196,6 +206,7 @@ echo "</table>\n";
 
 echo "<h2>Entrants</h2>\n";
 
+echo "<p>\n";
 echo "<label>Match Members:</label>\n";
 echo "<input type=\"submit\" name=\"matchmembers\" value=\"Match Members\" />\n";
 echo "</p>\n";
@@ -256,6 +267,27 @@ foreach ($entrantList as $e) {
 }
 
 echo "</tbody>\n";
+echo "</table>\n";
+
+echo "<h2>Event Entries</h2>\n";
+
+echo "<p>\n";
+echo "<label>Create Entries:</label>\n";
+echo "<input type=\"submit\" name=\"createentries\" value=\"Create Entries\" />\n";
+echo "</p>\n";
+
+echo "<table width=\"100%\">\n";
+echo "<thead>\n";
+echo "<tr>\n";
+echo "<th>Swimmer</th>\n";
+echo "<th>Entry Details</th>\n";
+echo "</tr>\n";
+echo "</thead>\n";
+
+echo "<tbody>\n";
+
+echo "</tbody>\n";
+
 echo "</table>\n";
 
 echo "</form>\n";

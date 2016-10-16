@@ -36,7 +36,7 @@ if (isset($_POST['update'])) {
     $entry->setMsaMember($msaMember);
     $entry->setMsaId($msaId);
     $entry->setMsaClubCode($msaClubCode);
-    $entry->overseasMastersClubCode($overseasMastersClubCode);
+    $entry->setOverseasMastersSwimmingClubCode($overseasMastersClubCode);
 
     $entry->updateEdit();
 
