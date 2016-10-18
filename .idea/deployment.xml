@@ -7,6 +7,9 @@
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
           </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/includes/config.php" />
+          </excludedPaths>
         </serverdata>
       </paths>
       <paths name="Quadrahosting">

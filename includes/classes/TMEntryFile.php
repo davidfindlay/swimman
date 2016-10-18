@@ -476,8 +476,10 @@ class TMEntryFile {
 		$clubDetails->load($clubId);
 		$clubCode = $clubDetails->getCode();
 		$clubName = substr($clubDetails->getNameShortened(), 0, 30);
-		
-		$tmpLine = "C1" . $clubCode . "  " . str_pad($clubName, 112, ' ') . str_pad("MAS", 9, ' ');
+
+        $clubLength = 115 - strlen($clubCode);
+
+		$tmpLine = "C1" . $clubCode . "  " . str_pad($clubName, $clubLength, ' ') . str_pad("MAS", 9, ' ');
 		$tmpLine = $tmpLine . $this->HY3checksum($tmpLine) . "\r\n";
 		
 		// Start Club line 2

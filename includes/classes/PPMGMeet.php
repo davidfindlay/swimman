@@ -262,20 +262,26 @@ class PPMGMeet
 
                     }
 
-                    // Create the entry
-                    $meetEntry->create();
-                    $emEntryId = $meetEntry->getId();
+                    $existEntry = new MeetEntry($entry->getMemberId(), $club->getId(), $this->meetId);
 
-                    // Store the entry and event entry id
-                    $entry->setEntryId($emEntryId);
-                    $entry->updateEntryId($this->meetId);
+                    if (!$existEntry->load()) {
 
-                    // Update status
-                    $meetEntry->setStatus(2);
-                    $meetEntry->setEventStatuses(2);
+                        // Create the entry
+                        $meetEntry->create();
+                        $emEntryId = $meetEntry->getId();
 
-                    $meetEntry->updateStatus();
-                    $meetEntry->updateEventStatuses();
+                        // Store the entry and event entry id
+                        $entry->setEntryId($emEntryId);
+                        $entry->updateEntryId($this->meetId);
+
+                        // Update status
+                        $meetEntry->setStatus(2);
+                        $meetEntry->setEventStatuses(2);
+
+                        $meetEntry->updateStatus();
+                        $meetEntry->updateEventStatuses();
+
+                    }
 
                 }
 

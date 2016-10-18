@@ -20,7 +20,7 @@ class Club {
 		} else {
 
 		    // Truncate club id to 4 characters if searching for a club code
-		    $clubId = substr($clubId, 0, 4);
+		    $clubId = substr($clubId, 0, 10);
 
 			$clubDetails = $GLOBALS['db']->getRow("SELECT * FROM clubs WHERE code = '$clubId';");
 			db_checkerrors($clubDetails);

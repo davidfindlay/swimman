@@ -691,19 +691,19 @@ class PPMGEntry
                     $gender = 2;
                 }
 
-                $insert = $GLOBALS['db']->query("INSERT INTO member (number, firstname, surname, dob, gender)
-                                              VALUES (?,?,?,?,?);", array(
-                                                  $this->msaId,
-                    ucwords($this->firstName),
-                    ucwords($this->lastName),
-                    $dob,
-                    $gender
-                ));
-                db_checkerrors($insert);
-
                 $interstateClub = new Club();
 
                 if ($interstateClub->load($this->msaClubCode)) {
+
+                    $insert = $GLOBALS['db']->query("INSERT INTO member (number, firstname, surname, dob, gender)
+                                              VALUES (?,?,?,?,?);", array(
+                                                  $this->msaId,
+                        titleCase($this->firstName),
+                        titleCase($this->lastName),
+                        $dob,
+                        $gender
+                    ));
+                    db_checkerrors($insert);
 
                     $emMember->loadNumber($this->msaId);
                     $this->member_id = $emMember->getId();
@@ -727,24 +727,24 @@ class PPMGEntry
             if (strcasecmp($this->overseasMastersSwimmingMember, "Yes") == 0) {
 
                 // Overseas Masters Member
-                if ((strlen($this->overseasMastersSwimmingClubCode) <= 4) &&
-                    (strlen($this->overseasMastersSwimmingClubCode) > 0)) {
+                //if ((strlen($this->overseasMastersSwimmingClubCode) <= 4) &&
+                  //  (strlen($this->overseasMastersSwimmingClubCode) > 0)) {
 
-                    if (preg_match('/[a-zA-Z]/', $this->overseasMastersSwimmingClubCode)) {
+//                    if (preg_match('/[a-zA-Z]/', $this->overseasMastersSwimmingClubCode)) {
 
                         $this->createOverseasMember();
 
-                    } else {
+  //                  } else {
 
-                        $this->status = "Overseas member - possible invalid club code";
+//                        $this->status = "Overseas member - possible invalid club code";
 
-                    }
+    //                }
 
-                } else {
+           //     } else {
 
-                    $this->status = "Overseas member - possible invalid club code";
+             //       $this->status = "Overseas member - possible invalid club code";
 
-                }
+               // }
 
                 return true;
 
@@ -806,7 +806,26 @@ class PPMGEntry
 
         } else {
 
-            $this->status = "Existing PPMG Unattached Member";
+            // Check if the member already has a membership
+            $existMember = new Member();
+            $existMember->loadId($existingCheck);
+
+            $membership = $GLOBALS['db']->getOne("SELECT id FROM member_memberships WHERE 
+                member_id = ? AND enddate > CURDATE();", array($existingCheck));
+            db_checkerrors($membership);
+
+            if ($membership == "") {
+
+                $existMember->applyMembership(20, 'UNAT');
+                $this->status = "Member Existed add membership";
+
+            } else {
+
+                $this->status = "Existing PPMG Unattached Member";
+
+            }
+
+            $this->member_id = $existingCheck;
 
         }
 
@@ -840,26 +859,41 @@ class PPMGEntry
 
             $newMember->setMSANumber("P" . $this->accountNumber);
 
-            $newMember->store();
+
 
             $clubDetails = new Club();
 
             if (!$clubDetails->load($this->overseasMastersSwimmingClubCode)) {
 
+                // Can't find by club code
+
                 $clubDetails->create($this->overseasMastersSwimmingClubCode, $this->overseasMastersSwimmingClubName);
 
             }
 
-            $newMember->applyMembership(20, $this->overseasMastersSwimmingClubCode);
+            $clubId = $clubDetails->getId();
 
-            // Get the membership ID and put it in the record
-            $this->member_id = $newMember->getId();
+            if ($clubId != "") {
 
-            $this->status = "Created PPMG Overseas Member";
+                $newMember->store();
+
+                $newMember->applyMembership(20, $this->overseasMastersSwimmingClubCode);
+
+                // Get the membership ID and put it in the record
+                $this->member_id = $newMember->getId();
+
+                $this->status = "Created PPMG Overseas Member";
+
+            } else {
+
+                $this->status = "Couldn't match Overseas club";
+
+            }
 
         } else {
 
             $this->status = "Existing PPMG Overseas Member";
+            $this->member_id = $existingCheck;
 
         }
     }

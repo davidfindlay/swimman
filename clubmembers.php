@@ -24,7 +24,18 @@ echo "</thead>\n";
 echo "<tbody>\n";
 
 $clubId = intval($_GET['club']);
-$start = intval($_GET['start']);
+
+if (isset($_GET['start'])) {
+
+    $start = intval($_GET['start']);
+
+} else {
+
+    $start = 0;
+
+}
+
+
 $interval = 20;
 
 $membersCount = $GLOBALS['db']->getOne("SELECT count(*) FROM member, member_memberships 

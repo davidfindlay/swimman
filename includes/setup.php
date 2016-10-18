@@ -121,8 +121,8 @@ function db_checkerrors($var) {
 		
 		addlog("sql", "SQL error in $callingFunction", $message);
 
-		echo "Oops. An error has occured. This incident has been logged and we apologise for the 
-			inconvenience. <a href=\"/\">Click here to return home.</a>";
+		//echo "Oops. An error has occured. This incident has been logged and we apologise for the
+		//	inconvenience. <a href=\"/\">Click here to return home.</a>";
 		
 		$GLOBALS['db']->disconnect();
 
@@ -464,40 +464,40 @@ function addlog($logName, $shortText, $longText = '', $jUser = '') {
 	//db_checkerrors($logId);
 
 	if (!isset($logId)) {
-	
+
 		$insert1 = $GLOBALS['db']->query("INSERT INTO log_type (logname) VALUES (?);",
 				array($logN));
 		//db_checkerrors($insert1);
-		
+
 		$logId = mysql_insert_id();
-	
-	} 
-	
-	if (isset($_SESSION['swuid'])) {
-		
-		$adminUser = $_SESSION['swuid'];
-		
-	} else {
-		
-		$adminUser = '';
-		
+
 	}
-	
+
+	if (isset($_SESSION['swuid'])) {
+
+		$adminUser = $_SESSION['swuid'];
+
+	} else {
+
+		$adminUser = '';
+
+	}
+
 	if ($jUser != '') {
 
 		// Look up the Member ID linked to this jUser
 		$memberId = $GLOBALS['db']->getOne("SELECT member_id FROM member_msqsite 
 				WHERE joomla_uid = ?;", array($jUser));
 		//db_checkerrors($memberId);
-		
+
 	} else {
-		
+
 		$memberId = '';
-		
+
 	}
-	
+
 	$insert = $GLOBALS['db']->query("INSERT INTO log (log_type, adminuser, member, juser, short, text) 
-		VALUES (?, ?, ?, ?, ?, ?);", 
+		VALUES (?, ?, ?, ?, ?, ?);",
 		array($logId, $adminUser, $memberId, $jUser, $shortT, $longT));
 	//db_checkerrors($insert);
 	
@@ -561,5 +561,27 @@ function sw_timeToSecs($formTime) {
 	return $secResult;
 	
 }
+
+/**
+ * Creates a proper name case
+ * TODO: make this better
+ */
+function titleCase($string) {
+
+    $string = ucwords(strtolower($string));
+
+    foreach (array('-', '\'', 'Mc', ) as $delimiter) {
+        if (strpos($string, $delimiter)!==false) {
+            $string =implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
+        }
+    }
+
+    $string = preg_replace("/De\s/", "de ", $string);
+    $string = preg_replace("/Der\s/", "der ", $string);
+
+    return $string;
+
+}
+
 
 ?>

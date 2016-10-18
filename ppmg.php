@@ -227,9 +227,12 @@ echo "<tr>\n";
 echo "</thead>\n";
 echo "<tbody>\n";
 
+$matchedMembers = 0;
+$totalmembers = 0;
+
 $entrantList = $GLOBALS['db']->getAll("SELECT PPMG_entry.first_name, PPMG_entry.last_name, PPMG_entry.gender, 
     PPMG_entry.dob, PPMG_entry.msa_id, PPMG_entry.member_id, member.firstname, member.surname, member.gender,
-    member.dob, member.number, PPMG_entry.status, PPMG_entry.account_number, PPMG_entry.entry_id
+    member.dob, member.number, PPMG_entry.status, PPMG_entry.account_number, PPMG_entry.entry_id, member.id
     FROM member RIGHT JOIN PPMG_entry ON member.id = PPMG_entry.member_id ORDER BY PPMG_entry.date_registered;");
 db_checkerrors($entrantList);
 
@@ -238,6 +241,8 @@ foreach ($entrantList as $e) {
     echo "<tr class=\"list\">\n";
 
     echo "<td>\n";
+
+    $totalmembers++;
 
     // Display entry manager details if a member is matched
     if ($e[6] != "") {
@@ -248,7 +253,9 @@ foreach ($entrantList as $e) {
         } else {
             echo "F";
         }
-        echo " (" . $e[10] . ")";
+        echo " (<a href=\"memberdetails.php?member=$e[14]\">" . $e[10] . "</a>)";
+
+        $matchedMembers++;
 
     }
     echo "</td>\n";
@@ -266,7 +273,10 @@ foreach ($entrantList as $e) {
 
     echo "<a href=\"ppmgedit.php?account=$e[12]\">Edit</a>\n";
     echo " | ";
-    echo "<a href=\"meetentry.php?entry=$e[13]\">Meet Entry</a>\n";
+
+    if ($e[13] != "") {
+        echo "<a href=\"meetentry.php?entry=$e[13]\">Meet Entry</a>\n";
+    }
 
     echo "</td>\n";
     echo "</tr>\n";
@@ -277,6 +287,17 @@ echo "</tbody>\n";
 echo "</table>\n";
 
 echo "</form>\n";
+
+echo "<p>\n";
+echo "<label>Matched Members:</label>\n";
+echo $matchedMembers;
+echo "</p>\n";
+
+echo "<p>\n";
+echo "<label>Total Members:</label>\n";
+echo $totalmembers;
+echo "</p>\n";
+
 
 echo "</div>\n";
 

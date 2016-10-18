@@ -101,8 +101,8 @@ class RE1File
         while($member = fgetcsv($csvFile, 250, ';')) {
 
             $msaNumber = $member[0];
-            $surname = ucwords($member[1]);
-            $firstname = ucwords($member[2]);
+            $surname = titleCase($member[1]);
+            $firstname = titleCase($member[2]);
             $initial = $member[3];
             $gender = $member[4];
 
@@ -139,6 +139,8 @@ class RE1File
                     addlog("RE1 Import", "Date of Birth Updated", "Date of Birth updated for $msaNumber to $dob");
 
                 }
+
+                $memberDetails->updateDetails();
 
             }
 

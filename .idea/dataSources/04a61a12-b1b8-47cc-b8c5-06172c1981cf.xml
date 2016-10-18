@@ -364,7 +364,7 @@ rgt</columns>
     </column>
     <column id="156" parent="14" name="code">
       <mandatory>1</mandatory>
-      <data-type>varchar(4)|0</data-type>
+      <data-type>varchar(10)|0</data-type>
     </column>
     <column id="157" parent="14" name="clubname">
       <mandatory>1</mandatory>
