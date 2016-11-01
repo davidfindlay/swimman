@@ -27,6 +27,9 @@ function sidebarMenu() {
 	echo "<li>\n";
 	echo "<a href=\"ppmg.php\">Pan Pacific Masters Games</a>";
 	echo "</li>\n";
+	echo "<li>\n";
+	echo "<a href=\"relayentry.php\">Relay Entry</a>";
+	echo "</li>\n";
 	echo "</ul>\n";
 	echo "</li>\n";
 
@@ -63,7 +66,10 @@ function sidebarMenu() {
 	echo "<li>\n";
 	echo "<a href=\"memberlist.php\">Member List</a>\n";
 	echo "</li>\n";
-	echo "<li>\n";
+    echo "<li>\n";
+    echo "<a href=\"memberbulk.php\">Bulk Member Check</a>\n";
+    echo "</li>\n";
+    echo "<li>\n";
 	echo "<a href=\"importmembers.php\">Import IMG Members</a>\n";
 	echo "</li>\n";
 	echo "<li>\n";

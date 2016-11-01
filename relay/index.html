@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>eProgram</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.js" integrity="sha256-5D8w0DqoYc/JafkO45w/mSk8TJOomU39RddXeFrAxGA=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap.js" integrity="sha256-cqEoL086rAnY+xKCnK0bMnvBIlYMX55kgcjDEu9pnLo=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="css/app.css">
+    <script src=js/main.js"></script>
+    </head>
+    <body ng-controller="menuCtrl">
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+            <div class="navbar-header">
+            <a class="btn btn-navbar navbar-toggle pull-left" ng-click="menuClosed = !menuClosed">
+            <span class="sr-only">Menu</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </a>
+            <a class="navbar-brand" href="#">eProgram2</a>
+            </div>
+            </div>
+            </nav>
+
+            <div id="wrapper">
+
+            <div id="sidebar-wrapper" class="col-xs-10 col-sm-3 col-md-3 col-lg-3" ng-hide="menuClosed"
+    role="navigation">
+
+            <form>
+            <select class="form-control" id="meetController">
+            <option value="">Select a meetController</option>
+    </select>
+
+    <ul class="nav nav-pills nav-stacked">
+            <li><a href="#/view1">Newsflashes</a></li>
+            <li><a href="#/view2">Marshalling</a></li>
+            </ul>
+
+            <select class="form-control" id="event">
+            <option value="">Select an event</option>
+    </select>
+
+    <select class="form-control" id="heat">
+            <option value="">Select a heat</option>
+
+    </select>
+
+    <select class="form-control" id="agegroup">
+            <option value="">Select an age group</option>
+    </select>
+
+    </form>
+
+    </div>
+
+    <div id="page-content-wrapper" class="col-xs-12 col-sm-9">
+
+            <div ng-view></div>
+
+    <div>Angular seed app: v<span app-version></span></div>
+
+    </div>
+
+    </div>
+    </body>
+    </html>

@@ -8,6 +8,7 @@ if (session_id() == '') {
 // Database include
 require_once ("DB.php");
 require_once ("config.php");
+require_once ("array_column_impl.php");
 //require_once ("../includes/Zebra_Form/Zebra_Form.php");
 global $db;
 
@@ -582,6 +583,5 @@ function titleCase($string) {
     return $string;
 
 }
-
 
 ?>
