@@ -27,6 +27,9 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/Member.php')
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/EntryChecker.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/RelayEntry.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/RelayEntryMember.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/PayPalEntryPayment.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/PayPal-PHP-SDK/autoload.php');
 
 //require_once("libphp-phpmailer/class.phpmailer.php");
 
@@ -169,10 +172,20 @@ class EntryManagerController extends JController {
 				$entryId = $otherEntries[0][0];
 				$entryData = new MeetEntry();
 				$entryData->loadId($entryId);
+
+//                if ($sess->get('emClubId') != $entryData->getClubId()) {
+//
+//                    $entryData->setClubId($sess->get('emClubId'));
+//
+//                }
 				
 				$sess->set('emEntryData', serialize($entryData));
-				
+                $sess->set('emEntryId', $entryId);
 				$sess->set('emEntryEdit', 'true');
+
+                // Set the club Id to the one from the existing entry
+                // TODO: make this better - currently you can't change clubs
+                $sess->set('emClubId', $entryData->getClubId());
 					
 			} else {
 				
@@ -244,13 +257,18 @@ class EntryManagerController extends JController {
 			}
 			
 			$numMeals = 0;
+            $massages = 0;
 			$entryErrors = "";
 			$numMeals = $jinput->get('numMeals');
+            $massages = $jinput->get('numMassages');
 			$medical = $jinput->get('medical');
 			$comments = $jinput->get('comments', null, "STRING");
 			
 			// If there are meals requested add them
 			$entryData->setNumMeals($numMeals);
+
+            // If there are massages requested add them
+            $entryData->setMassages($massages);
 			
 			if ($medical == "on")
 				$entryData->setMedical(TRUE);
@@ -382,7 +400,7 @@ class EntryManagerController extends JController {
 			JRequest::setVar('view', 'step1', 'method', true);
 			
 		}
-		
+
 		// Step 3 Submit
 		if ($jinput->get('emSubmit3') == "Submit") {
 			
@@ -395,9 +413,55 @@ class EntryManagerController extends JController {
 				
 				// Update entry
 				//$entryDetails->update(5, 11);
+
+                $oldEntry = new MeetEntry($entryDetails->getMemberId(), $entryDetails->getClubId(), $entryDetails->getMeetId());
+                $oldEntry->load();
+                $oldEntry->calcCost();
+                $oldCost = $oldEntry->getCost();
+
+                $oldEntryId = $oldEntry->getId();
+                $sess->set("emEntryId", $oldEntryId);
+
 				$entryDetails->updateExisting();
-				
-				JRequest::setVar('view', 'entrymanager', 'method', true);
+
+                // Check if payment needs to be made
+                $alreadyPaid = $oldEntry->getPaid();
+
+                $entryDetails->calcCost();
+                $newCost = $entryDetails->getCost();
+                $differentCost = $newCost - $alreadyPaid;
+
+                // Update the entry data
+                $sEntryData = serialize($entryData);
+                $sess->set('emEntryData', $sEntryData);
+
+                addlog("test", "newCost = $newCost - alreadyPaid = $alreadyPaid - differentCost = $differentCost");
+
+                if ($differentCost > 0) {
+
+                    // Send to paypal
+                    $pp = new PayPalEntryPayment();
+                    $pp->addItem("Meet Entry Amendment", 1, $differentCost);
+
+                    $approvalUrl = $pp->processPayment();
+
+                    $app = JFactory::getApplication();
+                    $app->redirect($approvalUrl, "Redirecting to PayPal", $msgType = 'message');
+
+
+                } elseif ($newCost < $oldCost) {
+
+                    // Raise refund
+                    $sess->set("emRefundAmount", $differentCost);
+
+                    JRequest::setVar('view', 'step4', 'method', true);
+
+                } else {
+
+                    JRequest::setVar('view', 'step4', 'method', true);
+
+                }
+
 				
 			} else {
 			
@@ -406,6 +470,9 @@ class EntryManagerController extends JController {
 			
 				// Create entry
 				$entryDetails->create();
+                $entryId = $entryDetails->getId();
+                $entryMember = $entryDetails->getMemberId();
+                $sess->set('emEntryId', $entryId);
 			
 				// Email the club captain
 				// Email entry submission
@@ -413,7 +480,8 @@ class EntryManagerController extends JController {
 			//	$mail->setFrom('recorder@mastersswimmingqld.org.au','MSQ Branch Recorder');
 					
 				$meetDetails = new Meet();
-				$meetDetails->loadMeet($sess->get('emMeetId'));
+                $meetId = $sess->get('emMeetId');
+				$meetDetails->loadMeet($meetId);
 				$meetName = $meetDetails->getName();
 				$clubDetails = new Club();
 				$clubId = $sess->get('emClubId');
@@ -439,25 +507,66 @@ class EntryManagerController extends JController {
 					//exit("Could not send email: " . $mail->ErrorInfo . "\n");
 						
 			//	}
-				
-				// Unset session
-				unset($entryDetails);
-				$sess->clear('emEntryData');
-				$sess->clear('emMemberId');
-				$sess->clear('emEntrant');
-				$sess->clear('emMeetId');
-				$sess->clear('emClubId');
-				$sess->clear('emEntryEdit');
 
-				// Return to Entry List
-				JRequest::setVar('view', 'entrymanager', 'method', true);
-				//header("Location: entry-manager-new/my-entries");
-				
-				echo "insert\n";
+                $meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE
+                            meet_id = ?;", array($meetId));
+                db_checkerrors($meetPaymentDetails);
+
+                // Update the entry data
+                $sEntryData = serialize($entryData);
+                $sess->set('emEntryData', $sEntryData);
+
+                // Check if only paypal payment available
+                if ($meetPaymentDetails[0][3] == 1) {
+
+                    $meetFee = $meetDetails->getMeetFee();
+                    $mealFee = $meetDetails->getMealFee() * $entryDetails->getNumMeals();
+                    $massageFee = $meetDetails->getMassageFee() * $entryDetails->getMassages();
+                    $eventFees = $entryDetails->calcEventFees();
+
+                    $eventFee = 9; // TODO: get proper details
+
+                    $pp = new PayPalEntryPayment();
+                    $pp->addItem("Meet Entry", 1, $meetFee);
+
+                    if ($entryDetails->getNumEntries() > 0) {
+                        $pp->addItem("Individual Entries", $entryDetails->getNumEntries(), $eventFee);
+                    }
+
+                    if ($entryDetails->getNumMeals() > 0) {
+                        $pp->addItem("Presentation Dinner", $entryDetails->getNumMeals(), $meetDetails->getMealFee());
+                    }
+
+                    if ($entryDetails->getMassages() > 0) {
+                        $pp->addItem("Massages", $entryDetails->getMassages(), $meetDetails->getMassageFee());
+                    }
+
+                    $approvalUrl = $pp->processPayment();
+
+                    //JRequest::setVar('view', 'entrymanager', 'method', true);
+
+                    $app = JFactory::getApplication();
+                    $app->redirect($approvalUrl, "Redirecting to PayPal", $msgType = 'message');
+
+                } else {
+
+
+                    // Unset session
+                    unset($entryDetails);
+                    $sess->clear('emEntryData');
+                    $sess->clear('emMemberId');
+                    $sess->clear('emEntrant');
+                    $sess->clear('emMeetId');
+                    $sess->clear('emClubId');
+                    $sess->clear('emEntryEdit');
+                    $sess->clear('emEntryId');
+
+                    // Return to Entry List
+                    JRequest::setVar('view', 'entrymanager', 'method', true);
+
+                }
 				
 			}
-			
-
 			
 		}
 		
@@ -467,6 +576,43 @@ class EntryManagerController extends JController {
 			JRequest::setVar('view', 'step2', 'method', true);
 			
 		}
+
+        // Step 3 Submit
+        if ($jinput->get('emSubmitPay') == "Pay") {
+
+            // Load entry information
+            $entryD = $sess->get('emEntryData');
+            $entryDetails = unserialize($entryD);
+
+            $meetDetails = new Meet();
+            $meetDetails->loadMeet($sess->get('emMeetId'));
+
+            $meetFee = $meetDetails->getMeetFee();
+            $mealFee = $meetDetails->getMealFee() * $entryDetails->getNumMeals();
+            $eventFees = $entryDetails->calcEventFees();
+            $totalFee = $meetFee + $mealFee + $eventFees;
+
+            $eventFee = 9; // TODO: get proper details
+
+            $pp = new PayPalEntryPayment();
+            $pp->addItem("Meet Entry", 1, $meetFee);
+
+            if ($entryDetails->getNumEntries() > 0) {
+                $pp->addItem("Individual Entries", $entryDetails->getNumEntries(), $eventFee);
+            }
+
+            if ($entryDetails->getNumMeals() > 0) {
+                $pp->addItem("Presentation Dinner", $entryDetails->getNumMeals(), $meetDetails->getMealFee());
+            }
+
+            $approvalUrl = $pp->processPayment();
+
+            //JRequest::setVar('view', 'entrymanager', 'method', true);
+
+            $app = JFactory::getApplication();
+            $app->redirect($approvalUrl, "Redirecting to PayPal", $msgType = 'message');
+
+        }
 		
 		// Process Club Recorder updates
 		if ($jinput->get('emClubUpdate') == "Update") {

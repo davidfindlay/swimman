@@ -18,7 +18,7 @@ function getImg() {
 	
 	$smtphost = "mail.quadrahosting.com.au";
 	
-	$portalURL = "https://console.imgstg.com/";
+	$portalURL = "https://console.sportstg.com/";
 	$imgdir = $GLOBALS['home_dir'] . "/masters-data/img";
 	
 	$GLOBALS['imguser'] = "dfindlay";
@@ -801,254 +801,257 @@ function parseImg() {
 	}
 
 	// Process second claims
-	foreach ( $secondClaimCsv as $csvEntry ) {
+    if (isset($secondClaimCsv)) {
+        foreach ($secondClaimCsv as $csvEntry) {
 
-		$msaNumber = mysql_real_escape_string ( $csvEntry [$memberNumberCol] );
-		$firstName = mysql_real_escape_string ( $csvEntry [$firstNameCol] );
-		$otherNames = mysql_real_escape_string ( $csvEntry [$otherNamesCol] );
-		$surname = mysql_real_escape_string ( $csvEntry [$lastNameCol] );
-		$address1 = mysql_real_escape_string ( $csvEntry [$address1Col] );
-		$address2 = mysql_real_escape_string ( $csvEntry [$address2Col] );
-		$suburb = mysql_real_escape_string ( $csvEntry [$suburbCol] );
-		$state = mysql_real_escape_string ( $csvEntry [$stateCol] );
-		$postcode = mysql_real_escape_string ( $csvEntry [$postcodeCol] );
-		$country = mysql_real_escape_string ( $csvEntry [$countryCol] );
-		$email = mysql_real_escape_string ( $csvEntry [$emailAddressCol] );
-		$businessPhone = mysql_real_escape_string ( $csvEntry [$businessCol] );
-		$directPhone = mysql_real_escape_string ( $csvEntry [$directCol] );
-		$privatePhone = mysql_real_escape_string ( $csvEntry [$privateCol] );
-		$mobilePhone = mysql_real_escape_string ( $csvEntry [$mobileCol] );
-		$faxPhone = mysql_real_escape_string ( $csvEntry [$faxCol] );
-		$emergName = mysql_real_escape_string ( $csvEntry [$emergencyContactCol] );
-		$emergPhone = mysql_real_escape_string ( $csvEntry [$emergencyNumberCol] );
-		$dob = mysql_real_escape_string ( $csvEntry [$dobCol] ); // Format 23-Aug-1983
-		$gender = mysql_real_escape_string ( $csvEntry [$genderCol] );
-		$subscriptionType = mysql_real_escape_string ( $csvEntry [$subscriptionsCol] );
-		$financialEndDate = mysql_real_escape_string ( $csvEntry [$financialDateCol] ); // Format 23-Aug-1983
-		$memberType = mysql_real_escape_string ( $csvEntry [$memberTypeCol] );
-		$clubName = mysql_real_escape_string ( $csvEntry [$clubNameCol] );
-		$clubCode = mysql_real_escape_string ( $csvEntry [$clubCodeCol] );
+            $msaNumber = mysql_real_escape_string($csvEntry [$memberNumberCol]);
+            $firstName = mysql_real_escape_string($csvEntry [$firstNameCol]);
+            $otherNames = mysql_real_escape_string($csvEntry [$otherNamesCol]);
+            $surname = mysql_real_escape_string($csvEntry [$lastNameCol]);
+            $address1 = mysql_real_escape_string($csvEntry [$address1Col]);
+            $address2 = mysql_real_escape_string($csvEntry [$address2Col]);
+            $suburb = mysql_real_escape_string($csvEntry [$suburbCol]);
+            $state = mysql_real_escape_string($csvEntry [$stateCol]);
+            $postcode = mysql_real_escape_string($csvEntry [$postcodeCol]);
+            $country = mysql_real_escape_string($csvEntry [$countryCol]);
+            $email = mysql_real_escape_string($csvEntry [$emailAddressCol]);
+            $businessPhone = mysql_real_escape_string($csvEntry [$businessCol]);
+            $directPhone = mysql_real_escape_string($csvEntry [$directCol]);
+            $privatePhone = mysql_real_escape_string($csvEntry [$privateCol]);
+            $mobilePhone = mysql_real_escape_string($csvEntry [$mobileCol]);
+            $faxPhone = mysql_real_escape_string($csvEntry [$faxCol]);
+            $emergName = mysql_real_escape_string($csvEntry [$emergencyContactCol]);
+            $emergPhone = mysql_real_escape_string($csvEntry [$emergencyNumberCol]);
+            $dob = mysql_real_escape_string($csvEntry [$dobCol]); // Format 23-Aug-1983
+            $gender = mysql_real_escape_string($csvEntry [$genderCol]);
+            $subscriptionType = mysql_real_escape_string($csvEntry [$subscriptionsCol]);
+            $financialEndDate = mysql_real_escape_string($csvEntry [$financialDateCol]); // Format 23-Aug-1983
+            $memberType = mysql_real_escape_string($csvEntry [$memberTypeCol]);
+            $clubName = mysql_real_escape_string($csvEntry [$clubNameCol]);
+            $clubCode = mysql_real_escape_string($csvEntry [$clubCodeCol]);
 
-		$clubObj = new Club ();
-		if (! $clubObj->load ( $clubCode )) {
-				
-			$clubObj->create ( $clubCode, $clubName );
-		}
+            $clubObj = new Club ();
+            if (!$clubObj->load($clubCode)) {
 
-		$clubId = $clubObj->getId ();
+                $clubObj->create($clubCode, $clubName);
+            }
 
-		$hasMSANumber = false;
+            $clubId = $clubObj->getId();
 
-		if (preg_match ( '/\d{6}/', $msaNumber )) {
-				
-			$hasMSANumber = true;
-		}
+            $hasMSANumber = false;
 
-		$memberId = $GLOBALS ['db']->getOne ( "SELECT id FROM member WHERE number = '$msaNumber';" );
-		db_checkerrors ( $memberId );
+            if (preg_match('/\d{6}/', $msaNumber)) {
 
-		if (isset ( $memberId ) && $hasMSANumber) {
-				
-			// Member already exists, update
-			// $uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname already exists, adding second claim membership. Financial end date = $financialEndDate<br />\n";
-				
-			// Create Member object
-			$memberObj = new Member ();
-			$memberObj->loadId ( $memberId );
-				
-			if ($financialEndDate == "31 Dec 2013") {
+                $hasMSANumber = true;
+            }
 
-				if ($memberObj->applyMembership ( 8, $clubCode )) {
-						
-					$uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Updating/adding second claim membership. Club = $clubCode. Financial End Date = $financialEndDate<br />\n";
-					$statsUpdated2 ++;
-				}
-			} elseif ($financialEndDate == "31 Dec 2014") {
+            $memberId = $GLOBALS ['db']->getOne("SELECT id FROM member WHERE number = '$msaNumber';");
+            db_checkerrors($memberId);
 
-				if ($memberObj->applyMembership ( 13, $clubCode )) {
-						
-					$uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Updating/adding second claim membership. Club = $clubCode. Financial End Date = $financialEndDate<br />\n";
-					$statsUpdated2 ++;
-				}
-			} elseif ($financialEndDate == "31 Dec 2015") {
+            if (isset ($memberId) && $hasMSANumber) {
 
-				if ($memberObj->applyMembership ( 13, $clubCode )) {
-						
-					$uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Updating/adding second claim membership. Club = $clubCode. Financial End Date = $financialEndDate<br />\n";
-					$statsUpdated2 ++;
-				}
-			} elseif (preg_match ( '/HCC/', $subscriptionType ) && $financialEndDate == "31 Dec 2016") {
-						
-					// echo "detected 2014hcc\n";
-						
-					if ($memberObj->applyMembership ( 16, $clubCode )) {
+                // Member already exists, update
+                // $uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname already exists, adding second claim membership. Financial end date = $financialEndDate<br />\n";
 
-						$uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
-						$statsUpdated ++;
-					} else {
+                // Create Member object
+                $memberObj = new Member ();
+                $memberObj->loadId($memberId);
 
-						// echo "Unable to apply membership";
-					}
-				} elseif ($financialEndDate == "31 Dec 2016") {
-						
-					if ($memberObj->applyMembership ( 17, $clubCode )) {
+                if ($financialEndDate == "31 Dec 2013") {
 
-						$uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
-						$statsUpdated ++;
-					} else {
+                    if ($memberObj->applyMembership(8, $clubCode)) {
 
-						//
-					}
-				}
-				
-			unset ( $memberObj );
-		} elseif ($hasMSANumber) {
-				
-			// Member doesn't exist - from another branch!
-			$uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Doesn't exist, creating as second claim member of club $clubCode. Financial End Date = $financialEndDate<br />\n";
-				
-			// Create an address first
-			$addressId = sw_createAddress ( $address1, $address2, $suburb, $state, $country, $postcode );
-				
-			// Create Member
-			if ($gender == "Male") {
-				$gender = 1;
-			} else {
-				$gender = 2;
-			}
-				
-			// Fix date of birth
-			$dobFormated = date ( 'Y-m-d', strtotime ( $dob ) );
-				
-			$memberInsert = $GLOBALS ['db']->query ( "INSERT INTO member (number, surname, firstname, othernames, dob, gender, address) VALUES ('$msaNumber', '$surname', '$firstName', '$otherNames', '$dobFormated', '$gender', '$addressId');" );
-			db_checkerrors ( $memberInsert );
-				
-			$memberId = mysql_insert_id ();
-				
-			// Changing to using full object oriented system
-			$memberObj = new Member ();
-			$memberObj->loadId ( $memberId );
-				
-			// Create Email address
-			$emailInsert = $GLOBALS ['db']->query ( "INSERT INTO emails (email_type, address) VALUES ('1', '$email');" );
-			db_checkerrors ( $emailInsert );
-				
-			$emailId = mysql_insert_id ();
-				
-			$emailMapInsert = $GLOBALS ['db']->query ( "INSERT INTO member_emails (member_id, email_id) VALUES ('$memberId', '$emailId');" );
-			db_checkerrors ( $emailMapInsert );
-				
-			// Create Emergency Contacts
-			if (strpos ( $emergName, ' ' )) {
+                        $uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Updating/adding second claim membership. Club = $clubCode. Financial End Date = $financialEndDate<br />\n";
+                        $statsUpdated2++;
+                    }
+                } elseif ($financialEndDate == "31 Dec 2014") {
 
-				list ( $emergFirstName, $emergSurname ) = explode ( ' ', $emergName );
-			} else {
+                    if ($memberObj->applyMembership(13, $clubCode)) {
 
-				$emergFirstName = $emergName;
-				$emergSurname = '';
-			}
-				
-			$phoneId = sw_addPhone ( $emergPhone, 7 );
-				
-			$emergContactInsert = $GLOBALS ['db']->query ( "INSERT INTO member_emerg (member_id, surname, firstname) VALUES ('$memberId', '$emergSurname', '$emergFirstName');" );
-			db_checkerrors ( $emergContactInsert );
-			$emergContactId = mysql_insert_id ();
-				
-			$emergContactPhoneInsert = $GLOBALS ['db']->query ( "INSERT INTO member_emerg_phones (member_emerg_id, phone_id) VALUES ('$emergContactId', '$phoneId');" );
-			db_checkerrors ( $emergContactPhoneInsert );
-				
-			// Create Phone numbers
-			if ($businessPhone != '') {
+                        $uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Updating/adding second claim membership. Club = $clubCode. Financial End Date = $financialEndDate<br />\n";
+                        $statsUpdated2++;
+                    }
+                } elseif ($financialEndDate == "31 Dec 2015") {
 
-				$businessPhoneId = sw_addPhone ( $businessPhone, 8 );
-				$businessPhoneInsert = $GLOBALS ['db']->query ( "INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$businessPhoneId');" );
-				db_checkerrors ( $businessPhoneInsert );
-			}
-				
-			if ($directPhone != '') {
+                    if ($memberObj->applyMembership(13, $clubCode)) {
 
-				$directPhoneId = sw_addPhone ( $directPhone, 7 );
-				$directPhoneInsert = $GLOBALS ['db']->query ( "INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$directPhoneId');" );
-			}
-				
-			if ($privatePhone != '') {
+                        $uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Updating/adding second claim membership. Club = $clubCode. Financial End Date = $financialEndDate<br />\n";
+                        $statsUpdated2++;
+                    }
+                } elseif (preg_match('/HCC/', $subscriptionType) && $financialEndDate == "31 Dec 2016") {
 
-				$privatePhoneId = sw_addPhone ( $privatePhone, 6 );
-				$privatePhoneInsert = $GLOBALS ['db']->query ( "INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$privatePhoneId');" );
-				db_checkerrors ( $privatePhoneInsert );
-			}
-				
-			if ($mobilePhone != '') {
+                    // echo "detected 2014hcc\n";
 
-				$mobilePhoneId = sw_addPhone ( $mobilePhone, 2 );
-				$mobilePhoneInsert = $GLOBALS ['db']->query ( "INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$mobilePhoneId');" );
-				db_checkerrors ( $mobilePhoneInsert );
-			}
-				
-			if ($faxPhone != '') {
+                    if ($memberObj->applyMembership(16, $clubCode)) {
 
-				$faxPhoneId = sw_addPhone ( $faxPhone, 5 );
-				$faxPhoneInsert = $GLOBALS ['db']->query ( "INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$faxPhoneId');" );
-				db_checkerrors ( $faxPhoneInsert );
-			}
-				
-			// Membership details
-			// Create Member object
-			$memberObj = new Member ();
-			$memberObj->loadId ( $memberId );
-				
-			if ($financialEndDate == "31 Dec 2013") {
+                        $uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
+                        $statsUpdated++;
+                    } else {
 
-				if ($memberObj->applyMembership ( 8, $clubCode )) {
-						
-					$statsNew2 ++;
-				}
-			} elseif ($financialEndDate == "31 Dec 2014") {
+                        // echo "Unable to apply membership";
+                    }
+                } elseif ($financialEndDate == "31 Dec 2016") {
 
-				if ($memberObj->applyMembership ( 13, $clubCode )) {
-						
-					$uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Updating/adding second claim membership. Club = $clubCode. Financial End Date = $financialEndDate<br />\n";
-					$statsUpdated2 ++;
-				}
-			} elseif ($financialEndDate == "31 Dec 2015") {
-						
-					// echo "detected 2014hcc\n";
-						
-					if ($memberObj->applyMembership ( 16, $clubCode )) {
+                    if ($memberObj->applyMembership(17, $clubCode)) {
 
-						$uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
-						$statsUpdated ++;
-					} else {
+                        $uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
+                        $statsUpdated++;
+                    } else {
 
-						// echo "Unable to apply membership";
-					}
-				} elseif ($financialEndDate == "31 Dec 2016") {
-						
-					if ($memberObj->applyMembership ( 17, $clubCode )) {
+                        //
+                    }
+                }
 
-						$uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
-						$statsUpdated ++;
-					} else {
+                unset ($memberObj);
+            } elseif ($hasMSANumber) {
 
-						//
-					}
-				} elseif ($financialEndDate == "31 Dec 2017") {
+                // Member doesn't exist - from another branch!
+                $uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Doesn't exist, creating as second claim member of club $clubCode. Financial End Date = $financialEndDate<br />\n";
 
-                if ($memberObj->applyMembership ( 18, $clubCode )) {
+                // Create an address first
+                $addressId = sw_createAddress($address1, $address2, $suburb, $state, $country, $postcode);
 
-                    $uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
-                    $statsUpdated ++;
+                // Create Member
+                if ($gender == "Male") {
+                    $gender = 1;
+                } else {
+                    $gender = 2;
+                }
+
+                // Fix date of birth
+                $dobFormated = date('Y-m-d', strtotime($dob));
+
+                $memberInsert = $GLOBALS ['db']->query("INSERT INTO member (number, surname, firstname, othernames, dob, gender, address) VALUES ('$msaNumber', '$surname', '$firstName', '$otherNames', '$dobFormated', '$gender', '$addressId');");
+                db_checkerrors($memberInsert);
+
+                $memberId = mysql_insert_id();
+
+                // Changing to using full object oriented system
+                $memberObj = new Member ();
+                $memberObj->loadId($memberId);
+
+                // Create Email address
+                $emailInsert = $GLOBALS ['db']->query("INSERT INTO emails (email_type, address) VALUES ('1', '$email');");
+                db_checkerrors($emailInsert);
+
+                $emailId = mysql_insert_id();
+
+                $emailMapInsert = $GLOBALS ['db']->query("INSERT INTO member_emails (member_id, email_id) VALUES ('$memberId', '$emailId');");
+                db_checkerrors($emailMapInsert);
+
+                // Create Emergency Contacts
+                if (strpos($emergName, ' ')) {
+
+                    list ($emergFirstName, $emergSurname) = explode(' ', $emergName);
                 } else {
 
-                    //
+                    $emergFirstName = $emergName;
+                    $emergSurname = '';
                 }
-            }
-				
-			unset ( $memberObj );
-		}
 
-		$arrMemberTrackSec ["$memberId"] = $clubId;
-	}
+                $phoneId = sw_addPhone($emergPhone, 7);
+
+                $emergContactInsert = $GLOBALS ['db']->query("INSERT INTO member_emerg (member_id, surname, firstname) VALUES ('$memberId', '$emergSurname', '$emergFirstName');");
+                db_checkerrors($emergContactInsert);
+                $emergContactId = mysql_insert_id();
+
+                $emergContactPhoneInsert = $GLOBALS ['db']->query("INSERT INTO member_emerg_phones (member_emerg_id, phone_id) VALUES ('$emergContactId', '$phoneId');");
+                db_checkerrors($emergContactPhoneInsert);
+
+                // Create Phone numbers
+                if ($businessPhone != '') {
+
+                    $businessPhoneId = sw_addPhone($businessPhone, 8);
+                    $businessPhoneInsert = $GLOBALS ['db']->query("INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$businessPhoneId');");
+                    db_checkerrors($businessPhoneInsert);
+                }
+
+                if ($directPhone != '') {
+
+                    $directPhoneId = sw_addPhone($directPhone, 7);
+                    $directPhoneInsert = $GLOBALS ['db']->query("INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$directPhoneId');");
+                }
+
+                if ($privatePhone != '') {
+
+                    $privatePhoneId = sw_addPhone($privatePhone, 6);
+                    $privatePhoneInsert = $GLOBALS ['db']->query("INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$privatePhoneId');");
+                    db_checkerrors($privatePhoneInsert);
+                }
+
+                if ($mobilePhone != '') {
+
+                    $mobilePhoneId = sw_addPhone($mobilePhone, 2);
+                    $mobilePhoneInsert = $GLOBALS ['db']->query("INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$mobilePhoneId');");
+                    db_checkerrors($mobilePhoneInsert);
+                }
+
+                if ($faxPhone != '') {
+
+                    $faxPhoneId = sw_addPhone($faxPhone, 5);
+                    $faxPhoneInsert = $GLOBALS ['db']->query("INSERT INTO member_phones (member_id, phone_id) VALUES ('$memberId', '$faxPhoneId');");
+                    db_checkerrors($faxPhoneInsert);
+                }
+
+                // Membership details
+                // Create Member object
+                $memberObj = new Member ();
+                $memberObj->loadId($memberId);
+
+                if ($financialEndDate == "31 Dec 2013") {
+
+                    if ($memberObj->applyMembership(8, $clubCode)) {
+
+                        $statsNew2++;
+                    }
+                } elseif ($financialEndDate == "31 Dec 2014") {
+
+                    if ($memberObj->applyMembership(13, $clubCode)) {
+
+                        $uploadStatus = $uploadStatus . "Member $msaNumber $firstName $surname: Updating/adding second claim membership. Club = $clubCode. Financial End Date = $financialEndDate<br />\n";
+                        $statsUpdated2++;
+                    }
+                } elseif ($financialEndDate == "31 Dec 2015") {
+
+                    // echo "detected 2014hcc\n";
+
+                    if ($memberObj->applyMembership(16, $clubCode)) {
+
+                        $uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
+                        $statsUpdated++;
+                    } else {
+
+                        // echo "Unable to apply membership";
+                    }
+                } elseif ($financialEndDate == "31 Dec 2016") {
+
+                    if ($memberObj->applyMembership(17, $clubCode)) {
+
+                        $uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
+                        $statsUpdated++;
+                    } else {
+
+                        //
+                    }
+                } elseif ($financialEndDate == "31 Dec 2017") {
+
+                    if ($memberObj->applyMembership(18, $clubCode)) {
+
+                        $uploadStats = $uploadStatus . "Member $msaNumber $firstName $surname: Updated Financial End Date to $financialEndDate.<br />\n";
+                        $statsUpdated++;
+                    } else {
+
+                        //
+                    }
+                }
+
+                unset ($memberObj);
+            }
+
+            $arrMemberTrackSec ["$memberId"] = $clubId;
+        }
+
+    }
 
 	$uploadStatus = $uploadStatus . "<p>\n";
 	$uploadStatus = $uploadStatus . "<table>\n";

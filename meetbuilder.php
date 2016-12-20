@@ -28,6 +28,7 @@ if (isset($_POST['meetCreate']) OR isset($_POST['meetUpdate'])) {
 	$newContactPhone = mysql_real_escape_string($_POST['meetcontactphone']);
 	$newMeetFee = mysql_real_escape_string($_POST['meetfee']);
 	$newMeetMealFee = mysql_real_escape_string($_POST['meetmealfee']);
+    $newMeetMealName = $_POST['mealname'];
 	$newMeetLocation = mysql_real_escape_string($_POST['meetlocation']);
 	$newMaxEvents = mysql_real_escape_string($_POST['meetmaxevents']);
 	
@@ -53,7 +54,7 @@ if (isset($_POST['meetUpdate'])) {
 	$newContactEmailId = sw_addEmail($newContactEmail, 10);
 	$newContactPhoneId = sw_addPhone($newContactPhone, 10);
 	
-	$update1 = $GLOBALS['db']->query("UPDATE meet SET meetname = '$newMeetName', startdate = '$newMeetStartDate', enddate = '$newMeetEndDate', deadline = '$newDeadline', contactname = '$newContactName', contactemail = '$newContactEmailId', contactphone = '$newContactPhoneId', meetfee = '$newMeetFee', mealfee = '$newMeetMealFee', location = '$newMeetLocation', maxevents = '$newMaxEvents' WHERE id = '$editMeetId';");
+	$update1 = $GLOBALS['db']->query("UPDATE meet SET meetname = '$newMeetName', startdate = '$newMeetStartDate', enddate = '$newMeetEndDate', deadline = '$newDeadline', contactname = '$newContactName', contactemail = '$newContactEmailId', contactphone = '$newContactPhoneId', meetfee = '$newMeetFee', mealfee = '$newMeetMealFee', location = '$newMeetLocation', maxevents = '$newMaxEvents', mealname = '$newMeetMealName' WHERE id = '$editMeetId';");
 	db_checkerrors($update1);
 	
 	header("Location: meetbuilder.php?meetId=$editMeetId");
@@ -242,6 +243,7 @@ if (isset($_GET['meetId'])) {
 	$psMeetMealFee = $psMeetInfo[9];
 	$psMeetEventLimit = $psMeetInfo[12];
 	$psMeetLocation = $psMeetInfo[10];
+    $psMealName = $psMeetInfo[14];
 	
 } else {
 
@@ -254,6 +256,7 @@ if (isset($_GET['meetId'])) {
 	$psMeetContactPhone = '';
 	$psMeetFee = '';
 	$psMeetMealFee = '';
+    $psMealName = '';
 	$psMeetEventLimit = '';
 	$psMeetLocation = '';
 	
@@ -309,6 +312,9 @@ echo "<input type=\"text\" size=\"15\" name=\"meetfee\" value=\"$psMeetFee\" /><
 
 echo "<label for=\"meetmealfee\">Meal Fee: </label>\n";
 echo "<input type=\"text\" size=\"15\" name=\"meetmealfee\" value=\"$psMeetMealFee\" /><br />";
+
+echo "<label for=\"mealname\">Meal Name: </label>\n";
+echo "<input type=\"text\" size=\"30\" name=\"mealname\" value=\"$psMealName\" /><br />";
 
 echo "<label for=\"meetmaxevents\">Maximum Event Limit: </label>\n";
 echo "<input type=\"text\" size=\"15\" name=\"meetmaxevents\" value=\"$psMeetEventLimit\" /><br />";

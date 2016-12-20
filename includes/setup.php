@@ -45,11 +45,16 @@ function htmlHeaders($pageTitle) {
 	echo "<head>\n";
 	echo "<meta name=\"viewport\" content=\"width=device-width\">\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/screen.css\">\n";
-	//echo "<link rel=\"stylesheet\" href=\"/swimman/includes/Zebra_Pagination/public/css/zebra_form.css\">\n";
 	echo "<link rel=\"stylesheet\" href=\"style/jquery.sidr.light.css\" />\n";
-	echo "<script src=\"/swimman/includes/jquery-1.11.2.min.js\"></script>\n";
-	//echo "<script src=\"/swimman/includes/Zebra_Pagination/public/javascript/zebra_form.js\"></script>\n";
+    echo "<link rel=\"stylesheet\" href=\"style/jquery-ui.min.css\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"style/jquery-ui.structure.min.css\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"style/jquery-ui.theme.min.css\" />\n";
+	echo "<link rel=\"stylesheet\" href=\"//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css\" />\n";
+	echo "<script src=\"/swimman/includes/jquery-3.1.1.min.js\"></script>\n";
+	echo "<script src=\"/swimman/includes/jquery-ui.min.js\"></script>\n";
+    echo "<script src=\"/swimman/includes/combobox.js\"></script>\n";
 	echo "<script src=\"/swimman/includes/jquery.sidr.min.js\"></script>\n";
+    echo "<script src=\"//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js\"></script>\n";
 	
 	echo "<title>$pageTitle</title>\n";
 	

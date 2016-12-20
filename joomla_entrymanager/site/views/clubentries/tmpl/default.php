@@ -221,6 +221,7 @@ if (isset($psMeetId)) {
 	$meetDet->loadMeet($psMeetId);
 	$meetName = $meetDet->getName();
 	$meetStart = $meetDet->getStartDate();
+    $meetDeadline = $meetDet->getDeadline();
 	
 	echo "<h2>$meetName</h2>\n";
 	
@@ -332,8 +333,9 @@ if (isset($psMeetId)) {
 				
 				$meetFee = $meetDet->getMeetFee();
 				$mealFee = $meetDet->getMealFee() * $numMeals;
+                $massageFee = $meetDet->getMassageFee() * $curEntry->getMassages();
 				$eventFees = $curEntry->calcEventFees();
-				$totalFee = $meetFee + $mealFee + $eventFees;
+                $totalFee = $meetFee + $mealFee + $massageFee + $eventFees;
 				$entryPaid = $curEntry->getPaid();
 				
 				echo "<tr id=\"$entryId\">\n";
@@ -351,7 +353,7 @@ if (isset($psMeetId)) {
 				echo "<td>";
 				
 				// If this is a future event, allow adding an entry
-				if (strtotime($meetStart) > time()) {
+				if (strtotime($meetDeadline) > time()) {
 				
 					echo "<a href=\"index.php?option=com_entrymanager&view=step2&editEntry=$entryId\">Edit</a>\n";
 					echo " | ";
@@ -448,6 +450,21 @@ if (isset($psMeetId)) {
 				echo "\$" . number_format($mealFee, 2);
 				echo "</td>\n";
 				echo "</tr>\n";
+
+                if ($meetDet->getMassageFee() > 0) {
+
+                    echo "<tr>\n";
+                    echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
+                    echo "Massage Fee:\n";
+                    echo "</th>\n";
+                    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+                    echo "\$" . number_format($massageFee, 2);
+                    echo "</td>\n";
+                    echo "</tr>\n";
+
+                }
+
+
 				echo "<tr>\n";
 				echo "<th style=\"padding-right: 5px; padding-left: 5px;\">Total Cost:</th>\n";
 				echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
@@ -470,55 +487,79 @@ if (isset($psMeetId)) {
 				echo "<form method=\"post\">\n";			
 				
 				echo "<p style=\"margin: 1em 0 1em 0;\">\n";
-				echo "<label>Accept Payment: </label>\n";
-							
-				if ($entryPaid == $totalFee)  {
-					
-					echo "Fully paid";
-					
-				} else {
-							
-					echo "$<input type=\"text\" name=\"payment_$entryId\" style=\"text-align: right\" /> ";
-							
-					// Get payment methods supported by club
-					$paymentMethods = $GLOBALS['db']->getRow("SELECT * FROM club_payment_types 
+
+
+                $meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE
+                            meet_id = ?;", array($meetId));
+                db_checkerrors($meetPaymentDetails);
+
+// Check if only one type of payment is available
+                $payPalOnly = false;
+                if ($meetPaymentDetails[0][3] == 1) {
+
+                    $payPalOnly = true;
+
+                    echo "<p>Payments for this meet are accepted via PayPal or Credit/Debit card. ";
+                    echo "</p>\n";
+
+                } else {
+
+                    echo "<label>Accept Payment: </label>\n";
+
+                    if ($entryPaid == $totalFee) {
+
+                        echo "Fully paid";
+
+                    } else {
+
+                        echo "$<input type=\"text\" name=\"payment_$entryId\" style=\"text-align: right\" /> ";
+
+                        // Get payment methods supported by club
+                        $paymentMethods = $GLOBALS['db']->getRow("SELECT * FROM club_payment_types 
 									WHERE club_id = '$clubId';");
-					db_checkerrors($paymentMethods);
-							
-					echo "<select name=\"method_$entryId\">\n";
-							
-					if ($paymentMethods[1] == 1) {
-								
-						echo "<option name=\"cash\">Cash</option>\n";
-								
-					}
-							
-					if ($paymentMethods[1] == 2) {
-							
-						echo "<option name=\"banktransfer\">Bank Transfer</option>\n";
-				
-					}
-							
-					echo "</select>\n";
-				
-				}
+                        db_checkerrors($paymentMethods);
+
+                        echo "<select name=\"method_$entryId\">\n";
+
+                        if ($paymentMethods[1] == 1) {
+
+                            echo "<option name=\"cash\">Cash</option>\n";
+
+                        }
+
+                        if ($paymentMethods[1] == 2) {
+
+                            echo "<option name=\"banktransfer\">Bank Transfer</option>\n";
+
+                        }
+
+                        echo "</select>\n";
+
+                    }
+
+                }
 					
 				echo "</p>\n";
 							
 				echo "<p style=\"margin: 1em 0 1em 0;\">\n";
-				
-				if ($entryStatus != 11) {
-				
-					echo "<label>Cancel Entry: </label>\n";
-					echo "<input type=\"checkbox\" name=\"cancelEntry[]\" value=\"$entryId\" />\n";
-					
-					
-				} else {
-					
-					echo "<label>Restore Entry: </label>\n";
-					echo "<input type=\"checkbox\" name=\"restoreEntry[]\" value=\"$entryId\" />\n";
-					
-				}
+
+                if (strtotime($meetDeadline) > time()) {
+
+                    if ($entryStatus != 11) {
+
+                        echo "<label>Cancel Entry: </label>\n";
+                        echo "<input type=\"checkbox\" name=\"cancelEntry[]\" value=\"$entryId\" />\n";
+
+
+                    } else {
+
+                        echo "<label>Restore Entry: </label>\n";
+                        echo "<input type=\"checkbox\" name=\"restoreEntry[]\" value=\"$entryId\" />\n";
+
+                    }
+
+                }
+
 				echo "</p>\n";
 				
 				echo "<p style=\"margin: 1em 0 1em 0;\">\n";

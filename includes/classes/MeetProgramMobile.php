@@ -118,6 +118,7 @@ class MeetProgramMobile {
 			$mName = str_replace("Indoor", "", $mName);
 			$mName = str_replace("Swim Meet", "", $mName);
 			$mName = str_replace("Meet", "", $mName);
+            $mName = str_replace("&", "&amp;", $mName);
 			
 			$cMeetName = $domtree->createElement("meetname", $mName);
 			$currentMeet->appendChild($cMeetName);
@@ -395,6 +396,9 @@ ORDER BY finalplace ASC;", array($this->meetId, $progNumber, $progSuffix, $ageGr
 		
 		$ageGroupDetails = $GLOBALS['db']->getRow("SELECT * FROM age_groups WHERE id = ?;", array($ageGroupId));
 		db_checkerrors($ageGroupDetails);
+
+        // Get MSX Standards for this age group and event
+
 		
 		$GLOBALS['db']->setFetchMode(DB_FETCHMODE_ORDERED);
 		

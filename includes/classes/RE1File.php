@@ -14,6 +14,8 @@ class RE1File
     private $datafile;
     private $data;      // Storage for data file
 
+    private $memberShipType;
+
     /**
      * @return mixed
      */
@@ -28,7 +30,37 @@ class RE1File
     public function setDatafile($datafile)
     {
         $this->datafile = $datafile;
-    }  // RE1 Data File
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMemberShipType()
+    {
+        return $this->memberShipType;
+    }/**
+     * @param mixed $memberShipType
+     */
+    public function setMemberShipType($memberShipType)
+    {
+
+        $memberShipTypeId = $GLOBALS['db']->getOne("SELECT id FROM membership_types WHERE id = ?;",
+            $memberShipType);
+
+        if (isset($memberShipTypeId)) {
+
+            $this->memberShipType = $memberShipType;
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+    }
+
+    // RE1 Data File
 
     /**
      * Import clubs function
@@ -141,6 +173,34 @@ class RE1File
                 }
 
                 $memberDetails->updateDetails();
+
+            } else {
+
+                // Create new member
+                $memberDetails->setMSANumber($msaNumber);
+                $memberDetails->setFirstname($firstname);
+                $memberDetails->setSurname($surname);
+                $memberDetails->setOtherNames('');
+                $memberDetails->setDob($dob);
+                $memberDetails->setGender($gender);
+
+                if ($memberDetails->store()) {
+
+                    addlog("RE1 Import", "Imported Member", "Imported $firstname $surname($msaNumber) $gender $dob.");
+
+                }
+
+            }
+
+            // Apply membership details
+            $club = new Club();
+            $club->load($clubcode);
+            $clubId = $club->getId();
+
+            if ($this->memberShipType != "") {
+
+                $memberDetails->applyMembership($this->memberShipType, $clubId);
+                addlog("RE1 Import", "Applied Membership", "$firstname $surname($msaNumber) member of club $clubcode");
 
             }
 

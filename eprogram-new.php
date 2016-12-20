@@ -35,6 +35,12 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 <script type="text/javascript" src="/swimman/includes/jquery.mobile-1.4.5.min.js"></script>
 <script type="text/javascript">
 
+    $body = $("body");
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");    },
+        ajaxStop: function() { $body.removeClass("loading"); }
+    });
+
 	// Get ordinal number function by Chris West 
 	// http://cwestblog.com/2012/09/28/javascript-number-getordinalfor/
 	(function(o) {
@@ -304,6 +310,7 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 				var swimmer = $(this).find('fullname').text();
 				var agegroup = $(this).find('agegroup').text();
 				var age = $(this).find('age').text();
+                var seedtime = $(this).find('seedtime').text();
 				var finaltime = $(this).find('finaltime').text();
 				var clubname = $(this).find('clubname').text();
 				var heatplace = Number.getOrdinalFor($(this).find('heatplace').text(), true);
@@ -324,7 +331,8 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 
 					$('<tr></tr>').html(
 							'<td class=\"placeCell\" colspan=\"3\">' +
-							'<strong>Heat: </strong>'
+                                '<strong>Seed Time: </strong>' + seedtime +
+							'<strong>&nbsp;&nbsp;Heat: </strong>'
 							+heatplace+'<strong>&nbsp;&nbsp;Age: </strong>'
 							+ageplace+'<strong>&nbsp;&nbsp;Points: </strong>'
 							+points+
@@ -341,9 +349,15 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 							+swimmer+'</div><div class=\"ageGroup\">'
 							+agegroup+'</div><div class=\"swimmerAge\">('
 							+age+')</div><div class=\"clubName\">'
-							+clubname+'</div></td><td class=\"resultRow\">' +
-							'</td><td class=\"resultRow\"> </td>')
+							+clubname+'</div></td><td class=\"resultRow\">'
+                            +'</td><td class=\"resultRow\"> </td>')
 							.appendTo("#heatDetails");
+
+                    $('<tr></tr>').html(
+                        '<td class=\"placeCell\" colspan=\"3\">' +
+                        '<strong>Seed Time: </strong>' + seedtime +
+                        '</td>')
+                        .appendTo("#heatDetails");
 					
 				}
 				
@@ -426,6 +440,7 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 				var swimmer = $(this).find('fullname').text();
 				var agegroup = $(this).find('agegroup').text();
 				var age = $(this).find('age').text();
+                var seedtime = $(this).find('seedtime').text();
 				var finaltime = $(this).find('finaltime').text();
 				var clubname = $(this).find('clubname').text();
 				var heatplace = Number.getOrdinalFor($(this).find('heatplace').text(), true);
@@ -446,7 +461,8 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 
 					$('<tr></tr>').html(
 							'<td class=\"placeCell\" colspan=\"3\">' +
-							'<strong>Heat Number: </strong>'
+                                '<strong>Seed Time: </strong>' + seedtime +
+							'<strong>&nbsp;&nbsp;Heat Number: </strong>'
 							+heatnumber+'<strong>&nbsp;&nbsp;Heat Place: </strong>'
 							+heatplace+'<strong>&nbsp;&nbsp;Points: </strong>'
 							+points+
@@ -462,9 +478,15 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 							+swimmer+'</div><div class=\"ageGroup\">'
 							+agegroup+'</div><div class=\"swimmerAge\">('
 							+age+')</div><div class=\"clubName\">'
-							+clubname+'</div></td><td class=\"resultRow\">' +
-							'</td><td class=\"resultRow\"> </td>')
+							+clubname+'</div></td><td class=\"resultRow\">'
+							+'</td><td class=\"resultRow\"> </td>')
 							.appendTo("#heatDetails");
+
+                    $('<tr></tr>').html(
+                        '<td class=\"placeCell\" colspan=\"3\">' +
+                        '<strong>Seed Time: </strong>' + seedtime +
+                        '</td>')
+                        .appendTo("#heatDetails");
 					
 				}
 				

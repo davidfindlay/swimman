@@ -48,13 +48,15 @@ $editEntry = $jinput->get('editEntry');
 if($editEntry != "") {
 	
 	$entryData = new MeetEntry();
-	$entryData->loadId($jinput->get('editEntry', true, string));
+    $entryId = $jinput->get('editEntry', true, string);
+	$entryData->loadId($entryId);
 	
 	$sess->set('emEntrant', $entryData->getMemberId());
 	$sess->set('emMeetId', $entryData->getMeetId());
 	$sess->set('emClubId', $entryData->getClubId());
 	$sess->set('emEntryData', serialize($entryData));
 	$sess->set('emEntryEdit', 'true');
+    $sess->set('emEntryId', $entryId);
 	
 }
 
@@ -146,9 +148,17 @@ if (($sess->get('emEntryData')) !== null) {
 echo "<fieldset>\n";
 
 if ($meetDetails->getMealFee() > 0) {
-	
+
+    $mealName = "Meals";
+
+    if ($meetDetails->getMealName() != '') {
+
+        $mealName = $meetDetails->getMealName() . "s";
+
+    }
+
 	echo "<p>\n";
-	echo "<label for=\"meals\">Number of Meals: </label>\n";
+	echo "<label for=\"meals\">$mealName: </label>\n";
 	$mealsIncluded = $meetDetails->getMealsIncluded();
 	$mealsPreset = $mealsIncluded;
 	
@@ -162,7 +172,7 @@ if ($meetDetails->getMealFee() > 0) {
 		
 	}
 	
-	echo "<input type=\"number\" name=\"numMeals\" style=\"width: 3em;\" value=\"$mealsPreset\" />\n";
+	echo "<input type=\"number\" name=\"numMeals\" style=\"width: 3em;\" min=\"0\" value=\"$mealsPreset\" />\n";
 	
 	if ($mealsIncluded != 0) {
 		
@@ -199,11 +209,32 @@ if (isset($entryData)) {
 			
 }
 
-echo "<p>\n";
-echo "<label for=\"medical\">Medical Certificate: </label>\n";
-echo "<input type=\"checkbox\" id=\"medical\" name=\"medical\" $preMedical/>\n";
-echo "I have a medical certificate.";
-echo "</p>\n";
+// Check if there if there are massages
+if ($meetDetails->getMassageFee() > 0) {
+
+    if (isset($entryData)) {
+
+        $ps_extra = $entryData->getMassages();
+
+    } else {
+
+        $ps_extra = 0;
+
+    }
+
+    echo "<p>\n";
+    echo "<label for=\"numMassages\">Massages: </label>\n";
+    echo "<input type=\"number\" id=\"numMassages\" name=\"numMassages\" min=\"0\" style=\"width: 3em;\" value=\"$ps_extra\"/>\n";
+    echo "</p>\n";
+
+}
+
+
+//echo "<p>\n";
+//echo "<label for=\"medical\">Medical Certificate: </label>\n";
+//echo "<input type=\"checkbox\" id=\"medical\" name=\"medical\" $preMedical/>\n";
+//echo "I have a medical certificate.";
+//echo "</p>\n";
 
 echo "<p style=\"clear: left;\">\n";
 echo "<label for=\"notes\">Comments: </label>\n";

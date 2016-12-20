@@ -163,8 +163,9 @@ class Member {
         }
 
         $insert = $GLOBALS['db']->query("INSERT INTO member (number, surname, firstname, othernames, 
-				dob, gender) VALUES ('$this->number', '$this->surname', '$this->firstname', 
-				'$this->othernames', '$this->dob', '$genderNum');");
+				dob, gender) VALUES (?, ?, ?, ?, ?, ?);",
+            array($this->number, $this->surname, $this->firstname, $this->othernames,
+                $this->dob, $genderNum));
         db_checkerrors($insert);
 
         $this->id = mysql_insert_id();
@@ -424,7 +425,7 @@ class Member {
 	
 	public function setSurname($nSurname) {
 	
-		$this->surname = $nSurname;
+		$this->surname = titleCase($nSurname);
 	
 	}
 	
@@ -436,9 +437,15 @@ class Member {
 	
 	public function setFirstname($nFirst) {
 	
-		$this->firstname = $nFirst;
+		$this->firstname = titleCase($nFirst);
 	
 	}
+
+    public function setOtherNames($nOther) {
+
+        $this->othernames = titleCase($nOther);
+
+    }
 		
 	public function getDob() {
 	

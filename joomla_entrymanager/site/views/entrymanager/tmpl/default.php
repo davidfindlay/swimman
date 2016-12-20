@@ -238,6 +238,7 @@ db_checkerrors($meetEntries);
 
 foreach ($meetEntries as $e) {
 
+    $entryId = $e[0];
 	$meetId = $e[1];
 	$entrantId = $e[2];
 	$c = $e[8];
@@ -247,6 +248,7 @@ foreach ($meetEntries as $e) {
 	$curMeet = new Meet();
 	$curMeet->loadMeet($meetId);
 	$meetName = $curMeet->getName();
+    $meetDeadline = $curMeet->getDeadline();
 	
 	$entryStatus = $curEntry->getStatus();
 	$entryStatusDesc = $curEntry->getStatusDesc();
@@ -263,6 +265,16 @@ foreach ($meetEntries as $e) {
 	$entrantName = $entrant->getFullname();
 	
 	echo "<h2 style=\"margin-top: 1em;\">$meetName</h2>\n";
+
+    // If this is a future event, allow adding an entry
+    if (strtotime($meetDeadline) > time()) {
+
+        echo "<p>\n";
+        echo "<a href=\"index.php?option=com_entrymanager&view=step2&editEntry=$entryId\">Edit</a>\n";
+        echo "</p>\n";
+
+    }
+
 	echo "<p>\n";
 	echo "<label>Date: </label>";
 	
@@ -288,6 +300,24 @@ foreach ($meetEntries as $e) {
 	echo "<label>Membership Status: </label>$memberStatus<br />\n";
 	echo "<label>Entry Status: </label>\n";
 	echo "<div style=\"margin-left: 12em;\">$entryStatus - $entryStatusDesc</div><br />\n";
+
+    if ($curMeet->getMealFee() > 0) {
+
+        $mealName = "Meal";
+
+        if ($curMeet->getMealName() != $mealName) {
+            $mealName = $curMeet->getMealName() . "s";
+        }
+
+        echo "<label>$mealName:</label>" . $curEntry->getNumMeals() . "<br />\n";
+
+    }
+
+    if ($curMeet->getMassageFee() > 0) {
+
+        echo "<label>Massages:</label>" . $curEntry->getMassages() . "<br />\n";
+
+    }
 	
 	echo "<label>View eProgram: </label>\n";
 	
@@ -306,11 +336,9 @@ foreach ($meetEntries as $e) {
 	}
 	
 	echo "</p>\n";
+    echo "<h3>Individual Events</h3>\n";
 	echo "<table border=\"1\">\n";
 	echo "<thead>\n";
-	echo "<tr>\n";
-	echo "<th colspan=\"5\"><div align=\"center\">Individual Events</div></th>\n";
-	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<th>No.</th>\n";
 	echo "<th>Event:</th>\n";
@@ -356,6 +384,156 @@ foreach ($meetEntries as $e) {
 	
 	echo "</tbody>\n";
 	echo "</table>\n";
+
+    $meetFee = $curMeet->getMeetFee();
+    $mealFee = $curMeet->getMealFee() * $curEntry->getNumMeals();
+    $massageFee = $curMeet->getMassageFee() * $curEntry->getMassages();
+    $eventFees = $curEntry->calcEventFees();
+    $totalFee = $meetFee + $mealFee + $massageFee + $eventFees;
+    $amountPaid = $curEntry->getPaid();
+    $amountToPay = $totalFee - $amountPaid;
+
+    echo "<p>\n";
+    echo "<label>Fees Payable: </label>\n";
+    echo "<table>\n";
+    echo "<tr>\n";
+    echo "<th style=\"padding-right: 5px; padding-left: 5px;\">\n";
+    echo "Entry Fee:\n";
+    echo "</th>\n";
+    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+    echo "\$" . number_format($meetFee, 2);
+    echo "</td>\n";
+    echo "</tr>\n";
+    echo "<tr>\n";
+    echo "<th style=\"padding-right: 5px; padding-left: 5px;\">\n";
+    echo "Event Fees:\n";
+    echo "</th>\n";
+    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+    echo "\$" . number_format($eventFees, 2);
+    echo "</td>\n";
+    echo "</tr>\n";
+    echo "<tr>\n";
+    echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
+    echo "Meal Fee:\n";
+    echo "</th>\n";
+    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+    echo "\$" . number_format($mealFee, 2);
+    echo "</td>\n";
+    echo "</tr>\n";
+
+    if ($curMeet->getMassageFee() > 0) {
+
+        echo "<tr>\n";
+        echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
+        echo "Massage Fee:\n";
+        echo "</th>\n";
+        echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+        echo "\$" . number_format($massageFee, 2);
+        echo "</td>\n";
+        echo "</tr>\n";
+
+    }
+
+    echo "<tr>\n";
+    echo "<th style=\"padding-right: 5px; padding-left: 5px;\">Total Cost:</th>\n";
+    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+    echo "\$" . number_format($totalFee, 2);
+    echo "</td>\n";
+    echo "<tr>\n";
+    echo "<th style=\"padding-right: 5px; padding-left: 5px;\">Paid:</th>\n";
+    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+    echo "<strong>\$" . number_format($amountPaid, 2) . "</strong>";
+    echo "</td>\n";
+    echo "<tr>\n";
+    echo "<th style=\"padding-right: 5px; padding-left: 5px;\">Amount Due:</th>\n";
+    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+    echo "<strong>\$" . number_format($amountToPay, 2) . "</strong>";
+
+    // Display payment button if amount due
+    if ($amountToPay > 0) {
+
+        // If this meet accepts paypal only
+        $meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE
+                            meet_id = ?;", array($meetId));
+        db_checkerrors($meetPaymentDetails);
+
+        if ($meetPaymentDetails[0][3] == 1) {
+
+            echo "<br /><a href=\"index.php?option=com_entrymanager&view=step2&editEntry=$entryId\">Pay Now</a>\n";
+
+        }
+
+    }
+
+    echo "</td>\n";
+    echo "</tr>\n";
+
+// Check if the user has paid
+
+
+    echo "</table>\n";
+    echo "</p>\n";
+
+
+    echo "<h3>Payment History:</h3>\n";
+    echo "<table>\n";
+    echo "<tr>\n";
+    echo "<th>Date</th>\n";
+    echo "<th>Payment Method:</th>\n";
+    echo "<th>Description:</th>\n";
+    echo "<th>Amount:</th>\n";
+    echo "</tr>\n";
+
+    $meetPayments = $GLOBALS['db']->getAll("SELECT * FROM meet_entry_payments, payment_types 
+            WHERE entry_id = ?
+            AND payment_types.id = meet_entry_payments.method;",
+        array($entryId));
+    db_checkerrors($meetPayments);
+
+    $runningAmount = 0;
+
+    if (count($meetPayments) > 0) {
+
+        foreach ($meetPayments as $m) {
+
+            $paymentDate = date('d/m/Y', strtotime($m[3]));
+            $paymentMethod = $m[8];
+            $amount = "$" . number_format($m[4], 2);
+            $runningAmount = $runningAmount + $m[4];
+            $comment = $m[6];
+
+            echo "<tr>\n";
+
+            echo "<td>\n";
+            echo $paymentDate;
+            echo "</td>\n";
+
+            echo "<td>\n";
+            echo $paymentMethod;
+            echo "</td>\n";
+
+            echo "<td>\n";
+            echo $comment;
+            echo "</td>\n";
+
+            echo "<td>\n";
+            echo $amount;
+            echo "</td>\n";
+
+            echo "</tr>\n";
+
+        }
+
+    }
+
+    echo "<tr>\n";
+    echo "<th colspan=\"3\">Total:</th>\n";
+    echo "<th>\n";
+    echo "$" . number_format($runningAmount, 2);
+    echo "</th>\n";
+    echo "</tr>\n";
+
+    echo "</table>\n";
 
 }
 

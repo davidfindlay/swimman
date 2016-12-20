@@ -25,6 +25,13 @@ if (isset($_GET['club'])) {
 $tmEntries = new TMEntryFile();
 $tmEntries->setMeet($meetId);
 
+if (isset($_GET['event'])) {
+
+	$eventId = $_GET['event'];
+	$tmEntries->setEvents($eventId);
+
+}
+
 // Create entry file for 
 
 if (isset($clubId)) {

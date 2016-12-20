@@ -45,7 +45,7 @@ class MeetEntryEvent {
 										FROM meet_events_entries_statuses, meet_entry_status_codes WHERE 
 										meet_events_entries_statuses.status = meet_entry_status_codes.id AND
 										meet_events_entries_statuses.meet_event_entries_id = '$this->id'
-										ORDER BY meet_events_entries_statuses.changed DESC LIMIT 1;");
+										ORDER BY meet_events_entries_statuses.id DESC LIMIT 1;");
 		db_checkerrors($status);
 		
 		$this->status = $status[0];
@@ -67,7 +67,7 @@ class MeetEntryEvent {
 	
 	public function setStatus($status) {
 	
-		$this->status = mysql_real_escape_string($status);
+		$this->status = $status;
 	
 		return true;
 	}
@@ -138,7 +138,9 @@ class MeetEntryEvent {
 		
 		// echo "update the seedtime for " . $this->id . " to " . $this->seedtime . " now!";
 
-		$curStatus = $GLOBALS['db']->getOne("SELECT status FROM meet_events_entries_statuses WHERE id = '$this->id';");
+		$curStatus = $GLOBALS['db']->getOne("SELECT status FROM meet_events_entries_statuses 
+                    WHERE meet_event_entries_id = '$this->id'
+                    ORDER BY id DESC LIMIT 1;");
 		db_checkerrors($curStatus);
 		
 		if ($this->status != $curStatus) {

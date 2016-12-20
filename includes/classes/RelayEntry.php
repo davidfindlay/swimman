@@ -68,6 +68,8 @@ class RelayEntry {
 			}
 			
 		}
+
+		addlog("RelayEntry.php", "Created relay entry $this->id");
 		
 	}
 	
@@ -105,6 +107,24 @@ class RelayEntry {
 		$this->seedTime = $s;
 		
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getTeamName()
+    {
+        return $this->teamName;
+    }
+
+    /**
+     * @param mixed $teamName
+     */
+    public function setTeamName($teamName)
+    {
+        $this->teamName = $teamName;
+    }
+
+
 	
 	// Add members
 	public function addMember($position, $memberId) {
@@ -198,6 +218,27 @@ class RelayEntry {
 		}
 		
 	}
+
+	// Get Next letter
+    public function getNextLetter() {
+
+        $firstLetter = ord("A");
+        $letterAvailable = false;
+        $curLetter = $firstLetter;
+
+        while($letterAvailable != true) {
+
+            $this->letter = chr($curLetter);
+
+            if ($this->checkLetter() === false) {
+                $curLetter++;
+            } else {
+                $letterAvailable = true;
+            }
+
+        }
+
+    }
 	
 	// Get Program Number
 	public function getProgNum() {
@@ -348,5 +389,13 @@ class RelayEntry {
 		return $this->meetEventId;
 	
 	}
+
+	public function setClubCode($code) {
+
+        $club = new Club();
+        $club->load($code);
+        $this->clubId = $club->getId();
+
+    }
 	
 }

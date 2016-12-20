@@ -6,6 +6,8 @@ class TMEntryFile {
 	private $clubId;
 	private $meetObj;
 	private $entries;  // Array of MeetEntries
+
+    private $event = "";      // Set if we just want one event
 	
 	private $filename;
 	
@@ -19,7 +21,11 @@ class TMEntryFile {
 		// echo "Loaded " . $this->meetObj->getName();
 		
 	}
-	
+
+	public function setEvent($eventId) {
+        $this->event = $eventId;
+    }
+
 	public function setClub($c) {
 		
 		$this->clubId = $c;
@@ -208,6 +214,13 @@ class TMEntryFile {
 							
 							// Check if this entry is a relay entry
 							$eventId = $e->getEventId();
+
+                            // Handle if if just exporting one event
+                            if ($this->event != "") {
+                                if ($eventId != $this->event) {
+                                    continue;
+                                }
+                            }
 							
 							$eventDet = new MeetEvent();
 							$eventDet->load($eventId);
@@ -299,7 +312,14 @@ class TMEntryFile {
 					// Get Event Details
 					$eventDet = new MeetEvent();
 					$eventDet->load($meetEventId);
-					
+
+                    // Handle if if just exporting one event
+                    if ($this->event != "") {
+                        if ($meetEventId != $this->event) {
+                            continue;
+                        }
+                    }
+
 					// Line start and club code
 					$lineR = "";
 					$lineR = "F1" . $clubCode . "  " . $relayLetter . " ";

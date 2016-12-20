@@ -43,6 +43,12 @@ echo "<label>Meet: </label>\n";
 
 $meetSel = new MeetSelector;
 $meetSel->setName("meetId");
+
+// Preselect previous meet if already selected.
+if (isset($meetId)) {
+    $meetSel->selected($meetId);
+}
+
 $meetSel->showDate();
 $meetSel->output();
 

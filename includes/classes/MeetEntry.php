@@ -9,6 +9,7 @@ class MeetEntry {
 	private $meetId;
 	private $ageGroupId;
 	private $meals;
+    private $massages;
 	private $medical;
 	private $cost;
 	private $notes;
@@ -67,9 +68,10 @@ class MeetEntry {
 			$this->medical = $entryDetails[5];
 			$this->cost = $entryDetails[6];
 			$this->notes = $entryDetails[7];
+            $this->massages = $entryDetails[10];
 				
 			$eventEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_events_entries WHERE meet_entry_id = '$this->id'
-					ORDER BY id DESC;");
+					ORDER BY event_id DESC;");
 			db_checkerrors($eventEntries);
 						
 			foreach ($eventEntries as $e) {
@@ -106,6 +108,8 @@ class MeetEntry {
 			$this->medical = $entryDetails[5];
 			$this->cost = $entryDetails[6];
 			$this->notes = $entryDetails[7];
+
+            $this->massages = $entryDetails[10];
 			
 			$eventEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_events_entries WHERE meet_entry_id = '$this->id'
 					ORDER BY id DESC;");
@@ -139,9 +143,9 @@ class MeetEntry {
 		if (isset($this->meetId) && $this->meetId != 0 && isset($this->clubId) && $this->clubId != 0) {
 		
 			$insert = $GLOBALS['db']->query("INSERT INTO meet_entries (meet_id, member_id, 
-					age_group_id, club_id, meals, medical, cost, notes) VALUES
+					age_group_id, club_id, meals, medical, cost, notes, massages) VALUES
 					('$this->meetId', '$this->memberId', '$this->ageGroupId', '$this->clubId',
-					'$this->meals', '$this->medical', '$this->cost', '$this->notes');");
+					'$this->meals', '$this->medical', '$this->cost', '$this->notes', '$this->massages');");
 			db_checkerrors($insert);
 			
 			$this->id = mysql_insert_id();
@@ -323,7 +327,7 @@ class MeetEntry {
 	// Sets the status of the Meet Entry
 	public function setStatus($status) {
 	
-		$this->status = mysql_real_escape_string($status);
+		$this->status = $status;
 		
 		// Check if this status cancels the entry
 		$cancelled = $GLOBALS['db']->getOne("SELECT cancelled FROM meet_entry_status_codes WHERE id = ?", 
@@ -363,8 +367,12 @@ class MeetEntry {
 	public function setEventStatuses($status) {
 		
 		foreach ($this->events as $e) {
-		
-			$e->setStatus($status);
+
+            if (!$e->getCancelled()) {
+
+                $e->setStatus($status);
+
+            }
 		
 		}
 		
@@ -384,7 +392,7 @@ class MeetEntry {
 		
 		$status = $GLOBALS['db']->getOne("SELECT meet_entry_status_codes.label FROM meet_entry_status_codes, 
 				meet_entry_statuses WHERE meet_entry_status_codes.id = meet_entry_statuses.code AND 
-				entry_id = '$this->id' ORDER BY changed DESC LIMIT 1;");
+				entry_id = '$this->id' ORDER BY meet_entry_statuses.id DESC LIMIT 1;");
 		db_checkerrors($status);
 		
 		return $status;			
@@ -395,7 +403,7 @@ class MeetEntry {
 		
 		$statusDesc = $GLOBALS['db']->getOne("SELECT meet_entry_status_codes.description FROM meet_entry_status_codes,
 				meet_entry_statuses WHERE meet_entry_status_codes.id = meet_entry_statuses.code AND
-				entry_id = '$this->id' ORDER BY changed DESC LIMIT 1;");
+				entry_id = '$this->id' ORDER BY meet_entry_statuses.id DESC LIMIT 1;");
 		db_checkerrors($statusDesc);
 		
 		return $statusDesc;
@@ -409,6 +417,7 @@ class MeetEntry {
 	}
 	
 	// Calculates if any event fees are payable for this entry
+    // TODO: don't charge for relay nominations
 	public function calcEventFees() {
 
 		$feeTotal = 0;
@@ -416,13 +425,18 @@ class MeetEntry {
 		if (isset($this->events)) {
 		
 			foreach($this->events as $e) {
-				
-				$eventId = $e->getEventId();
-				
-				$fee = $GLOBALS['db']->getOne("SELECT eventfee FROM meet_events WHERE id = '$eventId';");
-				db_checkerrors($fee);
-				
-				$feeTotal += floatval($fee);
+
+                // Add cost of events if not cancelled
+                if (!$e->getCancelled()) {
+
+                    $eventId = $e->getEventId();
+
+                    $fee = $GLOBALS['db']->getOne("SELECT eventfee FROM meet_events WHERE id = '$eventId';");
+                    db_checkerrors($fee);
+
+                    $feeTotal += floatval($fee);
+
+                }
 				
 			}
 			
@@ -437,7 +451,10 @@ class MeetEntry {
 		$meetDet = new Meet();
 		$meetDet->loadMeet($this->meetId);
 		
-		$this->cost = $meetDet->getMeetFee() + ($meetDet->getMealFee() * ($this->meals - $meetDet->getMealsIncluded())) + $this->calcEventFees();
+		$this->cost = $meetDet->getMeetFee() +
+            ($meetDet->getMealFee() * ($this->meals - $meetDet->getMealsIncluded())) +
+            ($meetDet->getMassageFee() * $this->massages) +
+            $this->calcEventFees();
 		
 	}
 	
@@ -504,6 +521,11 @@ class MeetEntry {
 		// Delete entry
 		$delete2 = $GLOBALS['db']->query("DELETE FROM meet_entries WHERE id = '$this->id';");
 		db_checkerrors($delete2);
+
+        // Delete payments
+        $delete3 = $GLOBALS['db']->query("DELETE FROM meet_entry_payments WHERE entry_id = ?;",
+            array($this->id));
+        db_checkerrors($delete3);
 		
 	}
 	
@@ -513,23 +535,59 @@ class MeetEntry {
 		$paidAmount = $GLOBALS['db']->getOne("SELECT sum(amount) FROM meet_entry_payments 
 				WHERE entry_id = '$this->id';");
 		db_checkerrors($paidAmount);
-		
+
+        if ($paidAmount == "") {
+            $paidAmount = 0;
+        }
+
 		return $paidAmount;
 	
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
 	
 	// Receive payment
 	public function makePayment($amount, $method) {
-		
+
+        if ($this->id == "") {
+
+            addlog("Entry Manager", "Unable to accept payment", "Unable to accept payment due to no entry id!");
+            return false;
+
+        }
+
+        if ($this->memberId == "") {
+
+            addlog("Entry Manager", "Unable to accept payment", "Unable to accept payment due to no member id!");
+            return false;
+
+        }
+
+        if ($amount <= 0) {
+
+            addlog("Entry manager", "Unable to accept payment", "Can't accept a zero payment!");
+            return false;
+
+        }
+
 		$payCol = $method;
 		$paid = $amount;
 		
 		$method = $GLOBALS['db']->getOne("SELECT id FROM payment_types 
 				WHERE colname = ?;", array($method));
 		db_checkerrors($method);
-		
+
+        // Update cost
+        $this->calcCost();
+
 		// Don't accept payment if already fully paid
-		if ($this->calcCost() >= $this->getPaid()) {
+		if ($this->getCost() >= $this->getPaid()) {
 		
 			$query = $GLOBALS['db']->query("INSERT INTO meet_entry_payments (entry_id, member_id, 
 				amount, method) VALUES (?, ?, ?, ?);",
@@ -537,33 +595,47 @@ class MeetEntry {
 			db_checkerrors($query);
 		
 		}
+
+		//addlog("test", "calcCost = " . $this->getCost() . " getPaid = " . $this->getPaid());
 		
 		// If full amount has been paid, update status
-		if ($this->calcCost() <= $this->getPaid()) {
+		if ($this->getCost() <= $this->getPaid()) {
 			
 			$this->setStatus(2);		// Change status to Accepted
 			$this->updateStatus();
 			
 			foreach ($this->events as $e) {
-				
-				$eventId = $e->getEventId();
-				$eventDet = new MeetEvent();
-				
-				if ($eventDet->getLegs() > 1) {
-				
-					$e->setStatus(1);
-					$e->update();
-					
-				} else {
 
-					$e->setStatus(2);
-					$e->update();
-					
-				}
+                // Don't record cancelled events as Accepted
+                if (!$e->getCancelled()) {
+
+                    $eventId = $e->getEventId();
+                    $eventDet = new MeetEvent();
+                    $eventDet->load($eventId);
+
+                    // Mark relays as Pending
+                    // Mark individual events as Accepted
+                    if ($eventDet->getLegs() > 1) {
+
+                        $e->setStatus(1);
+                        $e->update();
+
+                    } else {
+
+                        $e->setStatus(2);
+                        $e->update();
+
+                    }
+
+                }
 				
 			}
+
+            addlog("Entry Manager", "Payment Received", "Member $this->memberId paid $paid for $this->id - status updated to Accepted");
 			
-		}
+		} else {
+            addlog("Entry Manager", "Payment Received", "Member $this->memberId paid $paid for $this->id - status not updated due money still owed");
+        }
 		
 	}
 	
@@ -642,8 +714,43 @@ class MeetEntry {
 		$existEntry->setStatus(5);
 		$existEntry->updateStatus();
 		$existEntry->updateEvents($this->getEvents(), 5, 11);
+
+        // Update extras
+        //addlog("test", "meals = " . $this->meals . " massages = " . $this->massages);
+        $existEntry->setNumMeals($this->meals);
+        $existEntry->setMassages($this->massages);
+
+        $existEntry->updateExtras();
+
+        // Update club if necessary
+        if ($existEntry->getClubId() != $this->getClubId()) {
+
+            $existEntry->setClubId($this->clubId);
+            $existEntry->updateClub();
+
+        }
+
+        return $existingId;
 		
 	}
+
+    /**
+     * @param string $clubId
+     */
+    public function setClubId($clubId)
+    {
+        $this->clubId = $clubId;
+    }
+
+	public function updateClub() {
+
+        $update = $GLOBALS['db']->query("UPDATE meet_entries SET club_id = ? WHERE id = ?",
+            array($this->clubId, $this->id));
+        db_checkerrors($update);
+
+        addlog("Meet Entry", "Update club", "Update club to $this->clubId for $this->id.");
+
+    }
 	
 	// Gets a list of all events entered
 	public function getEventList() {
@@ -689,7 +796,8 @@ class MeetEntry {
 		//print_r($this->events);
 		
 		$update = $GLOBALS['db']->query("UPDATE meet_entries SET meals = ?, medical = ?, cost = ?, 
-				notes = ? WHERE id = ?", array($this->meals, $this->medical, $this->cost, $this->notes,
+				notes = ?, massages = ? 
+				WHERE id = ?", array($this->meals, $this->medical, $this->cost, $this->notes, $this->massages,
 				$this->id));
 		db_checkerrors($update);
 		
@@ -708,7 +816,7 @@ class MeetEntry {
 				
 				$nId = $nEvents->getEventId();
 				
-				if ($nId == $eventId) {
+				if (($nId == $eventId) && (!$nEvents->getCancelled())) {
 					
 					$tEvents->setStatus($foundStatus);
 					$na = $nEvents->getId();
@@ -770,6 +878,17 @@ class MeetEntry {
 		}
 		
 	}
+
+	public function updateExtras() {
+
+        $update = $GLOBALS['db']->query("UPDATE meet_entries SET meals = ?, massages = ? WHERE id = ?;",
+            array($this->meals, $this->massages, $this->id));
+        db_checkerrors($update);
+
+        addlog("Meet Entry", "Update extras", "Updated meals to " . $this->meals . " and massages to " .
+            $this->massages . " for " . $this->id . ".");
+
+    }
 	
 	// Checks if this entry is cancelled
 	public function isCancelled() {
@@ -777,6 +896,24 @@ class MeetEntry {
 		return $this->cancelled;
 		
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getMassages()
+    {
+        return $this->massages;
+    }
+
+    /**
+     * @param mixed $massages
+     */
+    public function setMassages($massages)
+    {
+        $this->massages = $massages;
+    }
+
+
 
 }
 

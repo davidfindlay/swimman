@@ -18,6 +18,8 @@ class Meet {
 	private $status;
 	private $maxEvents;
 	private $mealsIncluded;
+    private $mealName;
+    private $massageFee;
 	
 	private $events;	// MeetEvents array object
 	
@@ -41,6 +43,8 @@ class Meet {
 		$this->status = $meetData[11];		
 		$this->maxEvents = $meetData[12];
 		$this->mealsIncluded = $meetData[13];
+        $this->mealName = $meetData[14];
+        $this->massageFee = $meetData[15];
 		
 		// Get list of event ids
 		$eventIds = $GLOBALS['db']->getAll("SELECT * FROM meet_events WHERE meet_id = '$this->id' 
@@ -82,8 +86,14 @@ class Meet {
 		$status = mysql_real_escape_string($this->status);
 		$maxEvents = mysql_real_escape_string($this->maxEvents);
 		$mealincluded = mysql_real_escape_string($this->mealsIncluded);
+        $mealName = $this->mealName;
 	
-		$insert = $GLOBALS['db']->query("INSERT INTO meet (meetname, startdate, enddate, deadline, contactname, contactemail, contactphone, meetfee, mealfee, location, status, maxevents, mealsincluded) VALUES ('$meetName', '$startDate', '$endDate', '$deadline', '$contactName', '$newContactEmailId', '$newContactPhoneId', '$meetFee', '$mealfee', '$location', '$status', '$maxEvents', '$mealsIncluded');");
+		$insert = $GLOBALS['db']->query("INSERT INTO meet (meetname, startdate, enddate, deadline, 
+                      contactname, contactemail, contactphone, meetfee, mealfee, location, status, 
+                      maxevents, mealsincluded, mealname) 
+                      VALUES ('$meetName', '$startDate', '$endDate', '$deadline', '$contactName', 
+                      '$newContactEmailId', '$newContactPhoneId', '$meetFee', '$mealfee', '$location', 
+                      '$status', '$maxEvents', '$mealsIncluded', '$mealName');");
 		db_checkerrors($insert);
 		
 		$meetId = mysql_insert_id();
@@ -376,6 +386,49 @@ class Meet {
 		return $meetYear . '-12-31';
 		
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getMealName()
+    {
+        return $this->mealName;
+    }
+
+    /**
+     * @param mixed $mealName
+     */
+    public function setMealName($mealName)
+    {
+        $this->mealName = $mealName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMassageFee()
+    {
+        return $this->massageFee;
+    }
+
+    /**
+     * @param mixed $massageFee
+     */
+    public function setMassageFee($massageFee)
+    {
+        $this->massageFee = $massageFee;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeadline()
+    {
+        return $this->deadline;
+    }
+
+
+
 }
 
 
