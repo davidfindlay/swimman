@@ -132,7 +132,13 @@ class plgUserMSAMember extends JPlugin
 		}
 		else
 		{
+
+            // Convert date format
+            $conv = explode("/", $value);
+            $value = $conv[2] . $conv[1] . $conv[0];
+
 			return JHtml::_('date', $value, null, null);
+
 		}
 	}
 
@@ -251,7 +257,7 @@ class plgUserMSAMember extends JPlugin
 				if (!empty($data['profile']['dob']))
 				{
 					$date = new JDate($data['profile']['dob']);
-					$data['profile']['dob'] = $date->format('Y-m-d');
+					$data['profile']['dob'] = $date->format('d/m/Y');
 				}
 
 				$db = JFactory::getDbo();
@@ -306,8 +312,11 @@ class plgUserMSAMember extends JPlugin
 					
  					$member = new Member();
  					$member->loadNumber($jMSANumber);
+
+                    $arrDob = explode("/", $jDob);
+                    $phpDob = $arrDob[2] . "-" . $arrDob[1] . "-" . $arrDob[0];
 					
- 					if ($member->getDob() == $jDob) {
+ 					if ($member->getDob() == $phpDob) {
 						
  						// We have a match, create link if it doesn't already exist
  						$member->linkJUser($userId, $jusername);
