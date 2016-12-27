@@ -28,4 +28,3 @@ defined('_JEXEC') or die('Restricted Access');
 		</td>
 	</tr>
 <?php endforeach; ?>
-
