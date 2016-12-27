@@ -1,5 +1,5 @@
-/includes/PayPal-PHP-SDK
-/includes/config.php
-/includes/aws
-/.settings/
-/.idea
+includes/PayPal-PHP-SDK
+includes/config.php
+includes/aws
+.settings
+.idea
