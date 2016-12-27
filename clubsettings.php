@@ -6,7 +6,7 @@ checkLogin();
 // Check for submit
 if (isset($_POST['settingSubmit'])) {
 	
-	$clubId = mysql_real_escape_string($_POST['clubId']);
+	$clubId = intval($_POST['clubId']);
 	$rowExists = $GLOBALS['db']->getRow("SELECT * FROM clubs_captains WHERE club_id = '$clubId' LIMIT 1;");
 	
 	$daysPrior = mysql_real_escape_string($_POST['clubdeadline']);

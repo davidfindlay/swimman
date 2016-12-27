@@ -15,8 +15,8 @@ function uploadToAws() {
 	// Instantiate the client.
 	$s3 = S3Client::factory(array(
     	'credentials' => array(
-        	'key'    => 'AKIAJ6XQXZLMJD27R3KQ',
-        	'secret' => '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',
+        	'key'    => '',
+        	'secret' => '',
     	)
 	));
 	

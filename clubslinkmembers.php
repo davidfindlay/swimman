@@ -6,12 +6,12 @@ checkLogin();
 if (isset($_POST['linksubmit'])) {
 	
 	// Link selected members to club
-	$linkClubId = mysql_real_escape_string($_POST['linkclub']);
+	$linkClubId = intval($_POST['linkclub']);
 	
 	foreach ($_POST['linkmembers'] as $l) {
 		
 		// Insert row to link member to club
-		$memberId = mysql_real_escape_string($l);
+		$memberId = intval($l);
 		
 		// Check if this member is already linked to this club
 		$linked = $GLOBALS['db']->getOne("SELECT id FROM member_clubs WHERE member_id = '$memberId' AND club_id = '$linkClubId';");
