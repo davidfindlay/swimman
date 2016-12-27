@@ -1,7 +1,8 @@
 <?php
 
-require 'PHPMailerAutoload.php';
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/PHPMailer/PHPMailerAutoload.php');
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/Club.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/Meet.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/MeetEntry.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/MeetEvent.php');
@@ -20,8 +21,12 @@ class ConfirmationEmail {
     /** @var int Entry ID of entry this email is about */
     private $entry_id;
 
+    private $entryObj;
+
     /** @var int Meet ID of the Meet this entry is for */
     private $meet_id;
+
+    private $meetObj;
 
     /** @var int Template ID used for email */
     private $template_id;
@@ -37,37 +42,42 @@ class ConfirmationEmail {
         $member->loadId($this->member_id);
         $memberEmail = $member->getEmail();
 
-        $meet = new Meet();
-        $meet->loadMeet($this->meet_id);
+        $this->meetObj = new Meet();
+        $this->meetObj->loadMeet($this->meet_id);
 
         $mail->isSMTP();
 
         $mail->isSMTP();                                      // Set mailer to use SMTP
-        $mail->Host = 'smtp1.example.com;smtp2.example.com';  // Specify main and backup SMTP servers
+        $mail->Host = $GLOBALS['smtphost'];  // Specify main and backup SMTP servers
         $mail->SMTPAuth = true;                               // Enable SMTP authentication
-        $mail->Username = 'user@example.com';                 // SMTP username
-        $mail->Password = 'secret';                           // SMTP password
+        $mail->Username = $GLOBALS['smtpuser'];                 // SMTP username
+        $mail->Password = $GLOBALS['smtppass'];                           // SMTP password
         $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-        $mail->Port = 587;                                    // TCP port to connect to
+        $mail->Port = 25;                                    // TCP port to connect to
 
         $mail->setFrom('recorder@mastersswimmingqld.org.au', 'MSQ Entry Manager');
         $mail->addAddress($memberEmail);     // Add a recipient
 
         $mail->isHTML(true);                                  // Set email format to HTML
 
-        $mail->Subject = "Your " . $meet->getName() . " Entry";
+        $mail->Subject = "Your " . $this->meetObj->getName() . " Entry";
 
-        $mail->Body = createBody();
+        $mail->Body = $this->createBody();
+
+        //$mail->SMTPDebug = 2;
 
         if(!$mail->send()) {
 
             //TODO log it
-            echo 'Message could not be sent.';
-            echo 'Mailer Error: ' . $mail->ErrorInfo;
+            //echo 'Message could not be sent.';
+            //echo 'Mailer Error: ' . $mail->ErrorInfo;
+
+            addlog("Entry Confirmation", "Unable to send", "Entry " . $this->entry_id . " " . $mail->ErrorInfo);
 
         } else {
 
-            echo 'Message has been sent';
+            //echo 'Message has been sent';
+            addlog("Entry Confirmation", "Email sent", "Entry " . $this->entry_id . " to " . $memberEmail);
 
         }
 
@@ -78,8 +88,58 @@ class ConfirmationEmail {
      */
     public function createBody() {
 
+        // Get the entry
+        $curEntry = new MeetEntry();
+        $curEntry->loadId($this->entry_id);
+
+        $member = new Member();
+        $member->loadId($this->member_id);
+
         $body = "<p>Thank you for your entry.</p>\n";
         $body .= "<p>Your entry is as follows:</p>\n";
+
+        $body .= "<p>\n";
+        $body .= "<strong>Date: </strong>";
+
+        $body .= date('l jS \of F Y', strtotime($this->meetObj->getStartDate()));
+
+        if ($this->meetObj->getDays() > 1) {
+
+            $body .= " - " . date('l jS \of F Y', strtotime($this->meetObj->getEndDate()));
+
+        }
+
+        $body .= "<br />\n";
+
+        $clubId = $curEntry->getClubId() ;
+        $club = new Club();
+        $club->load($clubId);
+        $clubName = $club->getName();
+
+        $meetName = $this->meetObj->getName();
+
+        $body .= "<strong>Swimming For: </strong>" . $clubName . "<br />\n";
+        $body .= "<strong>Membership Status: </strong>" . $member->getMembershipStatusText($curEntry->getClubId(), $this->meetObj->getStartDate()) . "<br />\n";
+        $body .= "<strong>Entry Status: </strong>\n";
+        $body .=  $curEntry->getStatus() . " - " . $curEntry->getStatusDesc() . "<br />\n";
+
+        if ($this->meetObj->getMealFee() > 0) {
+
+            $mealName = "Meal";
+
+            if ($this->meetObj->getMealName() != $mealName) {
+                $mealName = $this->meetObj->getMealName() . "s";
+            }
+
+            $body .= "<strong>$mealName: </strong>" . $curEntry->getNumMeals() . "<br />\n";
+
+        }
+
+        if ($this->meetObj->getMassageFee() > 0) {
+
+            $body .= "<strong>Massages: </strong>" . $curEntry->getMassages() . "<br />\n";
+
+        }
 
         $body .= "<h3>Individual Events</h3>\n";
         $body .= "<table border=\"1\">\n";
@@ -93,10 +153,6 @@ class ConfirmationEmail {
         $body .= "</tr>\n";
         $body .= "</thead>\n";
         $body .= "<tbody>\n";
-
-        // Get the entry
-        $curEntry = new MeetEntry();
-        $curEntry->loadId($this->entry_id);
 
         $eventArray = array_reverse($curEntry->getEvents());
         foreach ($eventArray as $v) {
@@ -137,11 +193,14 @@ class ConfirmationEmail {
         $body .= "<p>If you have made a payment online you will receive a separate ";
         $body .= "receipt email for this payment.</p>\n";
 
-        $body .= "<p>If any details of this entry are incorrect and need amendment, please ";
-        $body .= "log into the MSQ Members Community Entry Manager and go to the ";
-        $body .= "<strong>Entry Manager</strong> menu link and click <strong>My Entries</strong>. ";
-        $body .= "Select the meet at the top of the page and click <strong>View Entries</strong>. ";
-        $body .= "You can then select the <strong>Edit</strong> link to edit your entry. </p>\n";
+        $body .= "<p>If you need to make an amendment, please ";
+        $body .= "follow these instructions:</p>";
+        $body .= "<p><ol><li>Go to <a href=\"http://forum.mastersswimmingqld.org.au\">http://forum.mastersswimmingqld.org.au</a>.</li>";
+        $body .= "<li>Log in with your MSQ Members Community Entry Manager username and password.</li>";
+        $body .= "<li>Click on the <strong>Entry Manager</strong> menu link.</li> ";
+        $body .= "<li>Click <strong>My Entries</strong>.</li>";
+        $body .= "<li>Select the $meetName under <strong>Meet:</strong> and click <strong>View Entries</strong>.</li>";
+        $body .= "<li>Click the <strong>Edit</strong> link to edit your entry. </li></ol>\n";
 
         $body .= "<p>Thank you for your entry. If you require any assistance feel free to reply ";
         $body .= "to this email or email <a href=mailto:\"recorder@mastersswimmingqld.org.au\">";

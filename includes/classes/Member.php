@@ -718,7 +718,7 @@ class Member {
 	public function getEmail() {
 		
 		$emailAddress = $GLOBALS['db']->getOne("SELECT address FROM emails WHERE id = 
-				(SELECT email_id FROM member_emails WHERE member_id = '$this->id' LIMIT 1);");
+				(SELECT email_id FROM member_emails WHERE member_id = '$this->id' ORDER BY id DESC LIMIT 1);");
 		db_checkerrors($emailAddress);
 		
 		return $emailAddress;
@@ -768,25 +768,46 @@ class Member {
 		$result = $jdb->query("SET time_zone = '+10:00';");
 		db_checkerrors($result);
 		
-		$checkIfLink = $jdb->getRow("SELECT * FROM j_user_usergroup_map WHERE user_id = '$juserId' 
-				AND group_id = '$msqMemGroup';");
+		$checkIfLink = $jdb->getRow("SELECT * FROM j_user_usergroup_map WHERE user_id = ? 
+				AND group_id = ?;", array($juserId, $msqMemGroup));
 		db_checkerrors($checkIfLink);
 		
 		if (count($checkIfLink) == 0) {
 			
-			$insert = $jdb->query("INSERT INTO j_user_usergroup_map (user_id, group_id) VALUES ('$juserId', 
-					'$msqMemGroup');");
+			$insert = $jdb->query("INSERT INTO j_user_usergroup_map (user_id, group_id) VALUES (?, ?);",
+                array($juserId, $msqMemGroup));
 			db_checkerrors($insert);
 			
 			addlog("Joomla", "Member $this->id added to Joomla MSQ Members group");
 			
 		}
-		
+
+		// Get the user's email address
+        $jUserEmail = $jdb->getOne("SELECT email FROM j_users WHERE id = ?;", array($juserId));
+        db_checkerrors($jUserEmail);
+
+        // Add the email address
+        $this->addEmail(1, $jUserEmail);
+
 		$jdb->disconnect();
 		
 		return;
 		
 	}
+
+	public function addEmail($emailType, $emailaddress) {
+
+        $insert1 = $GLOBALS['db']->query("INSERT INTO emails (email_type, address) VALUES (?, ?);",
+            array($emailType, $emailaddress));
+        db_checkerrors($insert1);
+
+        $emailId = mysql_insert_id();
+
+        $insert2 = $GLOBALS['db']->query("INSERT INTO member_emails (member_id, email_id) VALUES (?, ?);",
+            array($this->member_id, $emailId));
+        db_checkerrors($insert2);
+
+    }
 	
 	// Unlinks a Joomla User
 	public function unlinkJUser($juserId) {

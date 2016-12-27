@@ -40,29 +40,41 @@ if (isset($_GET['logout'])) {
 
 function htmlHeaders($pageTitle) {
 	
-	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"DTD/xhtml1-frameset.dtd\">\n";
-	echo "<html>\n";
-	echo "<head>\n";
-	echo "<meta name=\"viewport\" content=\"width=device-width\">\n";
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/screen.css\">\n";
-	echo "<link rel=\"stylesheet\" href=\"style/jquery.sidr.light.css\" />\n";
-    echo "<link rel=\"stylesheet\" href=\"style/jquery-ui.min.css\" />\n";
-    echo "<link rel=\"stylesheet\" href=\"style/jquery-ui.structure.min.css\" />\n";
-    echo "<link rel=\"stylesheet\" href=\"style/jquery-ui.theme.min.css\" />\n";
-	echo "<link rel=\"stylesheet\" href=\"//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css\" />\n";
-	echo "<script src=\"/swimman/includes/jquery-3.1.1.min.js\"></script>\n";
-	echo "<script src=\"/swimman/includes/jquery-ui.min.js\"></script>\n";
-    echo "<script src=\"/swimman/includes/combobox.js\"></script>\n";
-	echo "<script src=\"/swimman/includes/jquery.sidr.min.js\"></script>\n";
-    echo "<script src=\"//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js\"></script>\n";
+    ?>
+    
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
+	<html>
+	<head>
+	<meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" type="text/css" href="style/screen.css">
+	<link rel="stylesheet" href="style/jquery.sidr.light.css" />
+    <link rel="stylesheet" href="style/jquery-ui.min.css" />
+    <link rel="stylesheet" href="style/jquery-ui.structure.min.css" />
+    <link rel="stylesheet" href="style/jquery-ui.theme.min.css" />
+	<link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+
+	<script src="/swimman/includes/jquery-3.1.1.min.js"></script>
+	<script src="/swimman/includes/jquery-ui.min.js"></script>
+    <script src="/swimman/includes/combobox.js"></script>
+	<script src="/swimman/includes/jquery.sidr.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+        <title>$pageTitle</title>
 	
-	echo "<title>$pageTitle</title>\n";
+	</head>
 	
-	echo "</head>\n";
-	
-	echo "<body>\n";
-	
-	?>
+	<body>
 	
 	<div id="headerbar">
 	

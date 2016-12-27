@@ -305,6 +305,12 @@ if ($meetPaymentDetails[0][3] == 1) {
     echo "<p>Payments for this meet are accepted via PayPal or Credit/Debit card. ";
     echo "Click Submit to lodge your entry and proceed to the checkout</p>\n";
 
+    echo "<p><strong>IMPORTANT NOTE WHEN PAYING BY CREDIT CARD: </strong> When entering ";
+    echo "customer details in the PayPal Checkout, the billing details of the Credit Card";
+    echo "or Debit Card holder should be entered! If you are paying with someone else's credit ";
+    echo "or debit card, that person should enter their own details in Paypal, not the entrant's ";
+    echo "details. See <a href=\"http://forum.mastersswimmingqld.org.au/e-ref/index.php?title=Nationals_2017_FAQ#Can_someone_else_pay_for_my_entry_using_their_credit_card.3F\">this FAQ for details</a>.</p>";
+
     echo "<p>\n";
     echo "<img src=\"https://www.paypalobjects.com/webstatic/en_US/i/btn/png/blue-pill-paypalcheckout-60px.png\" alt=\"PayPal Checkout\">";
     echo "</p>\n";

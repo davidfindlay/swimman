@@ -1,0 +1,83 @@
+/* app css stylesheet */
+
+body { padding-top: 50px; }
+
+#wrapper {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+#sidebar-wrapper {
+    height: 100%;
+    padding: 10px;
+    background-color: #222;
+    color: white;
+}
+
+#sidebar-wrapper #nav {
+    width: 95%;
+}
+
+#page-content-wrapper {
+    width: 75%;
+    padding: 15px;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.form-control {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+/* Force side menu open on screens other than mobile */
+@media screen and (min-width: 768px) {
+    #sidebar-wrapper.collapse{
+        display: block !important;
+    }
+}
+
+/* Animation for menu */
+.ng-hide-add {
+    transition: 0.5s linear all;
+}
+.ng-hide-remove {
+    transition: 0.5s linear all;
+}
+
+/*!* Mobile narrow view *!*/
+@media screen and (max-width: 767px) {
+    .row-offcanvas {
+        position: relative;
+        -webkit-transition: all 0.25s ease-out;
+        -moz-transition: all 0.25s ease-out;
+        transition: all 0.25s ease-out;
+    }
+    .row-offcanvas-right
+    .sidebar-offcanvas {
+        right: -41.6%;
+    }
+
+    .row-offcanvas-left
+    .sidebar-offcanvas {
+        left: -41.6%;
+    }
+    .row-offcanvas-right.active {
+        right: 41.6%;
+    }
+    .row-offcanvas-left.active {
+        left: 41.6%;
+    }
+    .sidebar-offcanvas {
+        position: absolute;
+        top: 0;
+        width: 41.6%;
+    }
+    #sidebar-wrapper {
+        padding-top:0;
+    }
+
+}

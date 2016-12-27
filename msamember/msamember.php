@@ -132,13 +132,7 @@ class plgUserMSAMember extends JPlugin
 		}
 		else
 		{
-
-            // Convert date format
-            $conv = explode("/", $value);
-            $value = $conv[2] . $conv[1] . $conv[0];
-
 			return JHtml::_('date', $value, null, null);
-
 		}
 	}
 
@@ -186,7 +180,7 @@ class plgUserMSAMember extends JPlugin
 			'dob',
 			'tos',
 		);
-		
+
 		$tosarticle = $this->params->get('register_tos_article');
 		$tosenabled = $this->params->get('register-require_tos', 0);
 
@@ -203,7 +197,7 @@ class plgUserMSAMember extends JPlugin
 		}
 
 		foreach ($fields as $field)
-		{	
+		{
 			// Case using the users manager in admin
 			if ($name == 'com_users.user')
 			{
@@ -257,7 +251,7 @@ class plgUserMSAMember extends JPlugin
 				if (!empty($data['profile']['dob']))
 				{
 					$date = new JDate($data['profile']['dob']);
-					$data['profile']['dob'] = $date->format('d/m/Y');
+					$data['profile']['dob'] = $date->format('Y-m-d');
 				}
 
 				$db = JFactory::getDbo();
@@ -273,7 +267,7 @@ class plgUserMSAMember extends JPlugin
 
 				$tuples = array();
 				$order	= 1;
-				
+
 				$jMSANumber = '';
 				$jDob = '';
 				$jClub = '';
@@ -281,7 +275,7 @@ class plgUserMSAMember extends JPlugin
 				foreach ($data['profile'] as $k => $v)
 				{
 					$tuples[] = '('.$userId.', '.$db->quote('profile.'.$k).', '.$db->quote(json_encode($v)).', '.$order++.')';
-					
+
 					// Populate values for check of link prospects
 					switch ($k) {
 						case 'dob':
@@ -294,7 +288,7 @@ class plgUserMSAMember extends JPlugin
 							$jClub = $v;
 							break;
 					}
-					
+
 				}
 
 				$db->setQuery('INSERT INTO #__user_profiles VALUES '.implode(', ', $tuples));
@@ -303,20 +297,17 @@ class plgUserMSAMember extends JPlugin
 				{
 					throw new Exception($db->getErrorMsg());
 				}
-				
+
 				$db->setQuery('SELECT username FROM #__users WHERE id = ' . $db->quote($userId));
 				$jusername = $db->loadResult();
-				
+
  				// Create Joomla to swimman link
  				if ($jMSANumber != "") {
-					
+
  					$member = new Member();
  					$member->loadNumber($jMSANumber);
 
-                    $arrDob = explode("/", $jDob);
-                    $phpDob = $arrDob[2] . "-" . $arrDob[1] . "-" . $arrDob[0];
-					
- 					if ($member->getDob() == $phpDob) {
+ 					if ($member->getDob() == $jDob) {
 						
  						// We have a match, create link if it doesn't already exist
  						$member->linkJUser($userId, $jusername);
