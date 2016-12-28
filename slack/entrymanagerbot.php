@@ -9,7 +9,7 @@
 require_once("../includes/setup.php");
 
 // Check for correct token
-$token = "e2IDEwzFh8oqIRpzDNe08mLN";
+$token = $GLOBALS['slackToken'];
 
 if ($_POST['token'] != $token) {
     addlog("Entry Manager Bot", "Invalid Token");

@@ -69,7 +69,7 @@ $amountPaid = 0;
 $paymentStatus = false;
 
 // Notify slack
-define('SLACK_WEBHOOK', 'https://hooks.slack.com/services/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');
+
 
 if ($jinput->get('success') == 'true') {
 
