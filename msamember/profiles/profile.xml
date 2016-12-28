@@ -24,8 +24,9 @@
 			/>
 			<field
 				name="dob"
-				type="calendar"
-				label="Date of Birth(YYYY-MM-DD):"
+				type="text"
+				label="Date of Birth(DD/MM/YYYY):"
+				format="%d/%m/%Y"
 				description="Please enter your date of birth."
 			/>
 			<field

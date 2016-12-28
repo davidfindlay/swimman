@@ -80,6 +80,21 @@ class plgUserMSAMember extends JPlugin
 				{
 					$k = str_replace('profile.', '', $v[0]);
 					$data->profile[$k] = json_decode($v[1], true);
+
+					if ($k == 'dob') {
+
+					    if (strpos($data->profile[$k], "/") !== false ) {
+
+					        $tempArr = explode('/', $data->profile[$k]);
+                            $data->profile[$k] = $tempArr[2] . '-' . $tempArr[1] . '-' . $tempArr[0];
+
+                        }
+
+					    $tempDate = new JDate($data->profile[$k]);
+                        $data->profile[$k] = $tempDate->format('d/m/Y');
+
+                    }
+
 					if ($data->profile[$k] === null)
 					{
 						$data->profile[$k] = $v[1];
@@ -91,9 +106,9 @@ class plgUserMSAMember extends JPlugin
 			{
 				JHtml::register('users.url', array(__CLASS__, 'url'));
 			}
-			if (!JHtml::isRegistered('users.calendar'))
+			if (!JHtml::isRegistered('users.dob'))
 			{
-				JHtml::register('users.calendar', array(__CLASS__, 'calendar'));
+				JHtml::register('users.dob', array(__CLASS__, 'dob'));
 			}
 			if (!JHtml::isRegistered('users.tos'))
 			{
@@ -124,7 +139,7 @@ class plgUserMSAMember extends JPlugin
 		}
 	}
 
-	public static function calendar($value)
+	public static function dob($value)
 	{
 		if (empty($value))
 		{
@@ -132,7 +147,14 @@ class plgUserMSAMember extends JPlugin
 		}
 		else
 		{
-			return JHtml::_('date', $value, null, null);
+            if (strpos($value, "/") !== false ) {
+
+                $tempArr = explode('/', $value);
+                $$value = $tempArr[2] . '-' . $tempArr[1] . '-' . $tempArr[0];
+
+            }
+
+		    return $value;
 		}
 	}
 
@@ -250,6 +272,14 @@ class plgUserMSAMember extends JPlugin
 				//Sanitize the date
 				if (!empty($data['profile']['dob']))
 				{
+
+                    if (strpos($data['profile']['dob'], "/") !== false ) {
+
+                        $tempArr = explode('/', $data['profile']['dob']);
+                        $data['profile']['dob'] = $tempArr[2] . '-' . $tempArr[1] . '-' . $tempArr[0];
+
+                    }
+
 					$date = new JDate($data['profile']['dob']);
 					$data['profile']['dob'] = $date->format('Y-m-d');
 				}
@@ -279,6 +309,14 @@ class plgUserMSAMember extends JPlugin
 					// Populate values for check of link prospects
 					switch ($k) {
 						case 'dob':
+
+                            if (strpos($v, "/") !== false ) {
+
+                                $tempArr = explode('/', $v);
+                                $v = $tempArr[2] . '-' . $tempArr[1] . '-' . $tempArr[0];
+
+                            }
+
 							$jDob = $v;
 							break;
 						case 'msanumber':
@@ -347,6 +385,49 @@ class plgUserMSAMember extends JPlugin
 				$this->_subject->setError($e->getMessage());
 				return false;
 			}
+
+			// Redirect to login
+            // Copied from Webemus Autologin
+            if ($isNew) {
+
+                $app = JFactory::getApplication();
+
+                // Set return URL
+                $item = $app->getMenu()->getItem($this->params->get('login'));
+
+                // Go to home page
+                $return = JUri::base();
+
+                if ($item) {
+                    $lang = '';
+
+                    if (JLanguageMultilang::isEnabled() && $item->language !== '*') {
+                        $lang = '&lang=' . $item->id . $lang;
+                    }
+
+                    $return = 'index.php?Itemid=' . $item->id . $lang;
+                }
+
+                // Set return URL
+                $app->setUserState('users.login.form.return', $return);
+
+                // Get log in options
+                $options = array();
+                $options['remember'] = false;
+                $options['return'] = JURI::base();
+
+                // Get the login credentials
+                $credentials = array();
+                $credentials['username'] = $data['username'];
+                $credentials['password'] = $data['password1'];
+
+                // Perform the log in
+                $app->login($credentials, $options);
+                $app->setUserState('users.login.form.data', array());
+                $app->redirect(JRoute::_($app->getUserState('users.login.form.return'), false));
+
+            }
+
 		}
 
 		return true;
