@@ -19,6 +19,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/MeetEntryEve
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/Member.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/MeetSelector.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/PayPalEntryPayment.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/ConfirmationEmail.php');
 
 // Get Joomla User ID
 $curJUser = JFactory::getUser();
@@ -189,6 +190,12 @@ if ($jinput->get('success') == 'true') {
     curl_close($c);
 
 }
+
+$emailConfirm = new ConfirmationEmail();
+$emailConfirm->setEntryId($entryId);
+$emailConfirm->setMeetId($meetId);
+$emailConfirm->setMemberId($memberId);
+$emailConfirm->send();
 	
 echo "<style type=\"text/css\">\n";
 echo "label {\n";

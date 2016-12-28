@@ -79,6 +79,10 @@ class ConfirmationEmail {
             //echo 'Message has been sent';
             addlog("Entry Confirmation", "Email sent", "Entry " . $this->entry_id . " to " . $memberEmail);
 
+            $insert = $GLOBALS['db']->query("INSERT INTO meet_entry_emails (meet_entry_id) 
+                          VALUES (?);", array($this->entry_id));
+            db_checkerrors($insert);
+
         }
 
     }
