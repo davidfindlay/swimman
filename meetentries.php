@@ -110,6 +110,10 @@ $(document).ready(function() {
         {
             "ajax" : "/swimman/json/meetentries.php?meet=" + meetId,
             "sAjaxDataProp": "",
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            dom: 'Bfrtip',
             "columns" : [
                 { "data" : function (json) {
                     var clubDetails;
