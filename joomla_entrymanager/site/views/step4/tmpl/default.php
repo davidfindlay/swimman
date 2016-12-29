@@ -190,12 +190,6 @@ if ($jinput->get('success') == 'true') {
     curl_close($c);
 
 }
-
-$emailConfirm = new ConfirmationEmail();
-$emailConfirm->setEntryId($entryId);
-$emailConfirm->setMeetId($meetId);
-$emailConfirm->setMemberId($memberId);
-$emailConfirm->send();
 	
 echo "<style type=\"text/css\">\n";
 echo "label {\n";

@@ -42,6 +42,15 @@ class ConfirmationEmail {
         $member->loadId($this->member_id);
         $memberEmail = $member->getEmail();
 
+        // Don't send email
+        if (empty($memberEmail)) {
+
+            addlog("Entry Confirmation", "No email address", "Entry " . $this->entry_id);
+
+            return false;
+
+        }
+
         $this->meetObj = new Meet();
         $this->meetObj->loadMeet($this->meet_id);
 

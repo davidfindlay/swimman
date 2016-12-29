@@ -1,5 +1,7 @@
 <?php
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/ConfirmationEmail.php');
+
 class MeetEntry {
 
 	private $id;
@@ -630,6 +632,12 @@ class MeetEntry {
                 }
 				
 			}
+
+            $emailConfirm = new ConfirmationEmail();
+            $emailConfirm->setEntryId($this->id);
+            $emailConfirm->setMeetId($this->meetId);
+            $emailConfirm->setMemberId($this->memberId);
+            $emailConfirm->send();
 
             addlog("Entry Manager", "Payment Received", "Member $this->memberId paid $paid for $this->id - status updated to Accepted");
 			
