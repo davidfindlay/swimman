@@ -259,11 +259,7 @@ echo "<br />\n";
 
 if ($meetDet->getMealFee() > 0) {
 
-    $mealname = "Meal";
-
-    if ($meetDet->getMealName() != $mealname) {
-        $mealname = $meetDet->getMealName() . "s";
-    }
+    $mealname = $meetDet->getMealName();
 
     echo "<label>$mealname:</label>\n";
     echo $entry->getNumMeals();

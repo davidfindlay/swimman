@@ -149,13 +149,7 @@ echo "<fieldset>\n";
 
 if ($meetDetails->getMealFee() > 0) {
 
-    $mealName = "Meals";
-
-    if ($meetDetails->getMealName() != '') {
-
-        $mealName = $meetDetails->getMealName() . "s";
-
-    }
+    $mealName = $meetDetails->getMealName();
 
 	echo "<p>\n";
 	echo "<label for=\"meals\">$mealName: </label>\n";

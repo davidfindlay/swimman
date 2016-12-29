@@ -303,11 +303,7 @@ foreach ($meetEntries as $e) {
 
     if ($curMeet->getMealFee() > 0) {
 
-        $mealName = "Meal";
-
-        if ($curMeet->getMealName() != $mealName) {
-            $mealName = $curMeet->getMealName() . "s";
-        }
+        $mealName = $curMeet->getMealName();
 
         echo "<label>$mealName:</label>" . $curEntry->getNumMeals() . "<br />\n";
 

@@ -99,21 +99,21 @@ echo "<h1>Entry Details</h1>\n";
 
 echo "<h3>Entrant Details</h3>\n";
 
-echo "<form method=\"post\" action=\"meetentry.php?entry=$entryId\">\n";
+echo "<form method=\"post\" class=\"form-horizontal\" action=\"meetentry.php?entry=$entryId\">\n";
 echo "<input type=\"hidden\" name=\"entryId\" value=\"$entryId\" />\n";
 
 echo "<h3>Member Details</h3>\n";
 echo "<p>\n";
-echo "<label>Name: </label>$psMemberName<br />\n";
+echo "<label class=\"control-label\">Name: </label>$psMemberName<br />\n";
 
-echo "<label>Club: </label>$psClubName($psClubCode)<br />\n";
+echo "<label class=\"control-label\">Club: </label>$psClubName($psClubCode)<br />\n";
 echo "\n";
 
-echo "<label>MSA Number: </label>$psMSANumber<br />\n";
+echo "<label class=\"control-label\">MSA Number: </label>$psMSANumber<br />\n";
 
-echo "<label>Date of Birth: </label>$psMemberDob<br />\n";
+echo "<label class=\"control-label\">Date of Birth: </label>$psMemberDob<br />\n";
 
-echo "<label>Gender: </label>\n";
+echo "<label class=\"control-label\">Gender: </label>\n";
 
 if ($psMemberGender == "M") {
 	
@@ -127,8 +127,8 @@ if ($psMemberGender == "M") {
 
 echo "<br />\n";
 
-echo "<label>Age Group: </label>$psAgeGroup<br />\n";
-echo "<label>Membership Status: </label>\n";
+echo "<label class=\"control-label\">Age Group: </label>$psAgeGroup<br />\n";
+echo "<label class=\"control-label\">Membership Status: </label>\n";
 
 if($curMember->getMembershipStatus($clubId)) {
 	
@@ -159,7 +159,7 @@ if($curMember->getMembershipStatus($clubId)) {
 echo "<br />\n";
 
 
-echo "<label>Membership End Date: </label>\n";
+echo "<label class=\"control-label\">Membership End Date: </label>\n";
 
 echo $curMember->getMembershipEnd($clubId);
 	
@@ -168,10 +168,10 @@ echo "</p>\n";
 echo "<h3>Meet Details:</h3>\n";
 
 echo "<p>\n";
-echo "<label>Meet Name: </label>\n";
+echo "<label class=\"control-label\">Meet Name: </label>\n";
 echo $curMeet->getName();
 echo "<br />\n";
-echo "<label>Meet Date: </label>\n";
+echo "<label class=\"control-label\">Meet Date: </label>\n";
 echo $curMeet->getStartDate();
 
 if ($curMeet->getEndDate() != "0000-00-00") {
@@ -204,12 +204,12 @@ if (isset($entryDetails)) {
 echo "<h3>Entry Status</h3>\n";
 
 echo "<p>\n";
-echo "<label>Entry Id:</label>\n";
+echo "<label class=\"control-label\">Entry Id:</label>\n";
 echo $entryId;
 echo "</p>\n";
 
 echo "<p>\n";
-echo "<label>Status:</label>\n";
+echo "<label class=\"control-label\">Status:</label>\n";
 
 $entryStatuses = $GLOBALS['db']->getAll("SELECT * FROM meet_entry_status_codes;");
 db_checkerrors($entryStatuses);

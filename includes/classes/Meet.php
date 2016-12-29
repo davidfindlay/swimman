@@ -85,15 +85,15 @@ class Meet {
 		$location = mysql_real_escape_string($this->location);
 		$status = mysql_real_escape_string($this->status);
 		$maxEvents = mysql_real_escape_string($this->maxEvents);
-		$mealincluded = mysql_real_escape_string($this->mealsIncluded);
+		$mealIncluded = mysql_real_escape_string($this->mealsIncluded);
         $mealName = $this->mealName;
 	
 		$insert = $GLOBALS['db']->query("INSERT INTO meet (meetname, startdate, enddate, deadline, 
                       contactname, contactemail, contactphone, meetfee, mealfee, location, status, 
                       maxevents, mealsincluded, mealname) 
                       VALUES ('$meetName', '$startDate', '$endDate', '$deadline', '$contactName', 
-                      '$newContactEmailId', '$newContactPhoneId', '$meetFee', '$mealfee', '$location', 
-                      '$status', '$maxEvents', '$mealsIncluded', '$mealName');");
+                      '$newContactEmailId', '$newContactPhoneId', '$meetFee', '$mealFee', '$location', 
+                      '$status', '$maxEvents', '$mealIncluded', '$mealName');");
 		db_checkerrors($insert);
 		
 		$meetId = mysql_insert_id();
@@ -388,11 +388,23 @@ class Meet {
 	}
 
     /**
-     * @return mixed
+     * If a meal has been named, for instance "Presentation Dinner" return
+     * that name. Otherwise just return "Meals".
+     *
+     * @return string name of the meal associated with this meet
      */
     public function getMealName()
     {
-        return $this->mealName;
+
+        if (empty($this->mealName)) {
+
+            return "Meals";
+
+        } else {
+
+            return $this->mealName;
+
+        }
     }
 
     /**

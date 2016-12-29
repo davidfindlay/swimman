@@ -435,30 +435,43 @@ class EntryManagerController extends JController {
                 $sEntryData = serialize($entryData);
                 $sess->set('emEntryData', $sEntryData);
 
-                addlog("test", "newCost = $newCost - alreadyPaid = $alreadyPaid - differentCost = $differentCost");
+                //addlog("test", "newCost = $newCost - alreadyPaid = $alreadyPaid - differentCost = $differentCost");
 
-                if ($differentCost > 0) {
+                $meetId = $sess->get('emMeetId');
+                $meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE
+                            meet_id = ?;", array($meetId));
+                db_checkerrors($meetPaymentDetails);
 
-                    // Send to paypal
-                    $pp = new PayPalEntryPayment();
-                    $pp->addItem("Meet Entry Amendment", 1, $differentCost);
+                // Check if only paypal payment available
+                if ($meetPaymentDetails[0][3] == 1) {
 
-                    $approvalUrl = $pp->processPayment();
+                    if ($differentCost > 0) {
 
-                    $app = JFactory::getApplication();
-                    $app->redirect($approvalUrl, "Redirecting to PayPal", $msgType = 'message');
+                        // Send to paypal
+                        $pp = new PayPalEntryPayment();
+                        $pp->addItem("Meet Entry Amendment", 1, $differentCost);
 
+                        $approvalUrl = $pp->processPayment();
 
-                } elseif ($newCost < $oldCost) {
+                        $app = JFactory::getApplication();
+                        $app->redirect($approvalUrl, "Redirecting to PayPal", $msgType = 'message');
 
-                    // Raise refund
-                    $sess->set("emRefundAmount", $differentCost);
+                    } elseif ($newCost < $oldCost) {
 
-                    JRequest::setVar('view', 'step4', 'method', true);
+                        // Raise refund
+                        $sess->set("emRefundAmount", $differentCost);
+
+                        JRequest::setVar('view', 'step4', 'method', true);
+
+                    } else {
+
+                        JRequest::setVar('view', 'step4', 'method', true);
+
+                    }
 
                 } else {
 
-                    JRequest::setVar('view', 'step4', 'method', true);
+                    JRequest::setVar('view', 'entrymanager', 'method', true);
 
                 }
 
@@ -1198,7 +1211,6 @@ class EntryManagerController extends JController {
 				$rEntry->setClub($clubId);
 				$rEntry->setEvent($eventId);
 				$rEntry->setLetter($letter);
-				$rEntry->setSeedTime(sw_timeToSecs($st_1));
 
 				// Check that each swimmer has an individual entry
 				if ($swimmer1 != "") {
