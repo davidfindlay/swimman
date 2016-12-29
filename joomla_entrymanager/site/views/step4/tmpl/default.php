@@ -20,6 +20,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/Member.php')
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/MeetSelector.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/PayPalEntryPayment.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/ConfirmationEmail.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/SlackNotification.php');
 
 // Get Joomla User ID
 $curJUser = JFactory::getUser();
@@ -87,25 +88,17 @@ if ($jinput->get('success') == 'true') {
 
     if ($sess->get('emEntryEdit') == "true") {
 
-        $message = array('payload' => json_encode(
-            array('text' =>
-                "Edited entry to $meetName by $entrantName for $clubName - Paid \$$amountPaid.")));
+        $message = "Edited entry to $meetName by $entrantName for $clubName - Paid \$$amountPaid.";
 
     } else {
 
-        $message = array('payload' => json_encode(
-            array('text' =>
-                "New entry to $meetName by $entrantName for $clubName - Paid \$$amountPaid.")));
+        $message = "New entry to $meetName by $entrantName for $clubName - Paid \$$amountPaid.";
 
     }
 
-    $c = curl_init(SLACK_WEBHOOK);
-    curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($c, CURLOPT_POST, true);
-    curl_setopt($c, CURLOPT_POSTFIELDS, $message);
-    curl_exec($c);
-    curl_close($c);
+    $slack = new SlackNotification();
+    $slack->setMessage($message);
+    $slack->send();
 
     $paymentStatus = true;
 
@@ -116,24 +109,17 @@ if ($jinput->get('success') == 'true') {
 
     if ($sess->get('emEntryEdit') == "true") {
 
-        $message = array('payload' => json_encode(
-            array('text' =>
-                "Edited entry to $meetName by $entrantName for $clubName - Payment unsuccessful - Paid \$$amountPaid.")));
+        $message = "Edited entry to $meetName by $entrantName for $clubName - Payment unsuccessful - Paid \$$amountPaid.";
 
     } else {
 
-        $message = array('payload' => json_encode(
-            array('text' =>
-                "New entry to $meetName by $entrantName for $clubName - Payment unsuccessful - Paid \$$amountPaid.")));
+        $message = "New entry to $meetName by $entrantName for $clubName - Payment unsuccessful - Paid \$$amountPaid.";
 
     }
-    $c = curl_init(SLACK_WEBHOOK);
-    curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($c, CURLOPT_POST, true);
-    curl_setopt($c, CURLOPT_POSTFIELDS, $message);
-    curl_exec($c);
-    curl_close($c);
+
+    $slack = new SlackNotification();
+    $slack->setMessage($message);
+    $slack->send();
 
 } else {
 
@@ -146,29 +132,23 @@ if ($jinput->get('success') == 'true') {
 
         if ($refundAmount > 0) {
 
-            $message = array('payload' => json_encode(
-                array('text' =>
-                    "Edited entry to $meetName by $entrantName for $clubName - Refund of \$$refundAmount required.")));
+            $message = "Edited entry to $meetName by $entrantName for $clubName - Refund of \$$refundAmount required.";
 
         } else {
 
-            $message = array('payload' => json_encode(
-                array('text' =>
-                    "Edited entry to $meetName by $entrantName for $clubName - No payment required.")));
+            $message = "Edited entry to $meetName by $entrantName for $clubName - No payment required.";
 
         }
 
     } else {
 
-        $message = array('payload' => json_encode(
-            array('text' =>
-                "New entry to $meetName by $entrantName for $clubName - No payment required.")));
+        $message = "New entry to $meetName by $entrantName for $clubName - No payment required.";
 
     }
 
     $entry->calcCost();
 
-    addlog("test", "Step 4 no payment", $entry->getPaid() . " >= " . $entry->getCost());
+    //addlog("test", "Step 4 no payment", $entry->getPaid() . " >= " . $entry->getCost());
     if ($entry->getPaid() >= $entry->getCost()) {
 
         // Entry is already paid
@@ -181,13 +161,9 @@ if ($jinput->get('success') == 'true') {
 
     }
 
-    $c = curl_init(SLACK_WEBHOOK);
-    curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($c, CURLOPT_POST, true);
-    curl_setopt($c, CURLOPT_POSTFIELDS, $message);
-    curl_exec($c);
-    curl_close($c);
+    $slack = new SlackNotification();
+    $slack->setMessage($message);
+    $slack->send();
 
 }
 	

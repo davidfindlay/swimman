@@ -3,3 +3,4 @@ includes/config.php
 includes/aws
 .settings
 .idea
+config.php
