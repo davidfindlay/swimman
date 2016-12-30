@@ -138,11 +138,7 @@ class ConfirmationEmail {
 
         if ($this->meetObj->getMealFee() > 0) {
 
-            $mealName = "Meal";
-
-            if ($this->meetObj->getMealName() != $mealName) {
-                $mealName = $this->meetObj->getMealName() . "s";
-            }
+            $mealName = $this->meetObj->getMealName();
 
             $body .= "<strong>$mealName: </strong>" . $curEntry->getNumMeals() . "<br />\n";
 
