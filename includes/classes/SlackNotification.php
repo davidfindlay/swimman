@@ -46,9 +46,10 @@ class SlackNotification {
 
     public function send() {
 
-        $message = "payload=" . json_encode(
-            array('text' =>
-                $this->message));
+        $jsonPayload = array('text' =>
+            $this->message);
+
+        $message = "payload=" . json_encode($jsonPayload);
 
         $c = curl_init($GLOBALS['slackWebhook']);
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
@@ -57,7 +58,21 @@ class SlackNotification {
         curl_setopt($c, CURLOPT_POSTFIELDS, $message);
         $result = curl_exec($c);
 
-        print_r($message);
+        // If a channel has been set for this notification, also send to that channel
+        if (!empty($this->channel)) {
+
+            $jsonPayload['channel'] = $this->channel;
+
+            $message = "payload=" . json_encode($jsonPayload);
+
+            $c = curl_init($GLOBALS['slackWebhook']);
+            curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($c, CURLOPT_POST, true);
+            curl_setopt($c, CURLOPT_POSTFIELDS, $message);
+            $result = curl_exec($c);
+
+        }
 
         if (curl_error($c)) {
 
