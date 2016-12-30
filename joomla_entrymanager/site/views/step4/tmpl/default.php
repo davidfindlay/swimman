@@ -98,6 +98,7 @@ if ($jinput->get('success') == 'true') {
 
     $slack = new SlackNotification();
     $slack->setMessage($message);
+    $slack->setChannel("#nationals2017");
     $slack->send();
 
     $paymentStatus = true;
@@ -119,6 +120,7 @@ if ($jinput->get('success') == 'true') {
 
     $slack = new SlackNotification();
     $slack->setMessage($message);
+    $slack->setChannel("#nationals2017");
     $slack->send();
 
 } else {
@@ -163,6 +165,7 @@ if ($jinput->get('success') == 'true') {
 
     $slack = new SlackNotification();
     $slack->setMessage($message);
+    $slack->setChannel("#nationals2017");
     $slack->send();
 
 }
