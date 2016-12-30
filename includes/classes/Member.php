@@ -67,7 +67,7 @@ class Member {
 	// Load Member by MSA Number
 	public function loadNumber($memberNumber) {
 		
-		$this->number = intval($memberNumber);
+		$this->number = $memberNumber;
 		
 		$memberDetails = $GLOBALS['db']->getRow("SELECT * FROM member WHERE number = ?;",
 			array($this->number));
@@ -804,8 +804,10 @@ class Member {
         $emailId = mysql_insert_id();
 
         $insert2 = $GLOBALS['db']->query("INSERT INTO member_emails (member_id, email_id) VALUES (?, ?);",
-            array($this->member_id, $emailId));
+            array($this->id, $emailId));
         db_checkerrors($insert2);
+
+        addlog("Member Class", "Added email address", "Added email $emailaddress to member " . $this->id . ".");
 
     }
 	
