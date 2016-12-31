@@ -279,28 +279,13 @@ if (isset($_GET['linkjuid'])) {
 } else {
 
 echo "<h1>Joomla User Links</h1>\n";
-$interval = 20;
 
-// Get list of users from Joomla
-if (!isset($_GET['start'])) {
-	
-	$offset = 0;
-	
-} else {
-	
-	$offset = intval($_GET['start']);
-	
-}
 
-$jUsersCount = $jdb->getOne("SELECT count(*) FROM j_users ORDER BY registerDate DESC;");
-db_checkerrors($jUsersCount);
-
-$jUsers = $jdb->getAll("SELECT * FROM j_users ORDER BY registerDate DESC LIMIT ? OFFSET ?;", 
-	array($interval, $offset));
+$jUsers = $jdb->getAll("SELECT * FROM j_users;");
 db_checkerrors($jUsers);
 
-echo "<table width=\"100%\">\n";
-echo "<thead class=\"list\">\n";
+echo "<table width=\"100%\" id=\"jusertable\" class='display'>\n";
+echo "<thead>\n";
 echo "<tr>\n";
 echo "<th>\n";
 echo "Username\n";
@@ -317,6 +302,9 @@ echo "</th>\n";
 echo "<th>\n";
 echo "Club\n";
 echo "</th>\n";
+    echo "<th>\n";
+    echo "Registered Date:\n";
+    echo "</th>\n";
 echo "<th>\n";
 echo "Link Status\n";
 echo "</th>\n";
@@ -335,6 +323,7 @@ if (isset($jUsers)) {
 		$jId = $j[0];
 		$jName = $j[1];
 		$jUsername = $j[2];
+        $registeredDate = $j[8];
 		
 		// Get this user's profile items
 		$jDob = $jdb->getOne("SELECT profile_value FROM j_user_profiles WHERE user_id = '$jId' AND profile_key = 'profile.dob';");
@@ -352,7 +341,7 @@ if (isset($jUsers)) {
 		$memberId = $GLOBALS['db']->getOne("SELECT member_id FROM member_msqsite WHERE joomla_uid = '$jId';");
 		db_checkerrors($memberId);
 	
-		echo "<tr class=\"list\">\n";
+		echo "<tr>\n";
 		echo "<td>\n";
 		echo $jUsername;
 		echo "</td>\n";
@@ -368,6 +357,9 @@ if (isset($jUsers)) {
 		echo "<td>\n";
 		echo $jClub;
 		echo "</td>\n";
+        echo "<td>\n";
+        echo $registeredDate;
+        echo "</td>\n";
 		echo "<td>\n";
 		
 		if (isset($memberId)) {
@@ -447,6 +439,20 @@ echo "</p>\n";
 }
 
 echo "</div>\n";   // Main div
+
+?>
+
+<script>
+
+$(document).ready(function() {
+
+    $('#jusertable').DataTable();
+
+});
+
+</script>
+
+<?php
 
 htmlFooters();
 

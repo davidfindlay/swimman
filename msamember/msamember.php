@@ -354,30 +354,7 @@ class plgUserMSAMember extends JPlugin
 						
  					}
 					
- 				} else {
-					
-					// Get Joomla user details
-					
-// 					$db->setQuery("SELECT name FROM #__users WHERE id = '$userId';");
-// 					$jName = $db->loadResult();
-					
-// 					$member = new Member();
-					
-// 					list($tFirst, $tLast) = explode(' ', $jName);
-// 					$jClubId = $GLOBALS['db']->getOne("SELECT id FROM clubs WHERE code = '$jClub' OR
-// 							MATCH (clubname) AGAINST ('$jClub') LIMIT 1;");
-// 					db_checkerrors($jClubId);
-					
-// 					if ($member->find($tFirst, $tLast, $jDob, $jClubId)) {
-						
-// 						// We have a match, create link
-// 						//$member->linkJUser($userId, $jusername);
-// 						addlog("Joomla", "New Joomla Signup", "Name/dob signup with MSA Number: " . $jMSANumber);
-						
-// 					}
-					
  				}
-				
 
 			}
 			catch (JException $e)

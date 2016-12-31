@@ -146,15 +146,14 @@ class MeetEntry {
 		
 			$insert = $GLOBALS['db']->query("INSERT INTO meet_entries (meet_id, member_id, 
 					age_group_id, club_id, meals, medical, cost, notes, massages) VALUES
-					('$this->meetId', '$this->memberId', '$this->ageGroupId', '$this->clubId',
-					'$this->meals', '$this->medical', '$this->cost', '$this->notes', '$this->massages');");
+					(?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                array($this->meetId, $this->memberId, $this->ageGroupId, $this->clubId,
+                    $this->meals, $this->medical, $this->cost, $this->notes, $this->massages));
 			db_checkerrors($insert);
 			
 			$this->id = mysql_insert_id();
 			
-			$insert = $GLOBALS['db']->query("INSERT INTO meet_entry_statuses (entry_id, code) VALUES
-					('$this->id', '$this->status');");
-			db_checkerrors($insert);
+			$this->updateStatus();
 			
 			if (count($this->events) > 0) {
 			
@@ -166,10 +165,24 @@ class MeetEntry {
 				}
 				
 			}
+
+			$meetDetails = new Meet();
+            $meetDetails->loadMeet($this->meetId);
+            $clubDetails = new Club();
+            $clubDetails->load($this-clubId);
+
+			$message = "New entry created to " . $meetDetails . " by " . $memDetails->getFullname() . " for "
+                . $clubDetails->getName() . ".";
+
+            $slack = new SlackNotification();
+            $slack->setMessage($message);
+            $slack->send();
+
+            addlog("MeetEntry.php", "Created Entry", "Created entry $this->id for meet $this->meetId", "");
 			
 		} else {
 			
-			addlog("MeetEntry.php", "MeetId Unset!", "meetId was 0 when trying to insert meet entry", "");
+			addlog("MeetEntry.php", "MeetId Unset!", "meetId was 0 when trying to insert meet entry");
 			
 		}
 	
@@ -362,6 +375,18 @@ class MeetEntry {
 			db_checkerrors($updateCan);
 			
 		}
+
+		// As status has been updated, send a confirmation
+
+        if ($this->status == 2) {
+
+            $emailConfirm = new ConfirmationEmail();
+            $emailConfirm->setEntryId($this->id);
+            $emailConfirm->setMeetId($this->meetId);
+            $emailConfirm->setMemberId($this->memberId);
+            $emailConfirm->send();
+
+        }
 		
 	}
 	
@@ -632,12 +657,6 @@ class MeetEntry {
                 }
 				
 			}
-
-            $emailConfirm = new ConfirmationEmail();
-            $emailConfirm->setEntryId($this->id);
-            $emailConfirm->setMeetId($this->meetId);
-            $emailConfirm->setMemberId($this->memberId);
-            $emailConfirm->send();
 
             addlog("Entry Manager", "Payment Received", "Member $this->memberId paid $paid for $this->id - status updated to Accepted");
 			
