@@ -127,13 +127,13 @@ if (isset($_POST['logname'])) {
 		$logId = mysql_real_escape_string($_POST['logname']);
 
 		$logs = $GLOBALS['db']->getAll("SELECT * FROM log, log_type WHERE log.log_type = '$logId' 
-			AND log.log_type = log_type.id $periodClause ORDER BY time DESC;");
+			AND log.log_type = log_type.id $periodClause ORDER BY time DESC, log.id DESC;");
 		db_checkerrors($logs);
 	
 	} else {
 		
 		$logs = $GLOBALS['db']->getAll("SELECT * FROM log, log_type
-				WHERE log.log_type = log_type.id $periodClause ORDER BY time DESC;");
+				WHERE log.log_type = log_type.id $periodClause ORDER BY time DESC, log.id DESC;");
 		db_checkerrors($logs);
 		
 	}
@@ -141,7 +141,7 @@ if (isset($_POST['logname'])) {
 } else {
 
 	$logs = $GLOBALS['db']->getAll("SELECT * FROM log, log_type 
-			WHERE log.log_type = log_type.id $periodClause ORDER BY time DESC;");
+			WHERE log.log_type = log_type.id $periodClause ORDER BY time DESC, log.id DESC;");
 	db_checkerrors($logs);
 
 }
@@ -184,7 +184,7 @@ foreach ($logs as $l) {
 	echo "<tr class=\"list\">\n";
 	
 	echo "<td>\n";
-	echo "$lTime\n";
+	echo "$lTime - $lId\n";
 	echo "</td>\n";
 	
 	echo "<td>\n";
