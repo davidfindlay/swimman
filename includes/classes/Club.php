@@ -90,6 +90,35 @@ class Club {
 		return $this->code;
 		
 	}
+
+    /**
+     * @param mixed $code
+     */
+    public function setCode($code) {
+
+        $this->code = $code;
+    }
+
+    /**
+     * @param mixed $clubname
+     */
+    public function setClubname($clubname) {
+
+        $this->clubname = $clubname;
+    }
+
+	public function store() {
+
+        $insert = $GLOBALS['db']->query("INSERT INTO clubs (code, clubname) 
+                  VALUES (?, ?);",
+            array($this->code, $this->clubname));
+        db_checkerrors($insert);
+
+        $this->id = mysql_insert_id();
+
+        return $this->id();
+
+    }
 	
 }
 
