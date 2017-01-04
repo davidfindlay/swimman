@@ -20,6 +20,7 @@ class Meet {
 	private $mealsIncluded;
     private $mealName;
     private $massageFee;
+    private $programFee;
 	
 	private $events;	// MeetEvents array object
 	
@@ -45,6 +46,7 @@ class Meet {
 		$this->mealsIncluded = $meetData[13];
         $this->mealName = $meetData[14];
         $this->massageFee = $meetData[15];
+        $this->programFee = $meetData[16];
 		
 		// Get list of event ids
 		$eventIds = $GLOBALS['db']->getAll("SELECT * FROM meet_events WHERE meet_id = '$this->id' 
@@ -437,6 +439,22 @@ class Meet {
     public function getDeadline()
     {
         return $this->deadline;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProgramFee() {
+
+        return $this->programFee;
+    }
+
+    /**
+     * @param mixed $programFee
+     */
+    public function setProgramFee($programFee) {
+
+        $this->programFee = $programFee;
     }
 
 

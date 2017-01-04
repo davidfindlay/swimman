@@ -12,6 +12,7 @@ class MeetEntry {
 	private $ageGroupId;
 	private $meals;
     private $massages;
+    private $programs;
 	private $medical;
 	private $cost;
 	private $notes;
@@ -938,6 +939,22 @@ class MeetEntry {
     public function setMassages($massages)
     {
         $this->massages = $massages;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrograms() {
+
+        return $this->programs;
+    }
+
+    /**
+     * @param mixed $programs
+     */
+    public function setPrograms($programs) {
+
+        $this->programs = $programs;
     }
 
 
