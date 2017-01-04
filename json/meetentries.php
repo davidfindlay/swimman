@@ -28,6 +28,7 @@ if (isset($meetId)) {
     clubs.clubname,
     meet_entries.meals,
     meet_entries.massages,
+    meet_entries.programs,
     CONCAT('$', FORMAT(meet_entries.cost, 2)) as cost,
     CONCAT('$', FORMAT((SELECT sum(amount) FROM meet_entry_payments WHERE entry_id = meet_entries.id), 2)) AS paid,
     meet_entries.cancelled,

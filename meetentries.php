@@ -71,6 +71,9 @@ sidebarMenu();
                     Massages:
                 </th>
                 <th>
+                    Programmes:
+                </th>
+                <th>
                     Cost:
                 </th>
                 <th>
@@ -130,6 +133,7 @@ $(document).ready(function() {
                 { "data" : "entries", className : "dt-center"},
                 { "data" : "meals", className : "dt-center"},
                 { "data" : "massages", className : "dt-center"},
+                { "data" : "programs", className : "dt-center"},
                 { "data" : "cost", className : "dt-right"},
                 { "data" : "paid", className : "dt-right"},
                 { "data" : function (json) {
