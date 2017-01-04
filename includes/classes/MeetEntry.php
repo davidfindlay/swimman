@@ -1,6 +1,7 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/ConfirmationEmail.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/SlackNotification.php');
 
 class MeetEntry {
 
@@ -72,6 +73,7 @@ class MeetEntry {
 			$this->cost = $entryDetails[6];
 			$this->notes = $entryDetails[7];
             $this->massages = $entryDetails[10];
+            $this->programs = $entryDetails[11];
 				
 			$eventEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_events_entries WHERE meet_entry_id = '$this->id'
 					ORDER BY event_id DESC;");
@@ -113,6 +115,7 @@ class MeetEntry {
 			$this->notes = $entryDetails[7];
 
             $this->massages = $entryDetails[10];
+            $this->programs = $entryDetails[11];
 			
 			$eventEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_events_entries WHERE meet_entry_id = '$this->id'
 					ORDER BY id DESC;");
@@ -146,10 +149,11 @@ class MeetEntry {
 		if (isset($this->meetId) && $this->meetId != 0 && isset($this->clubId) && $this->clubId != 0) {
 		
 			$insert = $GLOBALS['db']->query("INSERT INTO meet_entries (meet_id, member_id, 
-					age_group_id, club_id, meals, medical, cost, notes, massages) VALUES
-					(?, ?, ?, ?, ?, ?, ?, ?, ?);",
+					age_group_id, club_id, meals, medical, cost, notes, massages, programs) VALUES
+					(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
                 array($this->meetId, $this->memberId, $this->ageGroupId, $this->clubId,
-                    $this->meals, $this->medical, $this->cost, $this->notes, $this->massages));
+                    $this->meals, $this->medical, $this->cost, $this->notes, $this->massages,
+                    $this->programs));
 			db_checkerrors($insert);
 			
 			$this->id = mysql_insert_id();
@@ -170,9 +174,9 @@ class MeetEntry {
 			$meetDetails = new Meet();
             $meetDetails->loadMeet($this->meetId);
             $clubDetails = new Club();
-            $clubDetails->load($this-clubId);
+            $clubDetails->load($this->clubId);
 
-			$message = "New entry created to " . $meetDetails . " by " . $memDetails->getFullname() . " for "
+			$message = "New entry to " . $meetDetails->getName() . " by " . $memDetails->getFullname() . " for "
                 . $clubDetails->getName() . ".";
 
             $slack = new SlackNotification();
@@ -916,7 +920,7 @@ class MeetEntry {
         db_checkerrors($update);
 
         addlog("Meet Entry", "Update extras", "Updated meals to " . $this->meals . " and massages to " .
-            $this->massages . " and programs to " . $this->programs . "for " . $this->id . ".");
+            $this->massages . " and programs to " . $this->programs . " for " . $this->id . ".");
 
     }
 	
