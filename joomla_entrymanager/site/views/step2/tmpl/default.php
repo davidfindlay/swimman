@@ -167,17 +167,20 @@ if ($meetDetails->getMealFee() > 0) {
 	}
 	
 	echo "<input type=\"number\" name=\"numMeals\" style=\"width: 3em;\" min=\"0\" value=\"$mealsPreset\" />\n";
+
+    echo "&nbsp;&nbsp;\n";
+    echo "\$" . number_format($meetDetails->getMealFee(), 2) . " each\n";
 	
 	if ($mealsIncluded != 0) {
 		
 		if ($mealsIncluded == 1) {
 		
-			echo "$mealsIncluded meal is included in the price of entry. Please add ";
+			echo "<br />$mealsIncluded meal is included in the price of entry. Please add ";
 			echo "additional meals if required.";
 			
 		} else {
 
-			echo "$mealsIncluded meals are included in the price of entry. Please add ";
+			echo "<br />$mealsIncluded meals are included in the price of entry. Please add ";
 			echo "additional meals if required.";
 			
 		}
@@ -219,6 +222,8 @@ if ($meetDetails->getMassageFee() > 0) {
     echo "<p>\n";
     echo "<label for=\"numMassages\">Massages: </label>\n";
     echo "<input type=\"number\" id=\"numMassages\" name=\"numMassages\" min=\"0\" style=\"width: 3em;\" value=\"$ps_extra\"/>\n";
+    echo "&nbsp;&nbsp;\n";
+    echo "\$" . number_format($meetDetails->getMassageFee(), 2) . " each\n";
     echo "</p>\n";
 
 }
@@ -239,6 +244,8 @@ if ($meetDetails->getProgramFee() > 0) {
     echo "<p>\n";
     echo "<label for=\"numPrograms\">Programmes: </label>\n";
     echo "<input type=\"number\" id=\"numPrograms\" name=\"numPrograms\" min=\"0\" style=\"width: 3em;\" value=\"$ps_extra\"/>\n";
+    echo "&nbsp;&nbsp;\n";
+    echo "\$" . number_format($meetDetails->getProgramFee(), 2) . " each\n";
     echo "</p>\n";
 
 }
