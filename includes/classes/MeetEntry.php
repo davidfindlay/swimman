@@ -748,6 +748,7 @@ class MeetEntry {
         //addlog("test", "meals = " . $this->meals . " massages = " . $this->massages);
         $existEntry->setNumMeals($this->meals);
         $existEntry->setMassages($this->massages);
+        $existEntry->setPrograms($this->programs);
 
         $existEntry->updateExtras();
 
@@ -910,12 +911,12 @@ class MeetEntry {
 
 	public function updateExtras() {
 
-        $update = $GLOBALS['db']->query("UPDATE meet_entries SET meals = ?, massages = ? WHERE id = ?;",
-            array($this->meals, $this->massages, $this->id));
+        $update = $GLOBALS['db']->query("UPDATE meet_entries SET meals = ?, massages = ?, programs = ? WHERE id = ?;",
+            array($this->meals, $this->massages, $this->programs, $this->id));
         db_checkerrors($update);
 
         addlog("Meet Entry", "Update extras", "Updated meals to " . $this->meals . " and massages to " .
-            $this->massages . " for " . $this->id . ".");
+            $this->massages . " and programs to " . $this->programs . "for " . $this->id . ".");
 
     }
 	
