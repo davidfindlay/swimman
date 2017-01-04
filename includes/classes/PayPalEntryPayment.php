@@ -126,9 +126,9 @@ class PayPalEntryPayment
             $payment->create($this->apiContext);
         } catch (Exception $ex) {
 
-            echo "<pre>\n";
-            print_r($ex);
-            echo "</pre>\n";
+            //echo "<pre>\n";
+            //print_r($ex);
+            //echo "</pre>\n";
         }
 
         $approvalUrl = $payment->getApprovalLink();
@@ -162,9 +162,9 @@ class PayPalEntryPayment
 
 //            echo "<h2>Get Payment</h2>\n";
 
-            echo "<pre>\n";
-            print_r($ex);
-            echo "</pre>\n";
+            //echo "<pre>\n";
+            //print_r($ex);
+            //echo "</pre>\n";
 
         }
 
