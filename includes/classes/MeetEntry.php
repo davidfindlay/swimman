@@ -482,6 +482,7 @@ class MeetEntry {
 		$this->cost = $meetDet->getMeetFee() +
             ($meetDet->getMealFee() * ($this->meals - $meetDet->getMealsIncluded())) +
             ($meetDet->getMassageFee() * $this->massages) +
+            ($meetDet->getProgramFee() * $this->programs) +
             $this->calcEventFees();
 		
 	}
