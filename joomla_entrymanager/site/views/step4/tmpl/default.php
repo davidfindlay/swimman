@@ -328,7 +328,7 @@ echo "</p>\n";
 $meetFee = $meetDet->getMeetFee();
 $mealFee = $meetDet->getMealFee() * $entry->getNumMeals();
 $massageFee = $meetDet->getMassageFee() * $entry->getMassages();
-$programFee = $meetDet->getProgramFee() * $entryDetails->getPrograms();
+$programFee = $meetDet->getProgramFee() * $entry->getPrograms();
 $eventFees = $entry->calcEventFees();
 $totalFee = $meetFee + $mealFee + $massageFee + $eventFees + $programFee;
 $amountPaid = $entry->getPaid();
