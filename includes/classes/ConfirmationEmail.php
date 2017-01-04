@@ -150,6 +150,12 @@ class ConfirmationEmail {
 
         }
 
+        if ($this->meetObj->getProgramFee() > 0) {
+
+            $body .= "<strong>Programmes: </strong>" . $curEntry->getPrograms() . "<br />\n";
+
+        }
+
         $body .= "<h3>Individual Events</h3>\n";
         $body .= "<table border=\"1\">\n";
         $body .= "<thead>\n";
