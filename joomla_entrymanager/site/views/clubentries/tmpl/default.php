@@ -334,8 +334,9 @@ if (isset($psMeetId)) {
 				$meetFee = $meetDet->getMeetFee();
 				$mealFee = $meetDet->getMealFee() * $numMeals;
                 $massageFee = $meetDet->getMassageFee() * $curEntry->getMassages();
+                $programFee = $meetDet->getProgramFee() * $curEntry->getPrograms();
 				$eventFees = $curEntry->calcEventFees();
-                $totalFee = $meetFee + $mealFee + $massageFee + $eventFees;
+                $totalFee = $meetFee + $mealFee + $massageFee + $eventFees + $programFee;
 				$entryPaid = $curEntry->getPaid();
 				
 				echo "<tr id=\"$entryId\">\n";
@@ -459,6 +460,19 @@ if (isset($psMeetId)) {
                     echo "</th>\n";
                     echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
                     echo "\$" . number_format($massageFee, 2);
+                    echo "</td>\n";
+                    echo "</tr>\n";
+
+                }
+
+                if ($meetDet->getProgramFee() > 0) {
+
+                    echo "<tr>\n";
+                    echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
+                    echo "Programme Fee:\n";
+                    echo "</th>\n";
+                    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+                    echo "\$" . number_format($programFee, 2);
                     echo "</td>\n";
                     echo "</tr>\n";
 

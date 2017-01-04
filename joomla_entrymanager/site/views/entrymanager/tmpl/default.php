@@ -314,6 +314,12 @@ foreach ($meetEntries as $e) {
         echo "<label>Massages:</label>" . $curEntry->getMassages() . "<br />\n";
 
     }
+
+    if ($curMeet->getProgramFee() > 0) {
+
+        echo "<label>Programmes:</label>" . $curEntry->getPrograms() . "<br />\n";
+
+    }
 	
 	echo "<label>View eProgram: </label>\n";
 	
@@ -384,8 +390,9 @@ foreach ($meetEntries as $e) {
     $meetFee = $curMeet->getMeetFee();
     $mealFee = $curMeet->getMealFee() * $curEntry->getNumMeals();
     $massageFee = $curMeet->getMassageFee() * $curEntry->getMassages();
+    $programFee = $curMeet->getProgramFee() * $curEntry->getPrograms();
     $eventFees = $curEntry->calcEventFees();
-    $totalFee = $meetFee + $mealFee + $massageFee + $eventFees;
+    $totalFee = $meetFee + $mealFee + $massageFee + $eventFees + $programFee;
     $amountPaid = $curEntry->getPaid();
     $amountToPay = $totalFee - $amountPaid;
 
@@ -425,6 +432,19 @@ foreach ($meetEntries as $e) {
         echo "</th>\n";
         echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
         echo "\$" . number_format($massageFee, 2);
+        echo "</td>\n";
+        echo "</tr>\n";
+
+    }
+
+    if ($curMeet->getProgramFee() > 0) {
+
+        echo "<tr>\n";
+        echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
+        echo "Programme Fee:\n";
+        echo "</th>\n";
+        echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+        echo "\$" . number_format($programFee, 2);
         echo "</td>\n";
         echo "</tr>\n";
 

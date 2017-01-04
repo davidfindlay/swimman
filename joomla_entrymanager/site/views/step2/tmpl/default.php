@@ -48,7 +48,7 @@ $editEntry = $jinput->get('editEntry');
 if($editEntry != "") {
 	
 	$entryData = new MeetEntry();
-    $entryId = $jinput->get('editEntry', true, string);
+    $entryId = $jinput->get('editEntry', true, 'string');
 	$entryData->loadId($entryId);
 	
 	$sess->set('emEntrant', $entryData->getMemberId());
@@ -219,6 +219,26 @@ if ($meetDetails->getMassageFee() > 0) {
     echo "<p>\n";
     echo "<label for=\"numMassages\">Massages: </label>\n";
     echo "<input type=\"number\" id=\"numMassages\" name=\"numMassages\" min=\"0\" style=\"width: 3em;\" value=\"$ps_extra\"/>\n";
+    echo "</p>\n";
+
+}
+
+// Check if there if there are programme fees
+if ($meetDetails->getProgramFee() > 0) {
+
+    if (isset($entryData)) {
+
+        $ps_extra = $entryData->getPrograms();
+
+    } else {
+
+        $ps_extra = 0;
+
+    }
+
+    echo "<p>\n";
+    echo "<label for=\"numPrograms\">Programmes: </label>\n";
+    echo "<input type=\"number\" id=\"numPrograms\" name=\"numPrograms\" min=\"0\" style=\"width: 3em;\" value=\"$ps_extra\"/>\n";
     echo "</p>\n";
 
 }

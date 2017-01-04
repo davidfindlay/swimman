@@ -261,6 +261,7 @@ class EntryManagerController extends JController {
 			$entryErrors = "";
 			$numMeals = $jinput->get('numMeals');
             $massages = $jinput->get('numMassages');
+            $programs = $jinput->get('numPrograms');
 			$medical = $jinput->get('medical');
 			$comments = $jinput->get('comments', null, "STRING");
 			
@@ -269,6 +270,9 @@ class EntryManagerController extends JController {
 
             // If there are massages requested add them
             $entryData->setMassages($massages);
+
+            // If there are programs requested add them
+            $entryData->setPrograms($programs);
 			
 			if ($medical == "on")
 				$entryData->setMedical(TRUE);
@@ -532,15 +536,10 @@ class EntryManagerController extends JController {
                 // Check if only paypal payment available
                 if ($meetPaymentDetails[0][3] == 1) {
 
-                    $meetFee = $meetDetails->getMeetFee();
-                    $mealFee = $meetDetails->getMealFee() * $entryDetails->getNumMeals();
-                    $massageFee = $meetDetails->getMassageFee() * $entryDetails->getMassages();
-                    $eventFees = $entryDetails->calcEventFees();
-
                     $eventFee = 9; // TODO: get proper details
 
                     $pp = new PayPalEntryPayment();
-                    $pp->addItem("Meet Entry", 1, $meetFee);
+                    $pp->addItem("Meet Entry", 1, $meetDetails->getMeetFee());
 
                     if ($entryDetails->getNumEntries() > 0) {
                         $pp->addItem("Individual Entries", $entryDetails->getNumEntries(), $eventFee);
@@ -554,16 +553,17 @@ class EntryManagerController extends JController {
                         $pp->addItem("Massages", $entryDetails->getMassages(), $meetDetails->getMassageFee());
                     }
 
-                    $approvalUrl = $pp->processPayment();
+                    if ($entryDetails->getPrograms() > 0) {
+                        $pp->addItem("Programmes", $entryDetails->getPrograms(), $meetDetails->getProgramFee());
+                    }
 
-                    //JRequest::setVar('view', 'entrymanager', 'method', true);
+                    $approvalUrl = $pp->processPayment();
 
                     $app = JFactory::getApplication();
                     $app->redirect($approvalUrl, "Redirecting to PayPal", $msgType = 'message');
 
                 } else {
-
-
+                    
                     // Unset session
                     unset($entryDetails);
                     $sess->clear('emEntryData');

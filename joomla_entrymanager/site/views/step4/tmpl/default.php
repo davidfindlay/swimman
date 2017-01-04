@@ -248,6 +248,14 @@ if ($meetDet->getMassageFee()) {
 
 }
 
+if ($meetDet->getProgramFee()) {
+
+    echo "<label>Programmes:</label>\n";
+    echo $entry->getPrograms();
+    echo "<br />\n";
+
+}
+
 echo "</p>\n";
 
 $entryEvents = $entry->getEvents();
@@ -320,8 +328,9 @@ echo "</p>\n";
 $meetFee = $meetDet->getMeetFee();
 $mealFee = $meetDet->getMealFee() * $entry->getNumMeals();
 $massageFee = $meetDet->getMassageFee() * $entry->getMassages();
+$programFee = $meetDet->getProgramFee() * $entryDetails->getPrograms();
 $eventFees = $entry->calcEventFees();
-$totalFee = $meetFee + $mealFee + $massageFee + $eventFees;
+$totalFee = $meetFee + $mealFee + $massageFee + $eventFees + $programFee;
 $amountPaid = $entry->getPaid();
 $amountToPay = $totalFee - $amountPaid;
 
@@ -361,6 +370,19 @@ if ($meetDet->getMassageFee() < 0) {
     echo "</th>\n";
     echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
     echo "\$" . number_format($massageFee, 2);
+    echo "</td>\n";
+    echo "</tr>\n";
+
+}
+
+if ($meetDet->getProgramFee() < 0) {
+
+    echo "<tr>\n";
+    echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
+    echo "Programme Fee:\n";
+    echo "</th>\n";
+    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+    echo "\$" . number_format($programFee, 2);
     echo "</td>\n";
     echo "</tr>\n";
 
