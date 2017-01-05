@@ -43,10 +43,14 @@ if (isset($meetId)) {
         ORDER BY meet_entry_statuses.id DESC
         LIMIT 1
     ) AS status,
-    COUNT(DISTINCT meet_events_entries.id) AS entries
+    (SELECT COUNT(DISTINCT meet_events_entries.id) 
+        FROM meet_events_entries, meet_events
+        WHERE meet_events.id = meet_events_entries.event_id
+        AND meet_events.legs = 1
+        AND meet_events_entries.meet_entry_id = meet_entries.id) AS entries
 FROM 
     meet_entries                    
-    , meet_events_entries           
+    , meet_events_entries
     , member                        
     , clubs
     , age_groups                         
