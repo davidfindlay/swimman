@@ -112,124 +112,92 @@ $psMeetFilter = $sess->get('emMeetFilter');
 
 // Get a list of meets
 
-echo "<form method=\"post\">\n";
+echo "<form method=\"post\" name=\"frmMeetFilter\">\n";
 
 // Start meet Filter
 $psMeetFilter = $sess->get('emMeetFilter');
 $psMeetId = $sess->get('emMeetView');
 
+
+// Start year selector
 echo "<p>\n";
-echo "<label>Meet Filter:</label>\n";
-echo "<select name=\"emMeetFilter\">\n";
+echo "<label>Year:</label>\n";
+echo "<select name=\"emMeetFilter\" onchange=\"document.frmMeetFilter.submit()\">\n";
 
-echo "<option value=\"current\"";
-if ($psMeetFilter == "current") {
-	
-	echo " selected";
-	
+// Get list of years
+$curYear = intval(date('Y'));
+$yearStart = $curYear - 2;
+$yearEnd = $curYear + 1;
+$yearCnt = $yearStart;
+
+while ($yearCnt <= $yearEnd) {
+
+    // Default to selecting the current year unless a year has been preset
+    if ($psMeetFilter != "" && $psMeetFilter == $yearCnt) {
+
+        echo "<option value=\"$yearCnt\" selected>$yearCnt</option>\n";
+
+    } elseif ($psMeetFilter == "" && $yearCnt == $curYear) {
+
+        echo "<option value=\"$yearCnt\" selected>$yearCnt</option>\n";
+
+    } else {
+
+        echo "<option value=\"$yearCnt\">$yearCnt</option>\n";
+
+    }
+
+    $yearCnt++;
 }
-echo ">Current</option>\n";
 
-echo "<option value=\"all\"";
-if ($psMeetFilter == "all") {
-
-	echo " selected";
-
-}
-echo ">All</option>\n";
-
-echo "<option value=\"past\"";
-if ($psMeetFilter == "past") {
-	
-	echo " selected";
-	
-}
-echo ">Past</option>\n";
-
-echo "<option value=\"future\"";
-if ($psMeetFilter == "future") {
-	
-	echo " selected";
-	
-}
-echo ">Future</option>\n";
 echo "</select>\n";
-echo "<input type=\"submit\" name=\"emMeetFilterSubmit\" id=\"emMeetFilterSubmit\" value=\"Update\" />\n";
-
 echo "</p>\n";
-// echo "<p>\n";
+
 
 if ($psMeetFilter == "") {
-	
-	$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet WHERE startdate < DATE_ADD(NOW(), INTERVAL 3 MONTH)
-		AND startdate > DATE_SUB(NOW(), INTERVAL 1 MONTH) ORDER BY startdate;");
-	
-	// echo "Showing entries for meets up to 1 month ago through to meets 3 months in the future.";
-	
-}
 
-if ($psMeetFilter == "all") {
-
-	$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet ORDER BY startdate;");
-	
-	//echo "Showing entries for all meets in the Entry Manager system.";
+    $psMeetFilter = $curYear;
 
 }
 
-if ($psMeetFilter == "future") {
+$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet 
+		WHERE DATE_FORMAT(startdate, '%Y') = ? 
+		ORDER BY startdate;", array($psMeetFilter));
 
-	$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet WHERE startdate > NOW() ORDER BY startdate;");
-	
-	//echo "Showing entries for all future meets.";
+if (!isset($psMeetId)) {
 
-}
-
-if ($psMeetFilter == "past") {
-
-	$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet WHERE startdate < NOW() ORDER BY startdate DESC;");
-	
-	//echo "Showing entries for all past meets in the Entry Manager system.";
+    $psMeetId = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_entries 
+                      WHERE member_id = ? $accessListSQL ORDER BY meet_id DESC LIMIT 1;",
+        array($memberId));
+    db_checkerrors($psMeetId);
 
 }
-
-if ($psMeetFilter == "current") {
-
-	$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet WHERE startdate < DATE_ADD(NOW(), INTERVAL 3 MONTH) AND startdate > DATE_SUB(NOW(), INTERVAL 1 MONTH) ORDER BY startdate;");
-	
-	//echo "Showing entries for meets up to 1 month ago through to meets 3 months in the future.";
-
-}
-
-//echo "</p>\n";
 
 db_checkerrors($meetList);
-
 echo "<p>\n";
 echo "<label>Meet: </label>\n";
-echo "<select name=\"meetSelect\">\n";
+echo "<select name=\"meetSelect\" onchange=\"document.frmMeetFilter.submit()\">\n";
 
 foreach ($meetList as $m) {
-	
-	$mId = $m[0];
-	$mName = $m[1];
-	
-	echo "<option value=\"$mId\"";
-	
-	if ($psMeetId == $mId) {
-		
-		echo " selected=\"selected\"";
-		
-	}
-	
-	echo ">$mName</option>\n";
-	
+
+    $mId = $m[0];
+    $mName = $m[1];
+
+    echo "<option value=\"$mId\"";
+
+    if ($psMeetId == $mId) {
+
+        echo " selected=\"selected\"";
+
+    }
+
+    echo ">$mName</option>\n";
+
 }
 
 echo "</select>\n";
 echo "<input type=\"submit\" name=\"emMeetViewSubmit\" id=\"emMeetViewSubmit\" value=\"View Entries\" />\n";
 echo "</p>\n";
-
-// End Meet Filter
 
 // Get list of Meet Entries the member has through this club
 $meetEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_entries WHERE meet_id = '$psMeetId' AND

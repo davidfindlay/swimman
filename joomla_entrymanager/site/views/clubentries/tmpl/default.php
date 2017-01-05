@@ -119,53 +119,16 @@ echo "</p>\n";
 if ($psMeetFilter == "") {
 	
 	$psMeetFilter = $curYear;
-	
 
-	
+
+
 	// echo "Showing entries for meets up to 1 month ago through to meets 3 months in the future.";
-	
+
 }
 
 $meetList = $GLOBALS['db']->getAll("SELECT * FROM meet 
 		WHERE DATE_FORMAT(startdate, '%Y') = ? 
 		ORDER BY startdate;", array($psMeetFilter));
-
-// $meetList = $GLOBALS['db']->getAll("SELECT * FROM meet WHERE startdate < DATE_ADD(NOW(), INTERVAL 3 MONTH)
-//		AND startdate > DATE_SUB(NOW(), INTERVAL 1 MONTH) ORDER BY startdate;");
-
-// if ($psMeetFilter == "all") {
-
-// 	$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet ORDER BY startdate;");
-	
-// 	//echo "Showing entries for all meets in the Entry Manager system.";
-
-// }
-
-// if ($psMeetFilter == "future") {
-
-// 	$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet WHERE startdate > NOW() ORDER BY startdate;");
-	
-// 	//echo "Showing entries for all future meets.";
-
-// }
-
-// if ($psMeetFilter == "past") {
-
-// 	$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet WHERE startdate < NOW() ORDER BY startdate DESC;");
-	
-// 	//echo "Showing entries for all past meets in the Entry Manager system.";
-
-// }
-
-// if ($psMeetFilter == "current") {
-
-// 	$meetList = $GLOBALS['db']->getAll("SELECT * FROM meet WHERE startdate < DATE_ADD(NOW(), INTERVAL 3 MONTH) AND startdate > DATE_SUB(NOW(), INTERVAL 1 MONTH) ORDER BY startdate;");
-	
-// 	//echo "Showing entries for meets up to 1 month ago through to meets 3 months in the future.";
-
-// }
-
-//echo "</p>\n";
 
 db_checkerrors($meetList);
 echo "<p>\n";
