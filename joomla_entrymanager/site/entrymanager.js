@@ -49,11 +49,57 @@ function rewriteTime(timeString) {
 
 	var seconds;
 
+	// Handle where user has separated with .'s instead of :
+    var dotstring = timeString.split('.');
+    var dotstringSections = dotstring.length;
+
+    // Check if there is more than one .
+    if (dotstringSections > 2) {
+
+        var newTimeString = "";
+
+        for (var i = 0; i < dotstringSections; i++) {
+
+            newTimeString += dotstring[i];
+
+
+            // Replace all but last instance of '.' with ':'
+            if (i <= (dotstringSections - 3)) {
+
+                newTimeString += ':';
+
+            } else if (i <= (dotstringSections - 2)) {
+
+                newTimeString += '.';
+
+            }
+
+        }
+
+        //console.log("newTimeString = " + newTimeString);
+
+        timeString = newTimeString;
+
+    }
+
+    // Is there a colon in the time?
 	if (timeString.search(':') != -1) {
 	
 		var timeArray = timeString.split(':');
-		
-		seconds = (parseFloat(timeArray[0]) * 60) + parseFloat(timeArray[1]);
+
+		// Check how many colons are in the time
+        if (timeArray.length == 2) {
+
+            // Time in minutes and seconds
+            seconds = (parseFloat(timeArray[0]) * 60) + parseFloat(timeArray[1]);
+
+        } else if (timeArray.length == 3) {
+
+            // Time in hours, minutes and seconds
+            seconds = (parseFloat(timeArray[0]) * 60 * 60) +
+                (parseFloat(timeArray[1]) * 60) + parseFloat(timeArray[2]);
+
+        }
 	
 	} else {
 		
@@ -100,6 +146,16 @@ function rewriteTime(timeString) {
 	}
 	
 	var timeMin = Math.floor(seconds / 60);
+    var timeHours = 0;
+
+    if (timeMin > 60) {
+
+        timeHours = Math.floor(timeMin / 60);
+        timeMin = timeMin - (timeHours * 60);
+
+
+    }
+
 	var timeSecs = seconds % 60;
 	timeSecs = timeSecs.toFixed(2);
 	var secString = timeSecs.toString();
@@ -109,8 +165,24 @@ function rewriteTime(timeString) {
 		secString = "0" + secString;
 	
 	}
-	
-	var nTimeString = timeMin.toString() + ":" + secString;
+
+	if (timeHours > 0) {
+
+	    var minString = timeMin.toString();
+
+	    if (minString.length == 1) {
+
+	        minString = "0" + minString;
+
+        }
+
+	    var nTimeString = timeHours.toString() + ":" + minString + ":" + secString;
+
+    } else {
+
+        var nTimeString = timeMin.toString() + ":" + secString;
+
+    }
 	
 	if (nTimeString == "NaN:NaN") {
 		nTimeString = "0:00.00";
