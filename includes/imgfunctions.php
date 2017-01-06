@@ -209,6 +209,34 @@ function getImg() {
 	
 }
 
+/**
+ * If called, attempts to unzip the upload file before parsing
+ */
+function unzipUpload() {
+
+    $uploaddir = $GLOBALS['home_dir'] . '/masters-data/img';
+    $path = $uploaddir . '/' . 'imgmembers.xls';
+
+    // Unzip the file
+    $fileinfo = "";
+    $zip = new ZipArchive;
+    if ($zip->open($path) === true) {
+
+        for($i = 0; $i < $zip->numFiles; $i++) {
+            $filename = $zip->getNameIndex($i);
+            $fileinfo = pathinfo($filename);
+
+            copy("zip://".$path."#".$filename, "$uploaddir" . '/' . $fileinfo['basename']);
+        }
+        $zip->close();
+    }
+
+    // Rename to original path
+    rename($uploaddir . '/' . $fileinfo['basename'], $path);
+
+}
+
+
 function parseImg() {
 
 	$uploaddir = $GLOBALS['home_dir'] . '/masters-data/img';

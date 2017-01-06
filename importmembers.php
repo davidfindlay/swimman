@@ -11,13 +11,23 @@ addlog("Access", "Accessed importmembers.php");
 if (isset($_POST['importmemberssubmit'])) {
 	
 	$uploaddir = $GLOBALS['home_dir'] . '/masters-data/img';
+
+	// Check if datafile has a zip extension
+    $fileparts = pathinfo($_FILES["userfile"]["name"]);
+    $fileext = $fileparts['extension'];
+
 	$uploadfile = $uploaddir . '/' . 'imgmembers.xls';
-	$tempCsvFile = $uploaddir . '/' . 'temp.csv';
 	
 	addlog("IMG Sync", "Manual Upload IMG Database", "IMG Database has been manually uploaded via web form.");
 
 
 	if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
+
+	    if ($fileext == "zip") {
+
+	        unzipUpload();
+
+        }
 		
 		$uploadStatus = parseImg();
     	
