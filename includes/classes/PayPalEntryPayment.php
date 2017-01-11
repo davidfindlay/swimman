@@ -23,6 +23,8 @@ class PayPalEntryPayment
     private $memberId;
     private $total;
     private $entryId;
+    private $meetName;
+    private $invoiceId;
 
     private $apiContext;
 
@@ -75,7 +77,29 @@ class PayPalEntryPayment
         $this->entryId = $entryId;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getMeetName() {
 
+        return $this->meetName;
+    }
+
+    /**
+     * @param mixed $meetName
+     */
+    public function setMeetName($meetName) {
+
+        $this->meetName = $meetName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInvoiceId() {
+
+        return $this->invoiceId;
+    }
 
     public function processPayment() {
 
@@ -104,10 +128,12 @@ class PayPalEntryPayment
             ->setTotal($this->getTotal());
 
         $transaction = new Transaction();
+        $this->invoiceId = uniqid();
+
         $transaction->setAmount($amount)
             ->setItemList($itemList)
-            ->setDescription("Masters Swimming Australia National Championships 2017")
-            ->setInvoiceNumber(uniqid());
+            ->setDescription($this->meetName . " - Entry " . $this->entryId)
+            ->setInvoiceNumber($this->invoiceId);
 
         //$baseUrl = "http://localhost:8888";
         $redirectUrls = new RedirectUrls();
@@ -150,6 +176,7 @@ class PayPalEntryPayment
 
             $result = $payment->execute($execution, $this->apiContext);
             $transactions = $result->getTransactions();
+            
             $paidAmount = $transactions[0]->getAmount()->getTotal();
 
             //echo "<h2>Payment Successful - Paid $paidAmount</h2>\n";

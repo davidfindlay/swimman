@@ -436,12 +436,16 @@ class EntryManagerController extends JController {
                 $differentCost = $newCost - $alreadyPaid;
 
                 // Update the entry data
-                $sEntryData = serialize($entryData);
+                $sEntryData = serialize($entryDetails);
                 $sess->set('emEntryData', $sEntryData);
 
                 //addlog("test", "newCost = $newCost - alreadyPaid = $alreadyPaid - differentCost = $differentCost");
 
-                $meetId = $sess->get('emMeetId');
+                $meetId = $entryDetails->getMeetId();
+                $meetDetails = new Meet();
+                $meetDetails->loadMeet($meetId);
+                $meetName = $meetDetails->getName();
+
                 $meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE
                             meet_id = ?;", array($meetId));
                 db_checkerrors($meetPaymentDetails);
@@ -453,6 +457,8 @@ class EntryManagerController extends JController {
 
                         // Send to paypal
                         $pp = new PayPalEntryPayment();
+                        $pp->setMeetName($meetName);
+                        $pp->setEntryId($oldEntryId);
                         $pp->addItem("Meet Entry Amendment", 1, $differentCost);
 
                         $approvalUrl = $pp->processPayment();
@@ -539,6 +545,8 @@ class EntryManagerController extends JController {
                     $eventFee = 9; // TODO: get proper details
 
                     $pp = new PayPalEntryPayment();
+                    $pp->setMeetName($meetName);
+                    $pp->setEntryId($entryId);
                     $pp->addItem("Meet Entry", 1, $meetDetails->getMeetFee());
 
                     if ($entryDetails->getNumEntries() > 0) {
