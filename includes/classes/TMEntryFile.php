@@ -211,7 +211,12 @@ class TMEntryFile {
 					if (count($entryList) > 0) {
 					
 						foreach ($entryList as $e) {
-							
+
+                            // Skip cancelled events
+						    if ($e->getCancelled()) {
+                                continue;
+                            }
+
 							// Check if this entry is a relay entry
 							$eventId = $e->getEventId();
 
