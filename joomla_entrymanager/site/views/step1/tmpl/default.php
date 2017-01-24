@@ -76,6 +76,15 @@ if (isset($entrantId)) {
 
 $entrantClubs = $entrantDetails->getClubIds();
 
+
+if ($sess->get('emClubError') != "") {
+
+    echo "<p style='color: red; font-weight: bold;'>\n";
+    echo $sess->get('emClubError');
+    echo "</p>\n";
+
+}
+
 // Club information
 echo "<p>\n";
 echo "<label for=\"clubSelector\" >Swimming for Club:";
@@ -105,10 +114,12 @@ if (count($entrantClubs) > 1) {
 } elseif (count($entrantClubs) == 1) {
 
 	$clubDetails = new Club;
-	$clubDetails->load($entrantClubs[0]);
-	echo $clubDetails->getName();
-	
-	$sess->set('emClubId', $entrantClubs[0]);
+	$cId = $entrantClubs[0];
+	$clubDetails->load($cId);
+	$clubName = $clubDetails->getName();
+
+    echo "<input type=\"radio\" name=\"emClubId\" id=\"emClubId\" value=\"$cId\" checked=\"checked\" />";
+    echo $clubName . "<br />";
 
 } else {
 

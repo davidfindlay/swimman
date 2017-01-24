@@ -334,6 +334,10 @@ if (isset($jUsers)) {
 		db_checkerrors($jClub);
 		
 		$jDob = trim($jDob, '"');
+
+		// Process DOB
+        $jDob = date('d/m/Y', strtotime($jDob));
+
 		$jMSA = trim($jMSA, '"');
 		$jClub = trim($jClub, '"');
 		
@@ -446,7 +450,9 @@ echo "</div>\n";   // Main div
 
 $(document).ready(function() {
 
-    $('#jusertable').DataTable();
+    $('#jusertable').DataTable( {
+        "order": [[5, "desc"]]
+    });
 
 });
 

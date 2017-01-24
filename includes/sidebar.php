@@ -66,6 +66,9 @@ function sidebarMenu() {
 	echo "<li>\n";
 	echo "<a href=\"memberlist.php\">Member List</a>\n";
 	echo "</li>\n";
+	echo "<li>\n";
+	echo "<a href=\"membercreate.php\">Create Member</a>\n";
+	echo "</li>\n";
     echo "<li>\n";
     echo "<a href=\"memberbulk.php\">Bulk Member Check</a>\n";
     echo "</li>\n";

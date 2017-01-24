@@ -1,6 +1,7 @@
 <?php
 
 //require_once("phpqrcode/qrlib.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/SlackNotification.php');
 
 class Member {
 	
@@ -45,6 +46,7 @@ class Member {
 		
 		$memberClubs = $GLOBALS['db']->getAll("SELECT * FROM member_memberships 
 					WHERE member_id = ?
+					AND startdate <= CURDATE() AND enddate >= CURDATE()
 					GROUP BY club_id;", array($this->id));
 		db_checkerrors($memberClubs);
 
@@ -790,6 +792,12 @@ class Member {
         $this->addEmail(1, $jUserEmail);
 
 		$jdb->disconnect();
+
+        $message = "Member " . $this->getFullname() . " linked to Joomla user " . $jUser . "("
+            . $juserId . ")";
+        $slack = new SlackNotification();
+        $slack->setMessage($message);
+        $slack->send();
 		
 		return;
 		
@@ -852,8 +860,13 @@ class Member {
 		db_checkerrors($delete3);
 		
 		addlog("Joomla", "Member $this->id removed from Joomla MSQ Members groups");
-		
-		
+
+        $message = "Member " . $this->getFullname() . " unlinked from Joomla user "
+            . $juserId;
+        $slack = new SlackNotification();
+        $slack->setMessage($message);
+        $slack->send();
+
 		//$jdb->disconnect();
 		
 	}

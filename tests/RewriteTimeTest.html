@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test rewriteTime function</title>
+
+<script src="entrymanager.js"></script>
+</head>
+<body>
+<h1>rewriteTime Function Tests</h1>
+
+<h2>Test 1 - Correct Format</h2>
+<p><strong>Input: </strong> 2:19.20</p>
+<p><strong>Correct: </strong> 2:19.20</p>
+<p><strong>Output: </strong>
+<script>
+    document.write(rewriteTime("2:19.20"));
+</script>
+</p>
+
+<h2>Test 2 - No separators</h2>
+<p><strong>Input: </strong> 11900</p>
+<p><strong>Correct: </strong> 1:19.00</p>
+<p><strong>Output: </strong>
+    <script>
+        document.write(rewriteTime("11900"));
+    </script>
+</p>
+
+<h2>Test 3 - Dots as separators</h2>
+<p><strong>Input: </strong> 1.19.63</p>
+<p><strong>Correct: </strong> 1:19.63</p>
+<p><strong>Output: </strong>
+    <script>
+        document.write(rewriteTime("1.19.63"));
+    </script>
+</p>
+
+<h2>Test 4 - Time over an hour</h2>
+<p><strong>Input: </strong> 1:10:04.11</p>
+<p><strong>Correct: </strong> 1:10:04.11</p>
+<p><strong>Output: </strong>
+    <script>
+        document.write(rewriteTime("1:10:04.11"));
+    </script>
+</p>
+
+<h2>Test 5 - Dots as separators over 1 hour</h2>
+<p><strong>Input: </strong> 1.01.19.63</p>
+<p><strong>Correct: </strong> 1:01:19.63</p>
+<p><strong>Output: </strong>
+    <script>
+        document.write(rewriteTime("1.01.19.63"));
+    </script>
+</p>
+
+<h2>Test 6 - Less than 60 seconds</h2>
+<p><strong>Input: </strong> 12</p>
+<p><strong>Correct: </strong> 0:12.00</p>
+<p><strong>Output: </strong>
+    <script>
+        document.write(rewriteTime("12"));
+    </script>
+</p>
+
+<h2>Test 7 - Less than 60 seconds with decimal</h2>
+<p><strong>Input: </strong> 8.2</p>
+<p><strong>Correct: </strong> 0:08.20</p>
+<p><strong>Output: </strong>
+    <script>
+        document.write(rewriteTime("8.2"));
+    </script>
+</p>
+
+</body>
+</html>

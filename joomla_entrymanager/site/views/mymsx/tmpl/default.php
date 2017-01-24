@@ -49,18 +49,18 @@ echo "}\n";
 echo "</style>\n";
 
 echo "<p>\n";
-echo "This page shows your MSX program results for 2015. Any award you have one is displayed \n";
+echo "This page shows your MSX program results for 2016. Any award you have one is displayed \n";
 echo "below. The qualifying swims are also shown. \n";
 echo "</p>\n";
 
 echo "<p>\n";
-echo "<strong>2015 MSX Results are currently at draft stage only.</strong> ";
+echo "<strong>2016 MSX Results are currently at draft stage only.</strong> ";
 echo "If you believe some qualifying swims are missing, please contact the <a href=\"mailto:recorder@mastersswimmingqld.org.au\">State Recorder</a>. \n";
 echo "</p>\n";
 
-echo "<h2>2015 MSX Program</h2>\n";
+echo "<h2>2016 MSX Program</h2>\n";
 
-$perf_prog_id = 3;
+$perf_prog_id = 4;
 
 $award = $GLOBALS['db']->getOne("SELECT l.levelname FROM performance_programs_awards as a, 
 			performance_programs_levels as l

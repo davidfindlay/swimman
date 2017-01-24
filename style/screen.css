@@ -297,6 +297,7 @@ body.loading .modal {
 .custom-combobox {
 	position: relative;
 	display: inline-block;
+	background-color: white;
 }
 .custom-combobox-toggle {
 	position: absolute;
@@ -304,8 +305,10 @@ body.loading .modal {
 	bottom: 0;
 	margin-left: -1px;
 	padding: 0;
+    z-index: 30;
 }
 .custom-combobox-input {
 	margin: 0;
 	padding: 5px 10px;
+	background-color: white;
 }

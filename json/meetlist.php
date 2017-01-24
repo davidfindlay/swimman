@@ -10,8 +10,9 @@ require_once("../includes/classes/Meet.php");
 $GLOBALS['db']->setFetchMode(DB_FETCHMODE_ASSOC);
 
 // Define request 
-$sql = "SELECT *
-		FROM meet
+$sql = "SELECT meet.id, meetname, startdate, enddate, deadline, contactname, address, phonenumber, meetfee, mealfee, location, maxevents, mealsincluded, mealname, massagefee, programfee FROM meet, emails, phones
+		WHERE meet.contactemail = emails.id
+		AND meet.contactphone = phones.id
 		ORDER BY startdate DESC;";
 
 // Make request and check for errors

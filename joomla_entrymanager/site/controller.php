@@ -158,8 +158,18 @@ class EntryManagerController extends JController {
 			if ($chosenClub != "") {
 				
 				$sess->set('emClubId', $chosenClub);
+				$sess->clear('emClubError');
+
+                JRequest::setVar('view', 'step2', 'method', true);
 				
-			}
+			} else {
+
+			    $sess->set('emClubError', 'You must choose a club for this entry!');
+
+                // No event entries
+                JRequest::setVar('view', 'step1', 'method', true);
+
+            }
 			
 			
 			// Check if member has already entered this meet
@@ -193,7 +203,7 @@ class EntryManagerController extends JController {
 				
 			}
 			
-			JRequest::setVar('view', 'step2', 'method', true);
+			// JRequest::setVar('view', 'step2', 'method', true);
 			
 			
 			
@@ -491,99 +501,111 @@ class EntryManagerController extends JController {
 				$entryDetails->setStatus(5);  // Awaiting Payment
 				$entryDetails->setEventStatuses(5); 	// Pending
 			
-				// Create entry
-				$entryDetails->create();
-                $entryId = $entryDetails->getId();
-                $entryMember = $entryDetails->getMemberId();
-                $sess->set('emEntryId', $entryId);
-			
-				// Email the club captain
-				// Email entry submission
-			//	$mail = new PHPMailer();
-			//	$mail->setFrom('recorder@mastersswimmingqld.org.au','MSQ Branch Recorder');
-					
-				$meetDetails = new Meet();
-                $meetId = $sess->get('emMeetId');
-				$meetDetails->loadMeet($meetId);
-				$meetName = $meetDetails->getName();
-				$clubDetails = new Club();
-				$clubId = $sess->get('emClubId');
-				$clubDetails->load($clubId);
-				$clubName = $clubDetails->getName();
-				$clubCode = $clubDetails->getCode();
-			
-				$submitterId = $entryDetails->getMemberId();
-				$subDetails = new Member();
-				$subDetails->loadId($submitterId);
-				$submitterName = $subDetails->getFullname();
-				
-				$clubCaptainEmail = $GLOBALS['db']->getOne("SELECT address FROM emails WHERE id = 
+
+				$entryCreated = $entryDetails->create();
+
+                if ($entryCreated) {
+
+                    $entryId = $entryDetails->getId();
+                    $entryMember = $entryDetails->getMemberId();
+                    $sess->set('emEntryId', $entryId);
+
+                    // Email the club captain
+                    // Email entry submission
+                    //	$mail = new PHPMailer();
+                    //	$mail->setFrom('recorder@mastersswimmingqld.org.au','MSQ Branch Recorder');
+
+                    $meetDetails = new Meet();
+                    $meetId = $sess->get('emMeetId');
+                    $meetDetails->loadMeet($meetId);
+                    $meetName = $meetDetails->getName();
+                    $clubDetails = new Club();
+                    $clubId = $sess->get('emClubId');
+                    $clubDetails->load($clubId);
+                    $clubName = $clubDetails->getName();
+                    $clubCode = $clubDetails->getCode();
+
+                    $submitterId = $entryDetails->getMemberId();
+                    $subDetails = new Member();
+                    $subDetails->loadId($submitterId);
+                    $submitterName = $subDetails->getFullname();
+
+                    $clubCaptainEmail = $GLOBALS['db']->getOne("SELECT address FROM emails WHERE id = 
 						(SELECT email_id FROM clubs_captains WHERE club_id = '$clubId');");
-				db_checkerrors($clubCaptainEmail);
-				
-			//	$mail->addAddress($clubCaptainEmail);
-			//	$mail->Subject = "$clubCode Member Entry";
-			//	$mail->Body = "Hi,\n\nAn entry for $meetName has been submitted by $submitterName. You can access the details of this entry from the Club Entries page of the Entry Manager on the MSQ Members Community site. If you have any problems please reply to this email.\n\nThanks,\n\nDavid Findlay\nDirector of Recording\nMasters Swimming QLD\n\nEmail: recorder@mastersswimmingqld.org.au\nPhone: 0428 874 874\nPostal: PO Box 282, Woody Point, QLD, 4019, Australia";
-					
-			//	if (!$mail->send()) {
-						
-					//exit("Could not send email: " . $mail->ErrorInfo . "\n");
-						
-			//	}
+                    db_checkerrors($clubCaptainEmail);
 
-                $meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE
+                    //	$mail->addAddress($clubCaptainEmail);
+                    //	$mail->Subject = "$clubCode Member Entry";
+                    //	$mail->Body = "Hi,\n\nAn entry for $meetName has been submitted by $submitterName. You can access the details of this entry from the Club Entries page of the Entry Manager on the MSQ Members Community site. If you have any problems please reply to this email.\n\nThanks,\n\nDavid Findlay\nDirector of Recording\nMasters Swimming QLD\n\nEmail: recorder@mastersswimmingqld.org.au\nPhone: 0428 874 874\nPostal: PO Box 282, Woody Point, QLD, 4019, Australia";
+
+                    //	if (!$mail->send()) {
+
+                    //exit("Could not send email: " . $mail->ErrorInfo . "\n");
+
+                    //	}
+
+                    $meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE
                             meet_id = ?;", array($meetId));
-                db_checkerrors($meetPaymentDetails);
+                    db_checkerrors($meetPaymentDetails);
 
-                // Update the entry data
-                $sEntryData = serialize($entryData);
-                $sess->set('emEntryData', $sEntryData);
+                    // Update the entry data
+                    $sEntryData = serialize($entryData);
+                    $sess->set('emEntryData', $sEntryData);
 
-                // Check if only paypal payment available
-                if ($meetPaymentDetails[0][3] == 1) {
+                    // Check if only paypal payment available
+                    if ($meetPaymentDetails[0][3] == 1) {
 
-                    $eventFee = 9; // TODO: get proper details
+                        $eventFee = 9; // TODO: get proper details
 
-                    $pp = new PayPalEntryPayment();
-                    $pp->setMeetName($meetName);
-                    $pp->setEntryId($entryId);
-                    $pp->addItem("Meet Entry", 1, $meetDetails->getMeetFee());
+                        $pp = new PayPalEntryPayment();
+                        $pp->setMeetName($meetName);
+                        $pp->setEntryId($entryId);
+                        $pp->addItem("Meet Entry", 1, $meetDetails->getMeetFee());
 
-                    if ($entryDetails->getNumEntries() > 0) {
-                        $pp->addItem("Individual Entries", $entryDetails->getNumEntries(), $eventFee);
+                        if ($entryDetails->getNumEntries() > 0) {
+                            $pp->addItem("Individual Entries", $entryDetails->getNumEntries(), $eventFee);
+                        }
+
+                        if ($entryDetails->getNumMeals() > 0) {
+                            $pp->addItem("Presentation Dinner", $entryDetails->getNumMeals(), $meetDetails->getMealFee());
+                        }
+
+                        if ($entryDetails->getMassages() > 0) {
+                            $pp->addItem("Massages", $entryDetails->getMassages(), $meetDetails->getMassageFee());
+                        }
+
+                        if ($entryDetails->getPrograms() > 0) {
+                            $pp->addItem("Programmes", $entryDetails->getPrograms(), $meetDetails->getProgramFee());
+                        }
+
+                        $approvalUrl = $pp->processPayment();
+
+                        $app = JFactory::getApplication();
+                        $app->redirect($approvalUrl, "Redirecting to PayPal", $msgType = 'message');
+
+                    } else {
+
+                        // Unset session
+                        unset($entryDetails);
+                        $sess->clear('emEntryData');
+                        $sess->clear('emMemberId');
+                        $sess->clear('emEntrant');
+                        $sess->clear('emMeetId');
+                        $sess->clear('emClubId');
+                        $sess->clear('emEntryEdit');
+                        $sess->clear('emEntryId');
+
+                        // Return to Entry List
+                        JRequest::setVar('view', 'entrymanager', 'method', true);
+
                     }
-
-                    if ($entryDetails->getNumMeals() > 0) {
-                        $pp->addItem("Presentation Dinner", $entryDetails->getNumMeals(), $meetDetails->getMealFee());
-                    }
-
-                    if ($entryDetails->getMassages() > 0) {
-                        $pp->addItem("Massages", $entryDetails->getMassages(), $meetDetails->getMassageFee());
-                    }
-
-                    if ($entryDetails->getPrograms() > 0) {
-                        $pp->addItem("Programmes", $entryDetails->getPrograms(), $meetDetails->getProgramFee());
-                    }
-
-                    $approvalUrl = $pp->processPayment();
-
-                    $app = JFactory::getApplication();
-                    $app->redirect($approvalUrl, "Redirecting to PayPal", $msgType = 'message');
 
                 } else {
-                    
-                    // Unset session
-                    unset($entryDetails);
-                    $sess->clear('emEntryData');
-                    $sess->clear('emMemberId');
-                    $sess->clear('emEntrant');
-                    $sess->clear('emMeetId');
-                    $sess->clear('emClubId');
-                    $sess->clear('emEntryEdit');
-                    $sess->clear('emEntryId');
+
+                    addlog("Entry Manager", "Unable to create entry", $entryD);
 
                     // Return to Entry List
-                    JRequest::setVar('view', 'entrymanager', 'method', true);
+                    JRequest::setVar('view', 'step3', 'method', true);
 
                 }
 				

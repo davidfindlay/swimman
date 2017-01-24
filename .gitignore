@@ -4,3 +4,4 @@ includes/aws
 .settings
 .idea
 config.php
+node_modules

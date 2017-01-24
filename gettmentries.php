@@ -1,12 +1,12 @@
 <?php
-require("includes/setup.php");
-require("includes/classes/Member.php");
-require("includes/classes/Meet.php");
-require("includes/classes/Club.php");
-require("includes/classes/MeetEvent.php");
-require("includes/classes/MeetEntry.php");
-require("includes/classes/MeetEntryEvent.php");
-require("includes/classes/TMEntryFile.php");
+require_once("includes/setup.php");
+require_once("includes/classes/Member.php");
+require_once("includes/classes/Meet.php");
+require_once("includes/classes/Club.php");
+require_once("includes/classes/MeetEvent.php");
+require_once("includes/classes/MeetEntry.php");
+require_once("includes/classes/MeetEntryEvent.php");
+require_once("includes/classes/TMEntryFile.php");
 
 
 // Get TM Entries

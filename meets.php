@@ -245,7 +245,7 @@ foreach ($meetList as $m) {
 	
 	echo "<td class=\"short\" width=\"10%\">\n";
 	
-	echo "<a href=\"meetbuilder.php?meetId=$meetId\" class=\"tooltip\" data-tip=\"Edit this meet\"><img src=\"images/edit.png\" alt=\"Edit\" /></a>";
+	echo "<a href=\"meetbuilder.php?meetId=$meetId\" ><img src=\"images/edit.png\" alt=\"Edit\" /></a>";
 	
 	// If eProgram exists show link
 	$eProgramExists = $GLOBALS['db']->getRow("SELECT * FROM meet_programs WHERE meet_id = '$meetId';");
@@ -253,28 +253,26 @@ foreach ($meetList as $m) {
 	
 	if (isset($eProgramExists)) {
 		
-		echo "<a href=\"eprogram.php?id=$meetId\" class=\"tooltip\" data-tip=\"View the eProgram for this meet\"><img src=\"images/eprogram.png\" alt=\"eProgram\" /></a>";
+		echo "<a href=\"eprogram.php?id=$meetId\"><img src=\"images/eprogram.png\" alt=\"eProgram\" /></a>";
 		
 	}
 	
 	// If no events yet, display TM Import link
 	if ($meetNumEvents == 0) {
 		
-		echo "<a href=\"importmeet.php?meet=$meetId\" class=\"tooltip\" data-tip=\"Import TM Event File\"><img src=\"images/import.png\" alt=\"Import TM Events\" /></a>";
+		echo "<a href=\"importmeet.php?meet=$meetId\"><img src=\"images/import.png\" alt=\"Import TM Events\" /></a>";
 		
 	}
 	
 	// Meet Access
-	echo "<a href=\"meetaccess.php?id=$meetId\" class=\"tooltip\" data-tip=\"Meet Access\">";
+	echo "<a href=\"meetaccess.php?id=$meetId\">";
 	echo "<img src=\"images/admin.png\" alt=\"Meet Access\" />";
 	echo "</a>\n";
 	
-	echo "<a href=\"meetfiles.php?id=$meetId\" class=\"tooltip\" data-tip=\"Meet Files\">\n";
+	echo "<a href=\"meetfiles.php?id=$meetId\">\n";
 	echo "<img src=\"images/folder.png\" alt=\"Meet Files\" />";
 	echo "</a>\n";
-	
-	echo "<a href=\"meets.php?deleteMeet=$meetId\" class=\"tooltip\" data-tip=\"Delete this meet\"><img src=\"images/delete.png\" alt=\"Delete\" /></a>";
-	
+
 	echo "</td>\n";	
 	
 	echo "</tr>\n";

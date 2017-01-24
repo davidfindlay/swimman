@@ -19,14 +19,22 @@ class MeetEntry {
 	private $notes;
 	private $status = 0;
 	private $cancelled = false;
-	
+
+	private $mealFees;
+
 	private $events;
-	
+
+	private $meet;
+	private $meetEvents;
+
 	public function __construct($member = '', $club = '', $meet = '') {
 	
-		$this->memberId = mysql_real_escape_string($member);
-		$this->clubId = mysql_real_escape_string($club);
-		$this->meetId = mysql_real_escape_string($meet);
+		$this->memberId = intval($member);
+		$this->clubId = intval($club);
+		$this->meetId = intval($meet);
+
+        $this->meet = new Meet();
+        $this->meet->loadMeet($this->meetId);
 	
 	}
 
@@ -50,91 +58,93 @@ class MeetEntry {
 		return $this->entrantName;
 		
 	}
-	
+
+	/**
+     * Loads a meet entry, finding it by it's id
+     *
+     * @param $eId integer Meet Entry Id
+     * @return boolean true if successfully loaded, false otherwise
+     */
 	public function loadId($eId) {
 		
-		$this->id = mysql_real_escape_string($eId);
+		$this->id = intval($eId);
 		$entryDetails = $GLOBALS['db']->getRow("SELECT * FROM meet_entries WHERE id = '$this->id';");
 		db_checkerrors($entryDetails);
-		
-		if (!isset($entryDetails)) {
-		
-			$this->status = 0;
-			return false;
-		
-		} else {
-		
-			$this->memberId = $entryDetails[2];
-			$this->clubId = $entryDetails[8];
-			$this->meetId = $entryDetails[1];
-			$this->id = $entryDetails[0];
-			$this->meals = $entryDetails[4];
-			$this->medical = $entryDetails[5];
-			$this->cost = $entryDetails[6];
-			$this->notes = $entryDetails[7];
-            $this->massages = $entryDetails[10];
-            $this->programs = $entryDetails[11];
-				
-			$eventEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_events_entries WHERE meet_entry_id = '$this->id'
-					ORDER BY event_id DESC;");
-			db_checkerrors($eventEntries);
-						
-			foreach ($eventEntries as $e) {
-						
-					$this->events[] = new MeetEntryEvent;
-					$eventsIndex = count($this->events) - 1;
-					$this->events[$eventsIndex]->setRow($e);
-					$this->events[$eventsIndex]->loadStatus();
-						
-			}
-			
-			return true;
-		
-		}
+
+        return $this->populateValues($entryDetails);
 		
 	}
-	
+
+    /**
+     * Loads a meet entry, finding it by the meet id, club id and member id passed
+     * to the constructor
+     *
+     * @return boolean true if successfully loaded, false otherwise
+     */
 	public function load() {
 	
 		$entryDetails = $GLOBALS['db']->getRow("SELECT * FROM meet_entries WHERE meet_id = '$this->meetId'
 												AND club_id = '$this->clubId'
 												AND member_id = '$this->memberId';");
 		db_checkerrors($entryDetails);
-		
-		if (!isset($entryDetails)) {
-		
-			$this->status = 0;
-			return false;
-		
-		} else {
-		
-			$this->id = $entryDetails[0];
-			$this->meals = $entryDetails[4];
-			$this->medical = $entryDetails[5];
-			$this->cost = $entryDetails[6];
-			$this->notes = $entryDetails[7];
+
+        return $this->populateValues($entryDetails);
+	
+	}
+
+    /**
+     * Takes a row from the meet_entries database table and populates it's values into
+     * the class
+     *
+     * @param $entryDetails array row as retrieved from the database
+     *
+     * @return boolean true if successfully loaded, false otherwise
+     */
+	private function populateValues($entryDetails) {
+
+        if (!isset($entryDetails)) {
+
+            $this->status = 0;
+            return false;
+
+        } else {
+
+            $this->memberId = $entryDetails[2];
+            $this->clubId = $entryDetails[8];
+            $this->meetId = $entryDetails[1];
+            $this->id = $entryDetails[0];
+            $this->meals = $entryDetails[4];
+            $this->medical = $entryDetails[5];
+            $this->cost = $entryDetails[6];
+            $this->notes = $entryDetails[7];
 
             $this->massages = $entryDetails[10];
             $this->programs = $entryDetails[11];
-			
-			$eventEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_events_entries WHERE meet_entry_id = '$this->id'
-					ORDER BY id DESC;");
-			db_checkerrors($eventEntries);
-			
-			foreach ($eventEntries as $e) {
-			
-				$this->events[] = new MeetEntryEvent;
-				$eventsIndex = count($this->events) - 1;
-				$this->events[$eventsIndex]->setRow($e);
-				$this->events[$eventsIndex]->loadStatus();				
-			
-			}
-			
-			return true;
 
-		}
-	
-	}
+            $eventEntries = $GLOBALS['db']->getAll("SELECT * FROM meet_events_entries WHERE meet_entry_id = '$this->id'
+					ORDER BY id DESC;");
+            db_checkerrors($eventEntries);
+
+            foreach ($eventEntries as $e) {
+
+                $this->events[] = new MeetEntryEvent;
+                $eventsIndex = count($this->events) - 1;
+                $this->events[$eventsIndex]->setRow($e);
+                $this->events[$eventsIndex]->loadStatus();
+
+            }
+
+            // Store a copy of the Meet object in the class, so we don't have to repeatedly load it
+            $this->meet = new Meet();
+            $this->meet->loadMeet($this->meetId);
+
+
+
+            return true;
+
+        }
+
+    }
 	
 	// Inserts Meet Entry into system and returns entry id number
 	public function create() {
@@ -146,7 +156,7 @@ class MeetEntry {
 		$this->calcCost(); // Calculate and update entry cost before creating
 		
 		// Prevent null entries
-		if (isset($this->meetId) && $this->meetId != 0 && isset($this->clubId) && $this->clubId != 0) {
+		if (isset($this->meetId) && ($this->meetId != 0)) {
 		
 			$insert = $GLOBALS['db']->query("INSERT INTO meet_entries (meet_id, member_id, 
 					age_group_id, club_id, meals, medical, cost, notes, massages, programs) VALUES
@@ -171,12 +181,10 @@ class MeetEntry {
 				
 			}
 
-			$meetDetails = new Meet();
-            $meetDetails->loadMeet($this->meetId);
             $clubDetails = new Club();
             $clubDetails->load($this->clubId);
 
-			$message = "New entry to " . $meetDetails->getName() . " by " . $memDetails->getFullname() . " for "
+			$message = "New entry to " . $this->meet->getName() . " by " . $memDetails->getFullname() . " for "
                 . $clubDetails->getName() . ".";
 
             $slack = new SlackNotification();
@@ -184,10 +192,14 @@ class MeetEntry {
             $slack->send();
 
             addlog("MeetEntry.php", "Created Entry", "Created entry $this->id for meet $this->meetId", "");
+
+            return true;
 			
 		} else {
 			
 			addlog("MeetEntry.php", "MeetId Unset!", "meetId was 0 when trying to insert meet entry");
+
+			return false;
 			
 		}
 	
@@ -381,6 +393,8 @@ class MeetEntry {
 			
 		}
 
+		$this->calcCost();
+
 		// As status has been updated, send a confirmation
 
         if ($this->status == 2) {
@@ -447,9 +461,12 @@ class MeetEntry {
 		return $this->events;
 		
 	}
-	
-	// Calculates if any event fees are payable for this entry
-    // TODO: don't charge for relay nominations
+
+    /**
+     * Calculates and returns the total event fees for this entry.
+     *
+     * @return float the total event fees for this entry
+     */
 	public function calcEventFees() {
 
 		$feeTotal = 0;
@@ -463,10 +480,20 @@ class MeetEntry {
 
                     $eventId = $e->getEventId();
 
-                    $fee = $GLOBALS['db']->getOne("SELECT eventfee FROM meet_events WHERE id = '$eventId';");
-                    db_checkerrors($fee);
+                    // Don't charge for relay entries as part of the individual entry
+                    $meetEvent = new MeetEvent();
+                    $meetEvent->load($eventId);
+                    $eventLegs = $meetEvent->getLegs();
 
-                    $feeTotal += floatval($fee);
+                    if ($eventLegs == 1) {
+
+                        $fee = $GLOBALS['db']->getOne("SELECT eventfee FROM meet_events WHERE id = ?;",
+                            array($eventId));
+                        db_checkerrors($fee);
+
+                        $feeTotal += floatval($fee);
+
+                    }
 
                 }
 				
@@ -476,25 +503,75 @@ class MeetEntry {
 		
 		return $feeTotal;
 	}
-	
-	// Calculate total cost of entry
+
+    /**
+     * Calculates and returns the fee for meals in this entry,
+     * equal to the number of meals multiplied by fee per meal.
+     *
+     * @return float the total fee for meals ordered in this entry
+     */
+    public function calcMealFees() {
+
+        $mealFees = $this->meet->getMealFee() * $this->meals;
+
+        return $mealFees;
+
+    }
+
+    /**
+     * Calculates and returns the fee for massages in this entry,
+     * equal to the number of massages multiplied by fee per massage.
+     *
+     * @return float the total fee for massages ordered in this entry
+     */
+    public function calcMassageFees() {
+
+        $massageFees = $this->meet->getMassageFee() * $this->massages;
+
+        return $massageFees;
+
+    }
+
+    /**
+     * Calculates and returns the fee for programs in this entry,
+     * equal to the number of programs multiplied by fee per programs.
+     *
+     * @return float the total fee for programs ordered in this entry
+     */
+    public function calcProgramFees() {
+
+        $programFees = $this->meet->getProgramFee() * $this->program;
+
+        return $programFees;
+
+    }
+
+    /**
+     * Calculates and returns the total cost for this entry.
+     * Calculated value is stored in the object and database on update.
+     *
+     * @return float the total cost of this entry
+     */
 	public function calcCost() {
 		
 		$meetDet = new Meet();
 		$meetDet->loadMeet($this->meetId);
 		
-		$this->cost = $meetDet->getMeetFee() +
-            ($meetDet->getMealFee() * ($this->meals - $meetDet->getMealsIncluded())) +
-            ($meetDet->getMassageFee() * $this->massages) +
-            ($meetDet->getProgramFee() * $this->programs) +
+		$this->cost = $this->meet->getMeetFee() +
+            $this->calcMealFees() +
+            $this->calcMassageFees() +
+            $this->calcProgramFees() +
             $this->calcEventFees();
+
+		return $this->cost;
 		
 	}
+
 	
 	// Set number of meals
 	public function setNumMeals($num) {
 		
-		$this->meals = mysql_real_escape_string($num);
+		$this->meals = intval($num);
 		
 	}
 	
@@ -764,6 +841,9 @@ class MeetEntry {
 
         }
 
+        // Calculate and store the new cost
+        $existEntry->calcCost();
+
         return $existingId;
 		
 	}
@@ -821,9 +901,9 @@ class MeetEntry {
 				AND meet_id = '$this->meetId' LIMIT 1;");
 		db_checkerrors($existId);
 		$existingEntry->loadId($existId);
-		
-		$existingEntry->calcCost();
+
 		$existingEntry->updateEvents($existingEntry->events, $foundStatus, $notFoundStatus);
+        $existingEntry->calcCost();
 		
 		addlog("Meet Entry", "Updated entry $existId");
 		
@@ -910,6 +990,9 @@ class MeetEntry {
 			}
 			
 		}
+
+		// Calculate and store the updated cost
+		$this->calcCost();
 		
 	}
 

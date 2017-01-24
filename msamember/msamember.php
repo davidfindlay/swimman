@@ -405,6 +405,16 @@ class plgUserMSAMember extends JPlugin
 
             }
 
+            // Refresh the permissions
+            $user = JFactory::getUser();
+            $session = JFactory::getSession();
+            $session->set('user', new JUser($user->id));
+
+            $app = JFactory::getApplication();
+            $app->enqueueMessage(JText::_('Tried to refresh permissions ' . $user->id), 'error');
+            $menu = $app->getMenu();
+            $menu->load();
+
 		}
 
 		return true;
