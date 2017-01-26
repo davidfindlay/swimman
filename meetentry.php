@@ -452,6 +452,96 @@ echo "</p>\n";
 echo "<input type=\"submit\" name=\"submitRefresh\" value=\"Refresh\" />\n";
 echo "<input type=\"submit\" name=\"updateEntry\" value=\"Update\" />\n";
 
+echo "<h3>Entry Cost</h3>\n";
+
+// Get list of payments for this entry
+$totalFee = $curEntry->calcCost();
+$meetFee = $curMeet->getMeetFee();
+$eventFees = $curEntry->calcEventFees();
+$mealFee = $curEntry->getNumMeals() * $curMeet->getMealFee();
+$massageFee = $curEntry->getMassages() * $curMeet->getMassageFee();
+$programFee = $curEntry->getPrograms() * $curMeet->getProgramFee();
+$amountPaid = $curEntry->getPaid();
+$amountToPay = $totalFee - $amountPaid;
+
+
+echo "<p>\n";
+echo "<label>Fees Payable: </label>\n";
+echo "<table>\n";
+echo "<tr>\n";
+echo "<th style=\"padding-right: 5px; padding-left: 5px;\">\n";
+echo "Entry Fee:\n";
+echo "</th>\n";
+echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+echo "\$" . number_format($meetFee, 2);
+echo "</td>\n";
+echo "</tr>\n";
+echo "<tr>\n";
+echo "<th style=\"padding-right: 5px; padding-left: 5px;\">\n";
+echo "Event Fees:\n";
+echo "</th>\n";
+echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+echo "\$" . number_format($eventFees, 2);
+echo "</td>\n";
+echo "</tr>\n";
+echo "<tr>\n";
+echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
+echo "Meal Fee:\n";
+echo "</th>\n";
+echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+echo "\$" . number_format($mealFee, 2);
+echo "</td>\n";
+echo "</tr>\n";
+
+if ($curMeet->getMassageFee() < 0) {
+
+    echo "<tr>\n";
+    echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
+    echo "Massage Fee:\n";
+    echo "</th>\n";
+    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+    echo "\$" . number_format($massageFee, 2);
+    echo "</td>\n";
+    echo "</tr>\n";
+
+}
+
+if ($curMeet->getProgramFee() < 0) {
+
+    echo "<tr>\n";
+    echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
+    echo "Programme Fee:\n";
+    echo "</th>\n";
+    echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+    echo "\$" . number_format($programFee, 2);
+    echo "</td>\n";
+    echo "</tr>\n";
+
+}
+
+echo "<tr>\n";
+echo "<th style=\"padding-right: 5px; padding-left: 5px;\">Total Cost:</th>\n";
+echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+echo "\$" . number_format($totalFee, 2);
+echo "</td>\n";
+echo "<tr>\n";
+echo "<th style=\"padding-right: 5px; padding-left: 5px;\">Paid:</th>\n";
+echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+echo "<strong>\$" . number_format($amountPaid, 2) . "</strong>";
+echo "</td>\n";
+echo "<tr>\n";
+echo "<th style=\"padding-right: 5px; padding-left: 5px;\">Amount Due:</th>\n";
+echo "<td style=\"text-align: right; padding-left: 5px;\">\n";
+echo "<strong>\$" . number_format($amountToPay, 2) . "</strong>";
+echo "</td>\n";
+echo "</tr>\n";
+
+// Check if the user has paid
+
+
+echo "</table>\n";
+echo "</p>\n";
+
 echo "</form>\n";
 
 
