@@ -540,7 +540,7 @@ class MeetEntry {
      */
     public function calcProgramFees() {
 
-        $programFees = $this->meet->getProgramFee() * $this->program;
+        $programFees = $this->meet->getProgramFee() * $this->programs;
 
         return $programFees;
 
