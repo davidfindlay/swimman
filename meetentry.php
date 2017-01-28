@@ -464,7 +464,6 @@ $programFee = $curEntry->getPrograms() * $curMeet->getProgramFee();
 $amountPaid = $curEntry->getPaid();
 $amountToPay = $totalFee - $amountPaid;
 
-
 echo "<p>\n";
 echo "<label>Fees Payable: </label>\n";
 echo "<table>\n";
@@ -493,7 +492,7 @@ echo "\$" . number_format($mealFee, 2);
 echo "</td>\n";
 echo "</tr>\n";
 
-if ($curMeet->getMassageFee() < 0) {
+if (floatval($curMeet->getMassageFee()) > 0) {
 
     echo "<tr>\n";
     echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
@@ -506,7 +505,7 @@ if ($curMeet->getMassageFee() < 0) {
 
 }
 
-if ($curMeet->getProgramFee() < 0) {
+if (floatval($curMeet->getProgramFee()) > 0) {
 
     echo "<tr>\n";
     echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
