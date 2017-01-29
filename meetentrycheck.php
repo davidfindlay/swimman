@@ -76,8 +76,9 @@ foreach ($entries as $entry) {
     if ($currentCost != $correctCost) {
 
         $check = false;
+        $difference = $correctCost - $currentCost;
         $messages[] = "Stored cost: \$" . number_format($currentCost, 2) .", Correct cost: \$" .
-            number_format($currentCost, 2);
+            number_format($correctCost, 2) . ", Difference: \$" . number_format($difference, 2);
 
     }
 
