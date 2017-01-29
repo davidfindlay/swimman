@@ -10,13 +10,13 @@ require_once("includes/classes/Club.php");
 checkLogin();
 
 // Identify if an entry has been opened
-$entryId = mysql_real_escape_string($_GET['entry']);
+$entryId = intval($_GET['entry']);
 
 // Submit entry
 if (isset($_POST['updateEntry'])) {
 	
 	// Get the current entry status
-	$entryStatus = mysql_real_escape_string($_POST['entryStatus']);
+	$entryStatus = intval($_POST['entryStatus']);
 
 	$objEntry = new MeetEntry();
 	$objEntry->loadId($entryId);
@@ -46,7 +46,8 @@ if (isset($_POST['updateEntry'])) {
 
 	}
 
-	//$objEntry->update();
+	// Recalculate and store the updated cost
+	$objEntry->updateCost();
 
 }
 
@@ -87,6 +88,18 @@ if (isset($_GET['entry'])) {
 	
 }
 
+
+// Handle payment adjustment
+if (isset($_POST['adj_submit'])) {
+
+    $adj_amount = floatval($_POST['adj_amount']);
+
+    $curEntry = new MeetEntry();
+    $curEntry->loadId($entryId);
+    $curEntry->makePayment($adj_amount, 2, "Administrator adjustment");
+    addlog("meetentry.php", "Administrator payment adjustment to meet entry: $entryId");
+
+}
 
 
 htmlHeaders("Swimming Management System - Enter a Meet");
@@ -190,6 +203,8 @@ db_checkerrors($eventsList);
 // Does user already have entries in this event?
 $entryDetails = $GLOBALS['db']->getRow("SELECT * FROM meet_entries WHERE meet_id = '$meetId' AND member_id = '$memberId';");
 db_checkerrors($entryDetails);
+
+$entryId = 0;
 
 if (isset($entryDetails)) {
 
@@ -541,6 +556,83 @@ echo "</tr>\n";
 
 echo "</table>\n";
 echo "</p>\n";
+
+echo "<h3>Payment History:</h3>\n";
+echo "<table width=\"100%\">\n";
+echo "<tr>\n";
+echo "<th>Date</th>\n";
+echo "<th>Payment Method:</th>\n";
+echo "<th>Description:</th>\n";
+echo "<th>Amount:</th>\n";
+echo "</tr>\n";
+
+$meetPayments = $GLOBALS['db']->getAll("SELECT * FROM meet_entry_payments, payment_types 
+            WHERE entry_id = ?
+            AND payment_types.id = meet_entry_payments.method;",
+    array($entryId));
+db_checkerrors($meetPayments);
+
+$runningAmount = 0;
+
+if (count($meetPayments) > 0) {
+
+    foreach ($meetPayments as $m) {
+
+        $paymentDate = date('d/m/Y', strtotime($m[3]));
+        $paymentMethod = $m[8];
+        $amount = "$" . number_format($m[4], 2);
+        $runningAmount = $runningAmount + $m[4];
+        $comment = $m[6];
+
+        echo "<tr>\n";
+
+        echo "<td>\n";
+        echo $paymentDate;
+        echo "</td>\n";
+
+        echo "<td>\n";
+        echo $paymentMethod;
+        echo "</td>\n";
+
+        echo "<td>\n";
+        echo $comment;
+        echo "</td>\n";
+
+        echo "<td>\n";
+        echo $amount;
+        echo "</td>\n";
+
+        echo "</tr>\n";
+
+    }
+
+}
+
+echo "<tr>\n";
+echo "<th colspan=\"3\">Total:</th>\n";
+echo "<th>\n";
+echo "$" . number_format($runningAmount, 2);
+echo "</th>\n";
+echo "</tr>\n";
+
+echo "</table>\n";
+
+?>
+
+<h3>Apply Payment Adjustment</h3>
+<p>
+<label>Date: </label>
+<input type="date" name="adj_date" id="adj_date" />
+</p>
+<p>
+<label>Amount(negative for refund): </label>
+<input type="text" name="adj_amount" id="adj_amount" />
+</p>
+<p>
+    <input type="submit" name="adj_submit" value="Apply" />
+</p>
+
+<?php
 
 echo "</form>\n";
 

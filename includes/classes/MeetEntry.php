@@ -663,7 +663,7 @@ class MeetEntry {
     }
 	
 	// Receive payment
-	public function makePayment($amount, $method) {
+	public function makePayment($amount, $method, $comment = "") {
 
         if ($this->id == "") {
 
@@ -679,7 +679,8 @@ class MeetEntry {
 
         }
 
-        if ($amount <= 0) {
+        // Changed from <= 0 so that we can handle refunds
+        if ($amount == 0) {
 
             addlog("Entry manager", "Unable to accept payment", "Can't accept a zero payment!");
             return false;
@@ -700,8 +701,8 @@ class MeetEntry {
 		if ($this->getCost() >= $this->getPaid()) {
 		
 			$query = $GLOBALS['db']->query("INSERT INTO meet_entry_payments (entry_id, member_id, 
-				amount, method) VALUES (?, ?, ?, ?);",
-				array($this->id, $this->memberId, $paid, $method));
+				amount, method, comment) VALUES (?, ?, ?, ?, ?);",
+				array($this->id, $this->memberId, $paid, $method, $comment));
 			db_checkerrors($query);
 		
 		}
@@ -1004,6 +1005,21 @@ class MeetEntry {
 
         addlog("Meet Entry", "Update extras", "Updated meals to " . $this->meals . " and massages to " .
             $this->massages . " and programs to " . $this->programs . " for " . $this->id . ".");
+
+    }
+
+    /**
+     * Recalculates and updates the entry cost
+     */
+    public function updateCost() {
+
+        $this->calcCost();
+
+        $update = $GLOBALS['db']->query("UPDATE meet_entries SET cost = ? WHERE id = ?;",
+            array($this->cost, $this->id));
+        db_checkerrors($update);
+
+        addlog("Meet Entry", "Updated cost", "Updated cost to $" . number_format($this->cost, 2) . " for " . $this->id);
 
     }
 	
