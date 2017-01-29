@@ -362,7 +362,7 @@ echo "\$" . number_format($mealFee, 2);
 echo "</td>\n";
 echo "</tr>\n";
 
-if ($meetDet->getMassageFee() < 0) {
+if ($meetDet->getMassageFee() > 0) {
 
     echo "<tr>\n";
     echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";
@@ -375,7 +375,7 @@ if ($meetDet->getMassageFee() < 0) {
 
 }
 
-if ($meetDet->getProgramFee() < 0) {
+if ($meetDet->getProgramFee() > 0) {
 
     echo "<tr>\n";
     echo "<th style=\"padding-right: 5px; padding-left: 5px\">\n";

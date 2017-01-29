@@ -356,9 +356,9 @@ foreach ($meetEntries as $e) {
 	echo "</table>\n";
 
     $meetFee = $curMeet->getMeetFee();
-    $mealFee = $curMeet->getMealFee() * $curEntry->getNumMeals();
-    $massageFee = $curMeet->getMassageFee() * $curEntry->getMassages();
-    $programFee = $curMeet->getProgramFee() * $curEntry->getPrograms();
+    $mealFee = $curEntry->calcMealFees();
+    $massageFee = $curEntry->calcMassageFees();
+    $programFee = $curEntry->calcProgramFees();
     $eventFees = $curEntry->calcEventFees();
     $totalFee = $meetFee + $mealFee + $massageFee + $eventFees + $programFee;
     $amountPaid = $curEntry->getPaid();
