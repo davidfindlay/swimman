@@ -101,7 +101,7 @@ foreach ($entries as $entry) {
     echo "</td>\n";
 
     echo "<td>\n";
-    echo "<a href=\"meetentry.php?id=$entryId\">$entryId</a>\n";
+    echo "<a href=\"meetentry.php?entry=$entryId\">$entryId</a>\n";
     echo "</td>\n";
 
     echo "<td>\n";
