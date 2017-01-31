@@ -1,6 +1,7 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/config.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/setup.php');
 
 use PayPal\Api\Amount;
 use PayPal\Api\Item;
@@ -25,10 +26,14 @@ class PayPalEntryPayment
     private $entryId;
     private $meetName;
     private $invoiceId;
+    private $payerName;
+    private $payerEmail;
 
     private $apiContext;
 
     private $items;
+
+    private $logger;
 
     public function __construct() {
 
@@ -40,6 +45,8 @@ class PayPalEntryPayment
         );
 
         $this->apiContext->setConfig(array('mode' => 'live'));
+
+        $this->logger = Logger::getLogger("PayPalEntryPayment");
 
     }
 
@@ -175,9 +182,24 @@ class PayPalEntryPayment
         try {
 
             $result = $payment->execute($execution, $this->apiContext);
+
+            // Log the result
+            $this->logger->debug($result);
+
             $transactions = $result->getTransactions();
-            
+
+            // Retrieve the paid amount
             $paidAmount = $transactions[0]->getAmount()->getTotal();
+
+            // Retreive the invoice id
+            $this->invoiceId = $transactions[0]->getInvoiceNumber();
+
+            // Retrieve the payer details
+            $payer = $payment->getPayer();
+            $payerInfo = $payer->getPayerInfo();
+            $this->payerName = $payerInfo->getFirstName() . ' ' . $payerInfo->getLastName();
+            $this->payerEmail = $payerInfo->getEmail();
+
 
             //echo "<h2>Payment Successful - Paid $paidAmount</h2>\n";
 
