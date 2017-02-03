@@ -1323,6 +1323,43 @@ class EntryManagerController extends JController {
 			$relay->delete();
 			
 		}
+
+		// Handle return from Paypal
+        if ($jinput->get('paymentId') && $jinput->get('PayerID')) {
+
+            $pp = new PayPalEntryPayment();
+            $paymentId = $jinput->get('paymentId');
+            $payerID = $jinput->get('PayerID');
+
+            if ($jinput->get('success') == 'true') {
+
+                $amountPaid = $pp->finalisePayment($paymentId, $payerID);
+
+                addlog("Entry Manager", "PayPal Payment", "$entrantName paid $amountPaid for $meetId");
+
+            } elseif($jinput->get('success') == 'false') {
+
+                // payment not made
+                addlog("Entry Manager", "PayPal Payment Failed", "$entrantName did not pay for $meetId");
+
+            } else {
+
+
+            }
+
+            // Rebuild session
+            $entryId = $pp->getEntryId();
+            $sess->set("emEntryId", $entryId);
+
+            $entry = new MeetEntry();
+            $entry->loadId($entryId);
+            $sess->set('emMeetId', $entry->getMeetId());
+            $sess->set('emClubId', $entry->getClubId());
+            $sess->set('emEntrant', $entry->getMemberId());
+            $sess->set('emEntryData', serialize($entry));
+
+
+        }
 		
 		parent::__construct();
 		

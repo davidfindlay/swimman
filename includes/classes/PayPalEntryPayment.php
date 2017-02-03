@@ -166,7 +166,23 @@ class PayPalEntryPayment
 
         $approvalUrl = $payment->getApprovalLink();
 
+        // Store the payment details
+        $this->storePayment();
+
         return $approvalUrl;
+
+    }
+
+    /**
+     *  Stores the initial details of the payment, linking the unique invoice
+     *  id to the entry id.
+     */
+    private function storePayment() {
+
+        $insert = $GLOBALS['db']->query("INSERT INTO paypal_payment (meet_entry_id, invoice_id) 
+                                          VALUES (?, ?);",
+                                        array($this->entryId, $this->invoiceId));
+        db_checkerrors($insert);
 
     }
 
@@ -190,9 +206,20 @@ class PayPalEntryPayment
 
             // Retrieve the paid amount
             $paidAmount = $transactions[0]->getAmount()->getTotal();
+            $this->paid = $paidAmount;
 
             // Retreive the invoice id
             $this->invoiceId = $transactions[0]->getInvoiceNumber();
+
+            // Get the entry Id associated with this one
+            $entryId = $GLOBALS['db']->getOne("SELECT meet_entry_id FROM paypal_payment 
+                                              WHERE invoice_id = ?", array($this->invoiceId));
+            db_checkerors($entryId);
+
+            // Load the entry and record payment
+            $entry = new MeetEntry();
+            $entry->loadId($entryId);
+            $entry->makePayment($this->paid, 1, "PayPal Invoice " . $this->invoiceId);
 
             // Retrieve the payer details
             $payer = $payment->getPayer();
@@ -200,20 +227,14 @@ class PayPalEntryPayment
             $this->payerName = $payerInfo->getFirstName() . ' ' . $payerInfo->getLastName();
             $this->payerEmail = $payerInfo->getEmail();
 
-
-            //echo "<h2>Payment Successful - Paid $paidAmount</h2>\n";
-
-//            echo "<pre>\n";
-//            print_r($result);
-//            echo "</pre>\n";
+            // Log the details
+            $this->logger->info("finalisePayment: $paidAmount for entry " . $this->entryId .
+                " for entrant " . $this->payerName . " <" . $this->payerEmail . ">");
 
         } catch (Exception $ex) {
 
-//            echo "<h2>Get Payment</h2>\n";
-
-            //echo "<pre>\n";
-            //print_r($ex);
-            //echo "</pre>\n";
+            // Log the exception
+            $this->logger->error("finalisePayment exception: " . $ex);
 
         }
 
