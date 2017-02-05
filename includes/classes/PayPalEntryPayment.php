@@ -144,8 +144,8 @@ class PayPalEntryPayment
 
         //$baseUrl = "http://localhost:8888";
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl("http://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=true")
-            ->setCancelUrl("http://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=false");
+        $redirectUrls->setReturnUrl("https://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=true")
+            ->setCancelUrl("https://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=false");
 
         $payment = new Payment();
         $payment->setIntent("sale")
@@ -212,7 +212,8 @@ class PayPalEntryPayment
             $this->invoiceId = $transactions[0]->getInvoiceNumber();
 
             // Get the entry Id associated with this one
-            $entryId = $GLOBALS['db']->getOne("SELECT meet_entry_id FROM paypal_payment 
+            list($paymentId, $entryId) = $GLOBALS['db']->getRow("SELECT id, meet_entry_id 
+                                              FROM paypal_payment 
                                               WHERE invoice_id = ?", array($this->invoiceId));
             db_checkerors($entryId);
 
@@ -230,6 +231,13 @@ class PayPalEntryPayment
             // Log the details
             $this->logger->info("finalisePayment: $paidAmount for entry " . $this->entryId .
                 " for entrant " . $this->payerName . " <" . $this->payerEmail . ">");
+
+            // Update table
+            $update = $GLOBALS['db']->query("UPDATE paypal_payment SET paid = ?, 
+                                    payer_name = ?, payer_email = ? 
+                                    WHERE id = ?",
+                array($paidAmount, $this->payerName, $this->payerEmail, $paymentId));
+            db_checkerrors($update);
 
         } catch (Exception $ex) {
 

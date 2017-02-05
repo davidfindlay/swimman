@@ -1335,15 +1335,19 @@ class EntryManagerController extends JController {
 
                 $amountPaid = $pp->finalisePayment($paymentId, $payerID);
 
-                addlog("Entry Manager", "PayPal Payment", "$entrantName paid $amountPaid for $meetId");
+                addlog("Entry Manager", "PayPal Payment", "User paid $amountPaid for $meetId");
 
             } elseif($jinput->get('success') == 'false') {
 
                 // payment not made
-                addlog("Entry Manager", "PayPal Payment Failed", "$entrantName did not pay for $meetId");
+                addlog("Entry Manager", "PayPal Payment Failed", "Entrant did not pay for $meetId");
 
             } else {
 
+                // User loaded step 4 without coming from Paypal
+                addlog("Entry Manager", "Step 4 without entry", "User landed on Step 4 without return from Paypal.");
+
+                JRequest::setVar('view', 'entrymanager', 'method', true);
 
             }
 
@@ -1358,6 +1362,7 @@ class EntryManagerController extends JController {
             $sess->set('emEntrant', $entry->getMemberId());
             $sess->set('emEntryData', serialize($entry));
 
+            JRequest::setVar('view', 'step4', 'method', true);
 
         }
 		
