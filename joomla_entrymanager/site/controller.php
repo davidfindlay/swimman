@@ -441,7 +441,7 @@ class EntryManagerController extends JController {
                 // Check if payment needs to be made
                 $alreadyPaid = $oldEntry->getPaid();
 
-                $entryDetails->calcCost();
+                $entryDetails->updateCost();
                 $newCost = $entryDetails->getCost();
                 $differentCost = $newCost - $alreadyPaid;
 
