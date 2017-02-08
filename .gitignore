@@ -6,3 +6,4 @@ includes/aws
 config.php
 node_modules
 vendor
+composer.lock

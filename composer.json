@@ -1,0 +1,5 @@
+{
+    "require": {
+        "nicolasbize/magicsuggest": "^2.1"
+    }
+}
