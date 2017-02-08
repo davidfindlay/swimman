@@ -137,8 +137,9 @@ class PayPalEntryPayment
 
         //$baseUrl = "http://localhost:8888";
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl("http://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=true")
-            ->setCancelUrl("http://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=false");
+
+        $redirectUrls->setReturnUrl(SITE_URL . "/entry-manager-new/enter-a-meet?view=step4&success=true")
+            ->setCancelUrl(SITE_URL . "/entry-manager-new/enter-a-meet?view=step4&success=false");
 
         $payment = new Payment();
         $payment->setIntent("sale")
