@@ -23,9 +23,9 @@ class MeetEntry {
 	private $mealFees;
 
 	private $events;
-
 	private $meet;
-	private $meetEvents;
+
+	private $logger;
 
 	public function __construct($member = '', $club = '', $meet = '') {
 	
@@ -35,8 +35,12 @@ class MeetEntry {
 
         $this->meet = new Meet();
         $this->meet->loadMeet($this->meetId);
-	
-	}
+
+        $this->logger = new \Monolog\Logger('MeetEntry');
+        $this->logger->pushProcessor(new \Monolog\Processor\WebProcessor);
+        $this->logger->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'meetentry.log', $GLOBALS['log_level']));
+
+    }
 
     /**
      * @return mixed

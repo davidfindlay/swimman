@@ -10,7 +10,7 @@ require_once ("DB.php");
 require_once ("config.php");
 require_once ("array_column_impl.php");
 
-require_once ("vendor/autoload.php");
+require_once ($GLOBALS['home_dir'] . "/swimman/vendor/autoload.php");
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;

@@ -43,7 +43,7 @@ class PayPalEntryPayment
 
         $this->apiContext->setConfig(array('mode' => 'live'));
 
-        $logger = new \Monolog\Logger('paypal');
+        $this->logger = new \Monolog\Logger('paypal');
         $GLOBALS['authLog']->pushProcessor(new \Monolog\Processor\WebProcessor);
         $GLOBALS['authLog']->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'paypal.log', $GLOBALS['log_level']));
 
@@ -161,6 +161,8 @@ class PayPalEntryPayment
             //echo "<pre>\n";
             //print_r($ex);
             //echo "</pre>\n";
+
+            $this->logger->error("Payment Creation Exeception: " . $ex);
         }
 
         $approvalUrl = $payment->getApprovalLink();
@@ -185,19 +187,11 @@ class PayPalEntryPayment
             
             $paidAmount = $transactions[0]->getAmount()->getTotal();
 
-            //echo "<h2>Payment Successful - Paid $paidAmount</h2>\n";
-
-//            echo "<pre>\n";
-//            print_r($result);
-//            echo "</pre>\n";
+            $this->logger->debug("PayPal payment info: " . $result);
 
         } catch (Exception $ex) {
 
-//            echo "<h2>Get Payment</h2>\n";
-
-            //echo "<pre>\n";
-            //print_r($ex);
-            //echo "</pre>\n";
+            $this->logger->error("Paypal payment finalise exception: " . $ex);
 
         }
 
