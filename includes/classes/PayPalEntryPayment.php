@@ -1,6 +1,7 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/config.php');
+require_once ($_SERVER['DOCUMENT_ROOT'] . "/swimman/vendor/autoload.php");
+require_once ($_SERVER['DOCUMENT_ROOT'] . '/swimman/config.php');
 
 use PayPal\Api\Amount;
 use PayPal\Api\Item;
@@ -10,6 +11,9 @@ use PayPal\Api\Payer;
 use PayPal\Api\Payment;
 use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 /**
  * Created by PhpStorm.
@@ -44,8 +48,8 @@ class PayPalEntryPayment
         $this->apiContext->setConfig(array('mode' => 'live'));
 
         $this->logger = new \Monolog\Logger('paypal');
-        $GLOBALS['authLog']->pushProcessor(new \Monolog\Processor\WebProcessor);
-        $GLOBALS['authLog']->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'paypal.log', $GLOBALS['log_level']));
+        $this->logger->pushProcessor(new \Monolog\Processor\WebProcessor);
+        $this->logger->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'paypal.log', $GLOBALS['log_level']));
 
     }
 
@@ -156,6 +160,8 @@ class PayPalEntryPayment
 
         try {
             $payment->create($this->apiContext);
+            $this->logger->info("Created transaction " . $this->invoiceId . " for entry " . $this->entryId);
+
         } catch (Exception $ex) {
 
             //echo "<pre>\n";
