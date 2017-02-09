@@ -30,6 +30,8 @@ class PayPalEntryPayment
 
     private $items;
 
+    private $logger;
+
     public function __construct() {
 
         $this->apiContext = new \PayPal\Rest\ApiContext(
@@ -40,6 +42,10 @@ class PayPalEntryPayment
         );
 
         $this->apiContext->setConfig(array('mode' => 'live'));
+
+        $logger = new \Monolog\Logger('paypal');
+        $GLOBALS['authLog']->pushProcessor(new \Monolog\Processor\WebProcessor);
+        $GLOBALS['authLog']->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'paypal.log', $GLOBALS['log_level']));
 
     }
 

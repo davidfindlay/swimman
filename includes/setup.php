@@ -12,6 +12,9 @@ require_once ("array_column_impl.php");
 
 require_once ("vendor/autoload.php");
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 //require_once ("../includes/Zebra_Form/Zebra_Form.php");
 global $db;
 
@@ -25,6 +28,8 @@ date_default_timezone_set('Australia/Brisbane');
 // Authentication logger
 $GLOBALS['authLog'] = new \Monolog\Logger('auth');
 $GLOBALS['authLog']->pushProcessor(new \Monolog\Processor\WebProcessor);
+$GLOBALS['authLog']->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'auth.log', $GLOBALS['log_level']));
+
 
 if (isset($_GET['logout'])) {
 	
@@ -148,6 +153,7 @@ function db_checkerrors($var) {
 		$callingFunction = $backTrace[0]['function'];
 
         $dbLog = new \Monolog\Logger('db');
+        $dbLog->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'db.log', $GLOBALS['log_level']));
 		$dbLog->critical("SQL error in $callingFunction: $message");
 
 		echo "Oops. An error has occured. This incident has been logged and we apologise for the
