@@ -22,15 +22,15 @@ $failed = false;
 				setcookie('swpass', $_POST['swpassword'], $expire);
 
 			}
-			
-			addlog("Authentication", "User $username logged in");
+
+            $GLOBALS['authLog']->info("Log in via web form: $username");
 			
 			header("Location: index.php");
 
 		} else {
 
 			$failed = true;
-			addlog("Authentication", "User $username login failed");
+            $GLOBALS['authLog']->error("Log in via web form: $username failed");
 
 		}
 

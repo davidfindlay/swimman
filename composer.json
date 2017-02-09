@@ -1,5 +1,5 @@
 {
   "require": {
-    "apache/log4php": "^2.3"
+    "monolog/monolog": "^1.22"
   }
 }

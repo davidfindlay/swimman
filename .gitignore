@@ -5,3 +5,4 @@ includes/aws
 .idea
 config.php
 node_modules
+/composer.lock

@@ -9,6 +9,9 @@ if (session_id() == '') {
 require_once ("DB.php");
 require_once ("config.php");
 require_once ("array_column_impl.php");
+
+require_once ("vendor/autoload.php");
+
 //require_once ("../includes/Zebra_Form/Zebra_Form.php");
 global $db;
 
@@ -18,6 +21,10 @@ database_connect();
 
 date_default_timezone_set('Australia/Brisbane');
 // set_magic_quotes_runtime(false);
+
+// Authentication logger
+$GLOBALS['authLog'] = new \Monolog\Logger('auth');
+$GLOBALS['authLog']->pushProcessor(new \Monolog\Processor\WebProcessor);
 
 if (isset($_GET['logout'])) {
 	
@@ -31,8 +38,8 @@ if (isset($_GET['logout'])) {
 	setcookie('swpass', "", $expire);
 			
 	session_destroy();
-	
-	addlog("Authentication", "User $logOutUser logged out");
+
+    $GLOBALS['authLog']->info("Log out: $logOutUser");
 	
 	header("Location: login.php");
 	
@@ -135,19 +142,16 @@ function database_close() {
 function db_checkerrors($var) {
 
 	if (DB::isError($var)) {
-		
-		//echo 'Standard Message: ' . $var->getMessage() . "<br />\n";
-    	//echo 'DBMS/User Message: ' . $var->getUserInfo() . "<br />\n";
-    	//echo 'DBMS/Debug Message: ' . $var->getDebugInfo() . "<br />\n";
 	
 		$message = $var->getDebugInfo();
 		$backTrace = debug_backtrace();
 		$callingFunction = $backTrace[0]['function'];
-		
-		addlog("sql", "SQL error in $callingFunction", $message);
 
-		//echo "Oops. An error has occured. This incident has been logged and we apologise for the
-		//	inconvenience. <a href=\"/\">Click here to return home.</a>";
+        $dbLog = new \Monolog\Logger('db');
+		$dbLog->critical("SQL error in $callingFunction: $message");
+
+		echo "Oops. An error has occured. This incident has been logged and we apologise for the
+			inconvenience. <a href=\"/\">Click here to return home.</a>";
 		
 		$GLOBALS['db']->disconnect();
 
@@ -177,9 +181,8 @@ function checkLogin() {
 			$password = $_COOKIE['swpass'];
 
 			$result = authenticate($username, $password);
-			
-			addlog("Authentication", "User $username logged in via cookie");
-			
+
+            $GLOBALS['authLog']->info("Log in via cookie: $username");
 
 		}
 		
@@ -195,11 +198,12 @@ function checkLogin() {
 
 function authenticate($username, $password) {
 
-	$uname = mysql_real_escape_string($username);
-	$pass = mysql_real_escape_string($password);
+	$uname = $username;
+	$pass = $password;
 
 	// Does the user exist in our database?
-	$row = $GLOBALS['db']->getRow("SELECT * FROM users WHERE username='$uname';");
+	$row = $GLOBALS['db']->getRow("SELECT * FROM users WHERE username = ?;",
+        array($uname));
 	db_checkerrors($row);
 	
 	if (!$row) {
@@ -253,8 +257,8 @@ function authenticate($username, $password) {
 				
 				$_SESSION['swuid'] = $uid;
 				$_SESSION['swuname'] = $uname;
-				
-				addlog("Authentication", "User $uname has updated password in Joomla, synchronised");
+
+                $GLOBALS['authLog']->info("User $uname has updated password in Joomla, synchronised");
 								
 				return (true);
 				
