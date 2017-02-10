@@ -61,6 +61,9 @@ if ($entry->loadId($entryId)) {
 //    echo "Loaded Entry<br />\n";
 } else {
 //    echo "Unable to Load Entry<br />\n";
+
+    header("Location: /entry-manager-new/my-entries");
+
 }
 
 $entrant = new Member();
