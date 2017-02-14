@@ -185,12 +185,14 @@ echo "<h2>Entry Confirmation</h2>\n";
 
 if ($sess->get('emEntryEdit') ==  "true") {
 
+    echo "<h3 style='color: green'>&#x2714 Entry Edited</h3>\n";
     echo "<p>\n";
     echo "Your entry has been edited. Please see the status listed below.\n";
     echo "</p>\n";
 
 } else {
 
+    echo "<h3 style='color: green'>>&#x2714 Entry Created</h3>\n";
     echo "<p>\n";
     echo "Your entry has been created. Please see the status listed below.\n";
     echo "</p>\n";
@@ -199,9 +201,17 @@ if ($sess->get('emEntryEdit') ==  "true") {
 
 if (!$paymentStatus) {
 
+    echo "<h3 style='color: red'>>&#x2718 Payment Cancelled or Failed</h3>\n";
     echo "<p>\n";
     echo "Your payment was cancelled or otherwise not confirmed. Please try again. If you have any ";
     echo "queries please <a href=\"mailto:recorder@mastersswimmingqld.org.au\">email the State Recorder</a>.";
+    echo "</p>\n";
+
+} else {
+
+    echo "<h3 style='color: green'>>&#x2714 Payment Received</h3>\n";
+    echo "<p>\n";
+    echo "Your payment has been received. You will receive a receipt via email from PayPal.";
     echo "</p>\n";
 
 }
