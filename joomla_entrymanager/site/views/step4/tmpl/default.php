@@ -201,7 +201,7 @@ if ($sess->get('emEntryEdit') ==  "true") {
 
 if (!$paymentStatus) {
 
-    echo "<h3 style='color: red'>>&#x2718 Payment Cancelled or Failed</h3>\n";
+    echo "<h3 style='color: red'>&#x2718 Payment Cancelled or Failed</h3>\n";
     echo "<p>\n";
     echo "Your payment was cancelled or otherwise not confirmed. Please try again. If you have any ";
     echo "queries please <a href=\"mailto:recorder@mastersswimmingqld.org.au\">email the State Recorder</a>.";
