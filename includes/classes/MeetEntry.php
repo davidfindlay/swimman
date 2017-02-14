@@ -713,8 +713,7 @@ class MeetEntry {
 		if ($this->getCost() <= $this->getPaid()) {
 			
 			$this->setStatus(2);		// Change status to Accepted
-			$this->updateStatus();
-			
+
 			foreach ($this->events as $e) {
 
                 // Don't record cancelled events as Accepted
@@ -741,6 +740,9 @@ class MeetEntry {
                 }
 				
 			}
+
+            // Move here, so the email sends after the entry events are accepted
+            $this->updateStatus();
 
             addlog("Entry Manager", "Payment Received", "Member $this->memberId paid $paid for $this->id - status updated to Accepted");
 			
