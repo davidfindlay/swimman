@@ -187,14 +187,14 @@ if ($sess->get('emEntryEdit') ==  "true") {
 
     echo "<h3 style='color: green'>&#x2714 Entry Edited</h3>\n";
     echo "<p>\n";
-    echo "Your entry has been edited. Please see the status listed below.\n";
+    echo "Your entry has been edited. Please see the details listed below.\n";
     echo "</p>\n";
 
 } else {
 
     echo "<h3 style='color: green'>>&#x2714 Entry Created</h3>\n";
     echo "<p>\n";
-    echo "Your entry has been created. Please see the status listed below.\n";
+    echo "Your entry has been created. Please see the details listed below.\n";
     echo "</p>\n";
 
 }
@@ -209,13 +209,14 @@ if (!$paymentStatus) {
 
 } else {
 
-    echo "<h3 style='color: green'>>&#x2714 Payment Received</h3>\n";
+    echo "<h3 style='color: green'>&#x2714 Payment Received</h3>\n";
     echo "<p>\n";
     echo "Your payment has been received. You will receive a receipt via email from PayPal.";
     echo "</p>\n";
 
 }
 
+echo "<h3>Entry Details</h3>\n";
 echo "<p>\n";
 echo "<label>Swimmer: </label>\n";
 echo "$entrantName<br />\n";
