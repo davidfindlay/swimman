@@ -331,6 +331,7 @@ if ($meetPaymentDetails[0][3] == 1) {
 
     echo "<p>\n";
     echo "<img src=\"https://www.paypalobjects.com/webstatic/en_US/i/btn/png/blue-pill-paypalcheckout-60px.png\" alt=\"PayPal Checkout\">";
+    echo "<br />Click Submit to lodge entry and proceed to pay via PayPal, Credit or Debit Card(scroll to bottom of PayPal page).\n";
     echo "</p>\n";
 
 
