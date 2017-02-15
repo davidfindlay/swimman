@@ -36,43 +36,11 @@ class MeetSelector {
 		$this->published = 1;
 		
 	}
-	
-	// Allows system to get the days prior for the club
-	public function availableOnly($clubIds) {
-		
-		$this->available = 1;
-		$lowest = 3;
-		
-		if (is_array($clubIds)) {
-			
-			foreach ($clubIds as $c) {
-				
-				// Find the lowest days prior amount
-				$daysPrior = $GLOBALS['db']->getOne("SELECT daysprior FROM clubs_captains
-						WHERE club_id = '$c';");
-				db_checkerrors($daysPrior);
 
-				if (isset($daysPrior) && $daysPrior < $lowest) {
-					
-					$lowest = $daysPrior;
-					
-				}
-				
-			}
-			
-		} else {
-			
-			if (isset($c)) {
-			
-				$lowest = $GLOBALS['db']->getRow("SELECT daysprior FROM clubs_captains WHERE club_id = $c;");
-				db_checkerrors($lowest);
-				
-			}
-			
-		}
-		
-		$this->daysprior = $lowest;
-		
+	public function availableOnly() {
+
+		$this->available = 1;
+
 	}
 	
 	public function showAll() {
@@ -99,16 +67,15 @@ class MeetSelector {
 			$published = 1;
 			
 		}
-		
+
 		if ($this->available == 1) {
-			
-			$daysPrior = $this->daysprior;
-			$available = "curdate() <= DATE_SUB(deadline, INTERVAL $daysPrior DAY)";
-			
+
+			$available = "curdate() <= deadline";
+
 		} else {
-			
+
 			$available = "1";
-			
+
 		}
 		
 		$dateClause = "startdate > " . $this->startDate;

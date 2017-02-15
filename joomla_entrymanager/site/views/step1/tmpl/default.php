@@ -140,7 +140,7 @@ $meetList = new MeetSelector();
 $meetList->setName("emMeetId");
 $meetList->selected($sess->get('emMeetId'));
 $meetList->publishedOnly();
-$meetList->availableOnly($entrantClubs);		// Show only meets available for entry for this club member
+$meetList->availableOnly();
 $meetList->output();
 
 echo "</div>\n";
