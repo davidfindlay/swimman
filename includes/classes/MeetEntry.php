@@ -697,15 +697,10 @@ class MeetEntry {
         // Update cost
         $this->calcCost();
 
-		// Don't accept payment if already fully paid
-		if ($this->getCost() >= $this->getPaid()) {
-		
-			$query = $GLOBALS['db']->query("INSERT INTO meet_entry_payments (entry_id, member_id, 
+        $query = $GLOBALS['db']->query("INSERT INTO meet_entry_payments (entry_id, member_id, 
 				amount, method, comment) VALUES (?, ?, ?, ?, ?);",
-				array($this->id, $this->memberId, $paid, $method, $comment));
-			db_checkerrors($query);
-		
-		}
+                array($this->id, $this->memberId, $paid, $method, $comment));
+        db_checkerrors($query);
 
 		//addlog("test", "calcCost = " . $this->getCost() . " getPaid = " . $this->getPaid());
 		
