@@ -1,6 +1,6 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/classes/Report.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/Report.php');
 
 /**
  * Created by PhpStorm.
@@ -27,7 +27,7 @@ CONCAT(meet_events.prognumber, meet_events.progsuffix) as event,
 event_distances.distance,
 event_disciplines.discipline,
 meet_events_entries.seedtime,
-event_distances.metres,
+event_distances.metres
 FROM meet_entries, meet_events_entries, meet_events, member, clubs, event_disciplines, event_distances
 WHERE meet_entries.meet_id = ?
 AND meet_entries.id = meet_events_entries.meet_entry_id
@@ -55,12 +55,12 @@ ORDER BY entry_id ASC, meet_events.prognumber ASC, meet_events.progsuffix ASC";
             $d['formatedtime'] = sw_formatSecs($seedTime);
             $warning = "";
 
-            if ($seedTime / $metres > 3.125) {
+            if (($seedTime != 0) && ($seedTime / $metres < 0.32)) {
 
                 // If time is faster than 8 seconds per 25m
                 $warning = "Too fast";
 
-            } elseif ($seedTime / $metres < 0.3125) {
+            } elseif (($seedTime / $metres > 3.2)) {
 
                 // If time is slower than 80 seconds per 25m
                 $warning = "Too slow";
@@ -68,6 +68,8 @@ ORDER BY entry_id ASC, meet_events.prognumber ASC, meet_events.progsuffix ASC";
             }
 
             $d['warning'] = $warning;
+
+            $outputData[] = $d;
 
         }
 

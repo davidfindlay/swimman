@@ -9,9 +9,11 @@
 require_once("includes/setup.php");
 require_once("includes/classes/MeetEventEntryReport.php");
 
+checkLogin();
+
 htmlHeaders("Swimming Management System - Meet Entry List");
 
-sidebarMenu();
+//sidebarMenu();
 
 ?>
 
@@ -87,9 +89,8 @@ sidebarMenu();
                         eventDetails = "#" + json.event + " " + json.distance + " " + json.discipline;
                         return eventDetails;
                     }},
-                    { "data" : "formattedtime"},
+                    { "data" : "formatedtime"},
                     { "data" : "warning"}
-                    }
                 ]
             }
         );

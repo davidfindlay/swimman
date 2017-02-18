@@ -51,6 +51,8 @@ if (isset($_POST['updateEntry'])) {
 
 }
 
+$meetId = 0;
+
 // Editing
 if (isset($_GET['entry'])) {
 	
@@ -110,12 +112,14 @@ echo "<div id=\"main\">\n";
 
 echo "<h1>Entry Details</h1>\n";
 
-echo "<h3>Entrant Details</h3>\n";
+echo "<p><a href=\"meetentries.php?meet=" . $meetId . "\">Return to Meet Entries list</a></p>\n";
+
+echo "<h2>Entrant Details</h2>\n";
 
 echo "<form method=\"post\" class=\"form-horizontal\" action=\"meetentry.php?entry=$entryId\">\n";
 echo "<input type=\"hidden\" name=\"entryId\" value=\"$entryId\" />\n";
 
-echo "<h3>Member Details</h3>\n";
+echo "<h2>Member Details</h2>\n";
 echo "<p>\n";
 echo "<label class=\"control-label\">Name: </label>$psMemberName<br />\n";
 
