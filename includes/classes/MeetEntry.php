@@ -695,7 +695,7 @@ class MeetEntry {
 		db_checkerrors($method);
 
         // Update cost
-        $this->calcCost();
+        $this->updateCost();
 
         $query = $GLOBALS['db']->query("INSERT INTO meet_entry_payments (entry_id, member_id, 
 				amount, method, comment) VALUES (?, ?, ?, ?, ?);",
@@ -840,7 +840,7 @@ class MeetEntry {
         }
 
         // Calculate and store the new cost
-        $existEntry->calcCost();
+        $existEntry->updateCost();
 
         return $existingId;
 		
@@ -990,7 +990,7 @@ class MeetEntry {
 		}
 
 		// Calculate and store the updated cost
-		$this->calcCost();
+        $this->updateCost();
 		
 	}
 
