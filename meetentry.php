@@ -21,6 +21,15 @@ if (isset($_POST['updateEntry'])) {
 	$objEntry = new MeetEntry();
 	$objEntry->loadId($entryId);
 
+	// Update club if changed
+	if ($objEntry->getClubId() != intval($_POST['club'])) {
+
+	    $objEntry->setClubId(intval($_POST['club']));
+	    $objEntry->updateClub();
+
+    }
+
+
 	// Set the new status
 	$objEntry->setStatus($entryStatus);
 	$objEntry->updateStatus();
@@ -74,6 +83,7 @@ if (isset($_GET['entry'])) {
 	
 	// Get Preset Values
 	$psMemberName = $curMember->getFullname();
+	$psClubId = $curClub->getId();
 	$psClubCode = $curClub->getCode();
 	$psClubName = $curClub->getName();
 	$psMSANumber = $curMember->getMSANumber();
@@ -123,8 +133,34 @@ echo "<h2>Member Details</h2>\n";
 echo "<p>\n";
 echo "<label class=\"control-label\">Name: </label>$psMemberName<br />\n";
 
-echo "<label class=\"control-label\">Club: </label>$psClubName($psClubCode)<br />\n";
-echo "\n";
+echo "<label class=\"control-label\">Club: </label>";
+
+// Get member clubs
+$memberClubs = $curMember->getClubIds();
+
+echo "<select name=\"club\">\n";
+
+if (isset($memberClubs)) {
+
+    foreach ($memberClubs as $c) {
+
+        $clubDetails = new Club();
+        $clubDetails->load($c);
+
+        echo "<option value=\"" . $clubDetails->getId() . "\"";
+
+        if ($c == $psClubId) {
+            echo " selected=\"selected\"";
+        }
+
+        echo ">" . $clubDetails->getName() . " (" .
+            $clubDetails->getCode() . ")</option>\n";
+
+    }
+
+}
+
+echo "</select><br />\n";
 
 echo "<label class=\"control-label\">MSA Number: </label>$psMSANumber<br />\n";
 
