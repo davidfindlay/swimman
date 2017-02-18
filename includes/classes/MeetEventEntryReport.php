@@ -1,5 +1,7 @@
 <?php
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/classes/Report.php');
+
 /**
  * Created by PhpStorm.
  * User: david
