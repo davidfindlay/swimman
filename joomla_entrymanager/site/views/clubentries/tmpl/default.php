@@ -317,7 +317,7 @@ if (isset($psMeetId)) {
 				echo "<td>";
 				
 				// If this is a future event, allow adding an entry
-				if (strtotime($meetDeadline) > time()) {
+				if (strtotime($meetDeadline . " 23:59:59") > time()) {
 				
 					echo "<a href=\"index.php?option=com_entrymanager&view=step2&editEntry=$entryId\">Edit</a>\n";
 					echo " | ";

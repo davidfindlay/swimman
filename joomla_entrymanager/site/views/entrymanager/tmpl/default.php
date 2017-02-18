@@ -235,7 +235,7 @@ foreach ($meetEntries as $e) {
 	echo "<h2 style=\"margin-top: 1em;\">$meetName</h2>\n";
 
     // If this is a future event, allow adding an entry
-    if (strtotime($meetDeadline) > time()) {
+    if (strtotime($meetDeadline . " 23:59:59") > time()) {
 
         echo "<p>\n";
         echo "<a href=\"index.php?option=com_entrymanager&view=step2&editEntry=$entryId\">Edit</a>\n";
