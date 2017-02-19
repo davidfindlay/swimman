@@ -1,7 +1,5 @@
 <?php
 
-require_once ("DB.php");
-
 class MeetProgram {
 
 	private $meetId;
@@ -17,7 +15,7 @@ class MeetProgram {
 	public function __construct() {
 
         $this->logger = new \Monolog\Logger('meetprogram');
-        $this->logger->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'meetprogram.log', $GLOBALS['log_level']));
+        $this->logger->pushHandler(new \Monolog\Handler\StreamHandler($GLOBALS['log_dir'] . 'meetprogram.log', $GLOBALS['log_level']));
 
     }
 
@@ -172,6 +170,8 @@ class MeetProgram {
 
 	private function exportCsv() {
 
+	    $this->logger->debug("exportCsv() begin");
+
 		$filePath = $this->uploaddir . $this->filename;
 
 		// Specify tables to export
@@ -184,7 +184,7 @@ class MeetProgram {
 
             // Store the table file name to the list
             $tableFile = $this->uploaddir . $this->meetId . "-" . $t . ".csv";
-            $tableCsvFile[] = $tableFile;
+            $tableCsvFile["$t"] = $tableFile;
 
             // Convert the table
             exec("mdb-export -H '$filePath' " . $t . " > " . $tableFile);
@@ -364,7 +364,7 @@ class MeetProgram {
         }
 
         // Process Events table
-        if ($eventFile = fopen($tableCsvFile['$event'], "r")) {
+        if ($eventFile = fopen($tableCsvFile['event'], "r")) {
 
             $this->logger->debug("Events file processing: start");
 
@@ -527,9 +527,6 @@ class MeetProgram {
                     $finalplace = $csvEntry[42];
                     $evscore = $csvEntry[12];
 
-                    // Check if entry already recorded
-                    //$entryTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_entry WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr' AND ath_no = '$ath_no';");
-                    // db_checkerrors($entryTest);
 
                     // Check if entry already exists in database
                     $entryTest = false;
@@ -538,6 +535,7 @@ class MeetProgram {
                         if ($row[1] == $event_ptr) {
                             if ($row[2] == $ath_no) {
                                 $entryTest = true;
+                                break;
                             }
                         }
 
@@ -545,8 +543,63 @@ class MeetProgram {
 
                     if ($entryTest) {
 
+                        // Check if there is a change
+                        $curHeatNumber = $row[3];
+                        $curLaneNumber = $row[4];
+                        $curSeedTime = $row[5];
+                        $curHeatPlace = $row[6];
+
+                        if ($curHeatPlace == 0)
+                            $curHeatPlace = "";
+
+                        $curFinalPlace = $row[7];
+
+                        if ($curFinalPlace == 0)
+                            $curFinalPlace = "";
+
+                        $curFinalTime = $row[8];
+
+                        if ($curFinalTime == 0)
+                            $curFinalTime = "";
+
+                        $curEvScore = $row[9];
+
+                        if ($curEvScore == 0)
+                            $curEvScore = "";
+
+                        $updateNeeded = false;
+
+                        if ($curHeatNumber != $heatnumber)
+                            $updateNeeded = true;
+
+                        if ($curLaneNumber != $heatlane)
+                            $updateNeeded = true;
+
+                        if ($curSeedTime != round(((float) $seedtime), 2))
+                            $updateNeeded = true;
+
+                        if ($curHeatPlace != $heatplace)
+                            $updateNeeded = true;
+
+                        if ($curFinalPlace != $finalplace)
+                            $updateNeeded = true;
+
+                        if ($curFinalTime != round(((float) $finaltime), 2))
+                            $updateNeeded = true;
+
+                        if ($curEvScore != $evscore)
+                            $updateNeeded = true;
+
+//                        echo "Current row = ";
+//                        print_r($row);
+//                        echo "<br />Current csv = ";
+//                        echo $heatnumber . ", " . $heatlane . ", " . round(((float) $seedtime), 2) . ", " . $heatplace .
+//                            ", " . round(((float) $finaltime), 2) . ", " . $finalplace . ", " . $evscore . "<br />";
+
                         // Check for updates
-                        $update4 = $GLOBALS['db']->query("UPDATE eprogram_entry 
+                        if ($updateNeeded) {
+
+                            $update4 = $GLOBALS['db']->query("UPDATE eprogram_entry 
                         SET heatnumber = ?, 
                         lanenumber = ?, 
                         seedtime = ?, 
@@ -556,10 +609,14 @@ class MeetProgram {
                         ev_score = ? 
                         WHERE meet_id = ? 
                         AND event_ptr = ? AND ath_no = ?;",
-                            array($heatnumber, $heatlane, $seedtime, $heatplace,
-                                $finalplace, $finaltime, $evscore, $this->meetId,
-                                $event_ptr, $ath_no));
-                        db_checkerrors($update4);
+                                array($heatnumber, $heatlane, $seedtime, $heatplace,
+                                    $finalplace, $finaltime, $evscore, $this->meetId,
+                                    $event_ptr, $ath_no));
+                            db_checkerrors($update4);
+
+                            $this->logger->debug("Updated $event_ptr for $ath_no");
+
+                        }
 
                         //echo "Updating $event_ptr for $ath_no.<br />";
 
@@ -696,6 +753,12 @@ class MeetProgram {
 
 		// Check if all entries already exist in Meet Entry system
 		//$this->updateEntryManager();
+
+        $this->logger->debug("exportCsv() end");
+
+        // Indicate success
+        $this->logger->info("Meet Data successfully imported");
+        return true;
 
 	}
 
