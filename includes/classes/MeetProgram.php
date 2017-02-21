@@ -752,7 +752,7 @@ class MeetProgram {
         }
 
 		// Check if all entries already exist in Meet Entry system
-		//$this->updateEntryManager();
+		$this->updateEntryManager();
 
         $this->logger->debug("exportCsv() end");
 
