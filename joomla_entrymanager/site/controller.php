@@ -635,30 +635,6 @@ class EntryManagerController extends JController {
 				
 			}
 			
-			
-			// Check for payments
-			foreach ($_POST as $key => $value) {
-				
-				if (substr($key, 0, 7) == "payment") {
-					
-					$paidMeet = substr($key, 8, 20);
-					$paidAmount = floatval($value);
-					$paidMethod = $jinput->get("method_$paidMeet");
-					
-					if ($paidAmount > 0) {
-					
-						$mEntry = new MeetEntry();
-						$mEntry->loadId($paidMeet);
-						$mEntry->makePayment($paidAmount, $paidMethod);
-					
-						addlog("Enter Manager", "Club recorder accepted payment for $paidMeet", "", $curUserId);
-						
-					}
-						
-				}
-				
-			}
-			
 		}
 		
 		// Invoke Entry Tool
