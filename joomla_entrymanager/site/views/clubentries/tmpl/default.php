@@ -460,67 +460,12 @@ if (isset($psMeetId)) {
 				
 				echo "</table>\n";
 				echo "</p>\n";
-							
-				echo "<form method=\"post\">\n";			
-				
-				echo "<p style=\"margin: 1em 0 1em 0;\">\n";
 
-
-                $meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE
-                            meet_id = ?;", array($meetId));
-                db_checkerrors($meetPaymentDetails);
-
-// Check if only one type of payment is available
-                $payPalOnly = false;
-                if ($meetPaymentDetails[0][3] == 1) {
-
-                    $payPalOnly = true;
-
-                    echo "<p>Payments for this meet are accepted via PayPal or Credit/Debit card. ";
-                    echo "</p>\n";
-
-                } else {
-
-                    echo "<label>Accept Payment: </label>\n";
-
-                    if ($entryPaid == $totalFee) {
-
-                        echo "Fully paid";
-
-                    } else {
-
-                        echo "$<input type=\"text\" name=\"payment_$entryId\" style=\"text-align: right\" /> ";
-
-                        // Get payment methods supported by club
-                        $paymentMethods = $GLOBALS['db']->getRow("SELECT * FROM club_payment_types 
-									WHERE club_id = '$clubId';");
-                        db_checkerrors($paymentMethods);
-
-                        echo "<select name=\"method_$entryId\">\n";
-
-                        if ($paymentMethods[1] == 1) {
-
-                            echo "<option name=\"cash\">Cash</option>\n";
-
-                        }
-
-                        if ($paymentMethods[1] == 2) {
-
-                            echo "<option name=\"banktransfer\">Bank Transfer</option>\n";
-
-                        }
-
-                        echo "</select>\n";
-
-                    }
-
-                }
-					
-				echo "</p>\n";
+                echo "<form method=\"post\">\n";
 							
 				echo "<p style=\"margin: 1em 0 1em 0;\">\n";
 
-                if (strtotime($meetDeadline) > time()) {
+                if (strtotime($meetDeadline . " 23:59:59") > time()) {
 
                     if ($entryStatus != 11) {
 
@@ -530,8 +475,8 @@ if (isset($psMeetId)) {
 
                     } else {
 
-                        echo "<label>Restore Entry: </label>\n";
-                        echo "<input type=\"checkbox\" name=\"restoreEntry[]\" value=\"$entryId\" />\n";
+                        //echo "<label>Restore Entry: </label>\n";
+                        //echo "<input type=\"checkbox\" name=\"restoreEntry[]\" value=\"$entryId\" />\n";
 
                     }
 

@@ -80,29 +80,6 @@ if ($jinput->get('success') == 'true') {
 
     // Payment made
 
-    $pp = new PayPalEntryPayment();
-    $paymentId = $jinput->get('paymentId');
-    $payerID =  $jinput->get('PayerID');
-
-    $amountPaid = $pp->finalisePayment($paymentId, $payerID);
-    addlog("Entry Manager", "PayPal Payment", "$entrantName paid $amountPaid for $meetId");
-
-    $entry->makePayment($amountPaid, 1);    // Record payment as made by paypal
-
-    if ($sess->get('emEntryEdit') == "true") {
-
-        $message = "Edited entry to $meetName by $entrantName for $clubName - Paid \$$amountPaid.";
-
-    } else {
-
-        $message = "New entry to $meetName by $entrantName for $clubName - Paid \$$amountPaid.";
-
-    }
-
-    $slack = new SlackNotification();
-    $slack->setMessage($message);
-    $slack->setChannel("#nationals2017");
-    $slack->send();
 
     $paymentStatus = true;
 
@@ -111,20 +88,6 @@ if ($jinput->get('success') == 'true') {
     // payment not made
     addlog("Entry Manager", "PayPal Payment Failed", "$entrantName did not pay for $meetId");
 
-    if ($sess->get('emEntryEdit') == "true") {
-
-        $message = "Edited entry to $meetName by $entrantName for $clubName - Payment unsuccessful - Paid \$$amountPaid.";
-
-    } else {
-
-        $message = "New entry to $meetName by $entrantName for $clubName - Payment unsuccessful - Paid \$$amountPaid.";
-
-    }
-
-    $slack = new SlackNotification();
-    $slack->setMessage($message);
-    $slack->setChannel("#nationals2017");
-    $slack->send();
 
 } else {
 

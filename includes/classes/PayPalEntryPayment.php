@@ -1,6 +1,7 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/config.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/setup.php');
 
 use PayPal\Api\Amount;
 use PayPal\Api\Item;
@@ -25,10 +26,14 @@ class PayPalEntryPayment
     private $entryId;
     private $meetName;
     private $invoiceId;
+    private $payerName;
+    private $payerEmail;
 
     private $apiContext;
 
     private $items;
+
+    private $logger;
 
     public function __construct() {
 
@@ -40,6 +45,8 @@ class PayPalEntryPayment
         );
 
         $this->apiContext->setConfig(array('mode' => 'live'));
+
+        $this->logger = Logger::getLogger("PayPalEntryPayment");
 
     }
 
@@ -137,9 +144,8 @@ class PayPalEntryPayment
 
         //$baseUrl = "http://localhost:8888";
         $redirectUrls = new RedirectUrls();
-
-        $redirectUrls->setReturnUrl(SITE_URL . "/entry-manager-new/enter-a-meet?view=step4&success=true")
-            ->setCancelUrl(SITE_URL . "/entry-manager-new/enter-a-meet?view=step4&success=false");
+        $redirectUrls->setReturnUrl("https://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=true")
+            ->setCancelUrl("https://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=false");
 
         $payment = new Payment();
         $payment->setIntent("sale")
@@ -160,7 +166,23 @@ class PayPalEntryPayment
 
         $approvalUrl = $payment->getApprovalLink();
 
+        // Store the payment details
+        $this->storePayment();
+
         return $approvalUrl;
+
+    }
+
+    /**
+     *  Stores the initial details of the payment, linking the unique invoice
+     *  id to the entry id.
+     */
+    private function storePayment() {
+
+        $insert = $GLOBALS['db']->query("INSERT INTO paypal_payment (meet_entry_id, invoice_id) 
+                                          VALUES (?, ?);",
+                                        array($this->entryId, $this->invoiceId));
+        db_checkerrors($insert);
 
     }
 
@@ -176,23 +198,51 @@ class PayPalEntryPayment
         try {
 
             $result = $payment->execute($execution, $this->apiContext);
+
+            // Log the result
+            $this->logger->debug($result);
+
             $transactions = $result->getTransactions();
-            
+
+            // Retrieve the paid amount
             $paidAmount = $transactions[0]->getAmount()->getTotal();
+            $this->paid = $paidAmount;
 
-            //echo "<h2>Payment Successful - Paid $paidAmount</h2>\n";
+            // Retreive the invoice id
+            $this->invoiceId = $transactions[0]->getInvoiceNumber();
 
-//            echo "<pre>\n";
-//            print_r($result);
-//            echo "</pre>\n";
+            // Get the entry Id associated with this one
+            list($paymentId, $entryId) = $GLOBALS['db']->getRow("SELECT id, meet_entry_id 
+                                              FROM paypal_payment 
+                                              WHERE invoice_id = ?", array($this->invoiceId));
+            db_checkerors($entryId);
+
+            // Load the entry and record payment
+            $entry = new MeetEntry();
+            $entry->loadId($entryId);
+            $entry->makePayment($this->paid, 1, "PayPal Invoice " . $this->invoiceId);
+
+            // Retrieve the payer details
+            $payer = $payment->getPayer();
+            $payerInfo = $payer->getPayerInfo();
+            $this->payerName = $payerInfo->getFirstName() . ' ' . $payerInfo->getLastName();
+            $this->payerEmail = $payerInfo->getEmail();
+
+            // Log the details
+            $this->logger->info("finalisePayment: $paidAmount for entry " . $this->entryId .
+                " for entrant " . $this->payerName . " <" . $this->payerEmail . ">");
+
+            // Update table
+            $update = $GLOBALS['db']->query("UPDATE paypal_payment SET paid = ?, 
+                                    payer_name = ?, payer_email = ? 
+                                    WHERE id = ?",
+                array($paidAmount, $this->payerName, $this->payerEmail, $paymentId));
+            db_checkerrors($update);
 
         } catch (Exception $ex) {
 
-//            echo "<h2>Get Payment</h2>\n";
-
-            //echo "<pre>\n";
-            //print_r($ex);
-            //echo "</pre>\n";
+            // Log the exception
+            $this->logger->error("finalisePayment exception: " . $ex);
 
         }
 
