@@ -46,7 +46,9 @@ class PayPalEntryPayment
 
         $this->apiContext->setConfig(array('mode' => 'live'));
 
-        $this->logger = Logger::getLogger("PayPalEntryPayment");
+        $this->logger = new \Monolog\Logger('paypal');
+        $this->logger->pushProcessor(new \Monolog\Processor\WebProcessor);
+        $this->logger->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'paypal.log', $GLOBALS['log_level']));
 
     }
 
@@ -144,8 +146,8 @@ class PayPalEntryPayment
 
         //$baseUrl = "http://localhost:8888";
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl("https://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=true")
-            ->setCancelUrl("https://forum.mastersswimmingqld.org.au/entry-manager-new/enter-a-meet?view=step4&success=false");
+        $redirectUrls->setReturnUrl(SITE_URL . "/entry-manager-new/enter-a-meet?view=step4&success=true")
+            ->setCancelUrl(SITE_URL . "/entry-manager-new/enter-a-meet?view=step4&success=false");
 
         $payment = new Payment();
         $payment->setIntent("sale")
@@ -162,27 +164,13 @@ class PayPalEntryPayment
             //echo "<pre>\n";
             //print_r($ex);
             //echo "</pre>\n";
+
+            $this->logger->error("Payment Creation Exeception: " . $ex);
         }
 
         $approvalUrl = $payment->getApprovalLink();
 
-        // Store the payment details
-        $this->storePayment();
-
         return $approvalUrl;
-
-    }
-
-    /**
-     *  Stores the initial details of the payment, linking the unique invoice
-     *  id to the entry id.
-     */
-    private function storePayment() {
-
-        $insert = $GLOBALS['db']->query("INSERT INTO paypal_payment (meet_entry_id, invoice_id) 
-                                          VALUES (?, ?);",
-                                        array($this->entryId, $this->invoiceId));
-        db_checkerrors($insert);
 
     }
 
@@ -199,15 +187,12 @@ class PayPalEntryPayment
 
             $result = $payment->execute($execution, $this->apiContext);
 
-            // Log the result
-            $this->logger->debug($result);
-
             $transactions = $result->getTransactions();
-
-            // Retrieve the paid amount
+            
             $paidAmount = $transactions[0]->getAmount()->getTotal();
             $this->paid = $paidAmount;
 
+            $this->logger->debug("PayPal payment info: " . $result);
             // Retreive the invoice id
             $this->invoiceId = $transactions[0]->getInvoiceNumber();
 

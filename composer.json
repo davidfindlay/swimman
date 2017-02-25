@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "require": {
         "nicolasbize/magicsuggest": "^2.1"
     },
@@ -8,4 +9,9 @@
         "pear/archive_tar": "^1.4",
         "pear/versioncontrol_git": "dev-master"
     }
+=======
+  "require": {
+    "monolog/monolog": "^1.22"
+  }
+>>>>>>> origin/log4php
 }

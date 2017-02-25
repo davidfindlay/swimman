@@ -155,17 +155,19 @@ function database_close() {
 function db_checkerrors($var) {
 
 	if (DB::isError($var)) {
+		
+		//echo 'Standard Message: ' . $var->getMessage() . "<br />\n";
+    	//echo 'DBMS/User Message: ' . $var->getUserInfo() . "<br />\n";
+    	//echo 'DBMS/Debug Message: ' . $var->getDebugInfo() . "<br />\n";
 	
 		$message = $var->getDebugInfo();
 		$backTrace = debug_backtrace();
 		$callingFunction = $backTrace[0]['function'];
+		
+		addlog("sql", "SQL error in $callingFunction", $message);
 
-        $dbLog = new \Monolog\Logger('db');
-        $dbLog->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'db.log', $GLOBALS['log_level']));
-		$dbLog->critical("SQL error in $callingFunction: $message");
-
-		echo "Oops. An error has occured. This incident has been logged and we apologise for the
-			inconvenience. <a href=\"/\">Click here to return home.</a>";
+		//echo "Oops. An error has occured. This incident has been logged and we apologise for the
+		//	inconvenience. <a href=\"/\">Click here to return home.</a>";
 		
 		$GLOBALS['db']->disconnect();
 
