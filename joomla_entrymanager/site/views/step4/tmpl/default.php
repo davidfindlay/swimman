@@ -61,9 +61,6 @@ if ($entry->loadId($entryId)) {
 //    echo "Loaded Entry<br />\n";
 } else {
 //    echo "Unable to Load Entry<br />\n";
-
-    header("Location: /entry-manager-new/my-entries");
-
 }
 
 $entrant = new Member();
@@ -73,68 +70,6 @@ $entrantName = $entrant->getFullname();
 $amountPaid = 0;
 $paymentStatus = false;
 
-// Notify slack
-
-
-if ($jinput->get('success') == 'true') {
-
-    // Payment made
-
-
-    $paymentStatus = true;
-
-} elseif($jinput->get('success') == 'false') {
-
-    // payment not made
-    addlog("Entry Manager", "PayPal Payment Failed", "$entrantName did not pay for $meetId");
-
-
-} else {
-
-    // Payment wasn't required.
-    $paymentStatus = true;
-
-    if ($sess->get('emEntryEdit') == "true") {
-
-        $refundAmount = -floatval($sess->get('emRefundAmount'));
-
-        if ($refundAmount > 0) {
-
-            $message = "Edited entry to $meetName by $entrantName for $clubName - Refund of \$$refundAmount required.";
-
-        } else {
-
-            $message = "Edited entry to $meetName by $entrantName for $clubName - No payment required.";
-
-        }
-
-    } else {
-
-        $message = "New entry to $meetName by $entrantName for $clubName - No payment required.";
-
-    }
-
-    $entry->calcCost();
-
-    //addlog("test", "Step 4 no payment", $entry->getPaid() . " >= " . $entry->getCost());
-    if ($entry->getPaid() >= $entry->getCost()) {
-
-        // Entry is already paid
-        $entry->setEventStatuses(2);
-        $entry->updateEventStatuses();
-        $entry->setStatus(2);
-        $entry->updateStatus();
-
-        addlog("Entry Manager", "Status Updated", "As entry is fully paid, updated status to Accepted");
-
-    }
-
-    $slack = new SlackNotification();
-    $slack->setMessage($message);
-    $slack->setChannel("#nationals2017");
-    $slack->send();
-
-}
 	
 echo "<style type=\"text/css\">\n";
 echo "label {\n";
@@ -144,7 +79,7 @@ echo "	float: left;\n";
 echo "}\n\n";
 echo "</style>\n";
 
-// Show different title if you are editing an existing entry
+/// Show different title if you are editing an existing entry
 echo "<h1>Enter a Meet</h1>\n";
 
 echo "<h2>Entry Confirmation</h2>\n";
@@ -165,24 +100,37 @@ if ($sess->get('emEntryEdit') ==  "true") {
 
 }
 
-if (!$paymentStatus) {
+if ($sess->get("emRefundAmount") > 0) {
 
-    echo "<h3 style='color: red'>&#x2718 Payment Cancelled or Failed</h3>\n";
+    echo "<h3 style='color: #ffa600'><img src=\"/swimman/images/warning_icon.png\" alt='Notice'> Refund Required</h3>\n";
     echo "<p>\n";
-    echo "Your payment was cancelled or otherwise not confirmed. Please try again. If you have any ";
+    echo "A refund will be issued to you via the payment method you used for this entry. If you have any ";
     echo "queries please <a href=\"mailto:recorder@mastersswimmingqld.org.au\">email the State Recorder</a>.";
     echo "</p>\n";
 
 } else {
 
-    echo "<h3 style='color: green'>&#x2714 Payment Received</h3>\n";
-    echo "<p>\n";
-    echo "Your payment has been received. You will receive a receipt via email from PayPal.";
-    echo "</p>\n";
+    if (!$paymentStatus) {
+
+        echo "<h3 style='color: red'>&#x2718 Payment Cancelled or Failed</h3>\n";
+        echo "<p>\n";
+        echo "Your payment was cancelled or otherwise not confirmed. Please try again. If you have any ";
+        echo "queries please <a href=\"mailto:recorder@mastersswimmingqld.org.au\">email the State Recorder</a>.";
+        echo "</p>\n";
+
+    } else {
+
+        echo "<h3 style='color: green'>&#x2714 Payment Received</h3>\n";
+        echo "<p>\n";
+        echo "Your payment has been received. You will receive a receipt via email from PayPal.";
+        echo "</p>\n";
+
+    }
 
 }
 
 echo "<h3>Entry Details</h3>\n";
+
 echo "<p>\n";
 echo "<label>Swimmer: </label>\n";
 echo "$entrantName<br />\n";
