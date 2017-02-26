@@ -56,10 +56,10 @@ $jinput = JFactory::getApplication()->input;
 $entry = new MeetEntry();
 $entryId = $sess->get("emEntryId");
 
-echo "entry id = $entryId";
+// echo "entry id = $entryId";
 
 if ($entry->loadId($entryId)) {
-    echo "Loaded Entry<br />\n";
+    // echo "Loaded Entry<br />\n";
 } else {
     header("/entry-manager-new");
 }

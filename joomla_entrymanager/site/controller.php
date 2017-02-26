@@ -1296,16 +1296,7 @@ class EntryManagerController extends JController {
 
             if ($sess->get('emEntryData') == "") {
 
-                echo "session recovery\n";
-
                 $sess->set("emEntryId", $entryId);
-
-//                $entry = new MeetEntry();
-//                $entry->loadId($entryId);
-//                $sess->set('emMeetId', $entry->getMeetId());
-//                $sess->set('emClubId', $entry->getClubId());
-//                $sess->set('emEntrant', $entry->getMemberId());
-//                $sess->set('emEntryData', serialize($entry));
 
             }
 
