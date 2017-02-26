@@ -449,8 +449,6 @@ class EntryManagerController extends JController {
                 $sEntryData = serialize($entryDetails);
                 $sess->set('emEntryData', $sEntryData);
 
-                //addlog("test", "newCost = $newCost - alreadyPaid = $alreadyPaid - differentCost = $differentCost");
-
                 $meetId = $entryDetails->getMeetId();
                 $meetDetails = new Meet();
                 $meetDetails->loadMeet($meetId);
@@ -488,6 +486,10 @@ class EntryManagerController extends JController {
                         $app = JFactory::getApplication();
                         $app->redirect($approvalUrl, "Redirecting to PayPal", $msgType = 'message');
 
+                    } else {
+
+                        JRequest::setVar('view', 'step4', 'method', true);
+
                     }
 
                 } elseif ($differentCost < 0) {
@@ -505,7 +507,6 @@ class EntryManagerController extends JController {
 				$entryDetails->setStatus(5);  // Awaiting Payment
 				$entryDetails->setEventStatuses(5); 	// Pending
 			
-
 				$entryCreated = $entryDetails->create();
 
                 if ($entryCreated) {
@@ -515,7 +516,6 @@ class EntryManagerController extends JController {
                     $entryId = $entryDetails->getId();
 //                    $entryMember = $entryDetails->getMemberId();
                     $sess->set('emEntryId', $entryId);
-
 
                     $meetDetails = new Meet();
                     $meetId = $sess->get('emMeetId');
@@ -533,8 +533,10 @@ class EntryManagerController extends JController {
                     // Get payment choice
                     $paymentType = $jinput->get('paymentType');
 
+                    echo "made it to here";
+
                     // Confirm payment choice is available
-                    if (!in_array(array_column($meetDetails->getPaymentTypes(), 2))) {
+                    if (!in_array($paymentType, array_column($meetDetails->getPaymentTypes(), 2))) {
 
                         // TODO Return error
                         JRequest::setVar('view', 'step3', 'method', true);
@@ -549,21 +551,21 @@ class EntryManagerController extends JController {
                         $pp->setEntryId($entryId);
                         $pp->addItem("Meet Entry", 1, $meetDetails->getMeetFee());
 
-                        if ($entryDetails->getNumEntries() > 0) {
-                            $pp->addItem("Individual Entries", $entryDetails->getNumEntries(), $entryDetails->calcEventFee());
-                        }
-
+//                        if ($entryDetails->getNumEntries() > 0) {
+//                            $pp->addItem("Individual Entries", $entryDetails->getNumEntries(), $entryDetails->calcEventFees());
+//                        }
+//
                         if ($entryDetails->getNumMeals() > 0) {
-                            $pp->addItem($meetDetails->getMealName(), $entryDetails->getNumMeals(), $entryDetails->getMealFee());
+                            $pp->addItem($meetDetails->getMealName(), $entryDetails->getNumMeals(), $meetDetails->getMealFee());
                         }
-
-                        if ($entryDetails->getMassages() > 0) {
-                            $pp->addItem("Massages", $entryDetails->getMassages(), $entryDetails->getMassageFee());
-                        }
-
-                        if ($entryDetails->getPrograms() > 0) {
-                            $pp->addItem("Programmes", $entryDetails->getPrograms(), $entryDetails->getProgramFee());
-                        }
+//
+//                        if ($entryDetails->getMassages() > 0) {
+//                            $pp->addItem("Massages", $entryDetails->getMassages(), $entryDetails->getMassageFee());
+//                        }
+//
+//                        if ($entryDetails->getPrograms() > 0) {
+//                            $pp->addItem("Programmes", $entryDetails->getPrograms(), $entryDetails->getProgramFee());
+//                        }
 
                         $approvalUrl = $pp->processPayment();
 
@@ -572,15 +574,6 @@ class EntryManagerController extends JController {
 
                     } else {
 
-                        // Unset session
-//                        unset($entryDetails);
-//                        $sess->clear('emEntryData');
-//                        $sess->clear('emMemberId');
-//                        $sess->clear('emEntrant');
-//                        $sess->clear('emMeetId');
-//                        $sess->clear('emClubId');
-//                        $sess->clear('emEntryEdit');
-//                        $sess->clear('emEntryId');
 
                         // Return to Entry List
                         JRequest::setVar('view', 'step4', 'method', true);
@@ -1260,40 +1253,61 @@ class EntryManagerController extends JController {
 		// Handle return from Paypal
         if ($jinput->get('paymentId') && $jinput->get('PayerID')) {
 
+		    // Simulate session expiry
+
+            $sess->clear('emEntryData');
+            $sess->clear('emMemberId');
+            $sess->clear('emEntrant');
+            $sess->clear('emMeetId');
+            $sess->clear('emClubId');
+            $sess->clear('emEntryEdit');
+            $sess->clear('emEntryId');
+            $sess->clear('emAmountPaid');
+
             $pp = new PayPalEntryPayment();
             $paymentId = $jinput->get('paymentId');
             $payerID = $jinput->get('PayerID');
 
+            $entryId = $sess->get('emEntryId');
+
             if ($jinput->get('success') == 'true') {
 
                 $amountPaid = $pp->finalisePayment($paymentId, $payerID);
+                $sess->set('emPaidAmount', $amountPaid);
 
-                addlog("Entry Manager", "PayPal Payment", "User paid $amountPaid for $meetId");
+                // Rebuild session
+                $entryId = $pp->getEntryId();
+
+                addlog("Entry Manager", "PayPal Payment", "User paid $amountPaid for entry $entryId");
 
             } elseif($jinput->get('success') == 'false') {
 
+                $amountPaid = $pp->finalisePayment($paymentId, $payerID);
+                $entryId = $pp->getEntryId();
+
+                $sess->set('emPaidAmount', $amountPaid);
+
                 // payment not made
-                addlog("Entry Manager", "PayPal Payment Failed", "Entrant did not pay for $meetId");
-
-            } else {
-
-                // User loaded step 4 without coming from Paypal
-                addlog("Entry Manager", "Step 4 without entry", "User landed on Step 4 without return from Paypal.");
-
-                JRequest::setVar('view', 'entrymanager', 'method', true);
+                addlog("Entry Manager", "PayPal Payment Failed", "Entrant did not pay for $entryId.");
 
             }
 
-            // Rebuild session
-            $entryId = $pp->getEntryId();
-            $sess->set("emEntryId", $entryId);
+            addlog("test", "emEntryData", $sess->get('emEntryData'));
 
-            $entry = new MeetEntry();
-            $entry->loadId($entryId);
-            $sess->set('emMeetId', $entry->getMeetId());
-            $sess->set('emClubId', $entry->getClubId());
-            $sess->set('emEntrant', $entry->getMemberId());
-            $sess->set('emEntryData', serialize($entry));
+            if ($sess->get('emEntryData') == "") {
+
+                echo "session recovery\n";
+
+                $sess->set("emEntryId", $entryId);
+
+//                $entry = new MeetEntry();
+//                $entry->loadId($entryId);
+//                $sess->set('emMeetId', $entry->getMeetId());
+//                $sess->set('emClubId', $entry->getClubId());
+//                $sess->set('emEntrant', $entry->getMemberId());
+//                $sess->set('emEntryData', serialize($entry));
+
+            }
 
             JRequest::setVar('view', 'step4', 'method', true);
 

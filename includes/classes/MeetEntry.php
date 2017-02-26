@@ -667,7 +667,7 @@ class MeetEntry {
     }
 	
 	// Receive payment
-	public function makePayment($amount, $method, $comment = "") {
+	public function makePayment($paid, $method, $comment = "") {
 
         if ($this->id == "") {
 
@@ -684,19 +684,12 @@ class MeetEntry {
         }
 
         // Changed from <= 0 so that we can handle refunds
-        if ($amount == 0) {
+        if ($paid == 0) {
 
             addlog("Entry manager", "Unable to accept payment", "Can't accept a zero payment!");
             return false;
 
         }
-
-		$payCol = $method;
-		$paid = $amount;
-		
-		$method = $GLOBALS['db']->getOne("SELECT id FROM payment_types 
-				WHERE colname = ?;", array($method));
-		db_checkerrors($method);
 
         // Update cost
         $this->updateCost();
@@ -706,8 +699,6 @@ class MeetEntry {
                 array($this->id, $this->memberId, $paid, $method, $comment));
         db_checkerrors($query);
 
-		//addlog("test", "calcCost = " . $this->getCost() . " getPaid = " . $this->getPaid());
-		
 		// If full amount has been paid, update status
 		if ($this->getCost() <= $this->getPaid()) {
 			

@@ -460,7 +460,7 @@ class Meet {
     // TODO: make this better
     public function getPaymentTypes() {
 
-        $paymentTypes = $GLOBALS['db']->getAll("SELECT * FROM meet_paymet_methods WHERE meet_id = ?;",
+        $paymentTypes = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE meet_id = ?;",
             array($this->id));
         db_checkerrors($paymentTypes);
 

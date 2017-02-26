@@ -48,7 +48,7 @@ class PayPalEntryPayment
 
         $this->logger = new \Monolog\Logger('paypal');
         $this->logger->pushProcessor(new \Monolog\Processor\WebProcessor);
-        $this->logger->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'paypal.log', $GLOBALS['log_level']));
+        $this->logger->pushHandler(new \Monolog\Handler\StreamHandler($GLOBALS['log_dir'] . 'paypal.log', $GLOBALS['log_level']));
 
     }
 
@@ -146,8 +146,8 @@ class PayPalEntryPayment
 
         //$baseUrl = "http://localhost:8888";
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl(SITE_URL . "/entry-manager-new/enter-a-meet?view=step4&success=true")
-            ->setCancelUrl(SITE_URL . "/entry-manager-new/enter-a-meet?view=step4&success=false");
+        $redirectUrls->setReturnUrl(SITE_URL . "entry-manager-new/enter-a-meet?view=step4&success=true")
+            ->setCancelUrl(SITE_URL . "entry-manager-new/enter-a-meet?view=step4&success=false");
 
         $payment = new Payment();
         $payment->setIntent("sale")
@@ -158,19 +158,36 @@ class PayPalEntryPayment
         $request = clone $payment;
 
         try {
+
             $payment->create($this->apiContext);
+
+            $approvalUrl = $payment->getApprovalLink();
+
+            // Store the payment details
+            $this->storePayment();
+
+
+
         } catch (Exception $ex) {
 
-            //echo "<pre>\n";
-            //print_r($ex);
-            //echo "</pre>\n";
-
             $this->logger->error("Payment Creation Exeception: " . $ex);
+
         }
 
-        $approvalUrl = $payment->getApprovalLink();
-
         return $approvalUrl;
+
+    }
+
+    /**
+     *  Stores the initial details of the payment, linking the unique invoice
+     *  id to the entry id.
+     */
+    private function storePayment() {
+
+        $insert = $GLOBALS['db']->query("INSERT INTO paypal_payment (meet_entry_id, invoice_id) 
+                                          VALUES (?, ?);",
+            array($this->entryId, $this->invoiceId));
+        db_checkerrors($insert);
 
     }
 
@@ -200,11 +217,12 @@ class PayPalEntryPayment
             list($paymentId, $entryId) = $GLOBALS['db']->getRow("SELECT id, meet_entry_id 
                                               FROM paypal_payment 
                                               WHERE invoice_id = ?", array($this->invoiceId));
-            db_checkerors($entryId);
+            db_checkerrors($entryId);
+            $this->entryId = $entryId;
 
             // Load the entry and record payment
             $entry = new MeetEntry();
-            $entry->loadId($entryId);
+            $entry->loadId($this->entryId);
             $entry->makePayment($this->paid, 1, "PayPal Invoice " . $this->invoiceId);
 
             // Retrieve the payer details

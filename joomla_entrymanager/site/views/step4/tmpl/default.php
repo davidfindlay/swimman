@@ -23,54 +23,61 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/Confirmation
 require_once($_SERVER['DOCUMENT_ROOT'] . '/swimman/includes/classes/SlackNotification.php');
 
 // Get Joomla User ID
-$curJUser = JFactory::getUser();
-$curUserId = $curJUser->id;
-$curUsername = $curJUser->username;
+//$curJUser = JFactory::getUser();
+//$curUserId = $curJUser->id;
+//$curUsername = $curJUser->username;
 
-// Look up Swimman DB to see if this user is linked to a member
-$memberId = $GLOBALS['db']->getOne("SELECT member_id FROM member_msqsite WHERE joomla_uid = '$curUserId';");
-db_checkerrors($memberId);
+//// Look up Swimman DB to see if this user is linked to a member
+//$memberId = $GLOBALS['db']->getOne("SELECT member_id FROM member_msqsite WHERE joomla_uid = '$curUserId';");
+//db_checkerrors($memberId);
 
 $sess = JFactory::getSession();
 $jinput = JFactory::getApplication()->input;
 
-$member = new Member;
-$member->loadId($memberId);
-$memberFullname = $member->getFullname();
-$memberClubs = $member->getClubIds();
-$memberStatus = $member->getMembershipStatusText(1);
+//$member = new Member;
+//$member->loadId($memberId);
+//$memberFullname = $member->getFullname();
+//$memberClubs = $member->getClubIds();
+//$memberStatus = $member->getMembershipStatusText(1);
+//
+//$memberId = $sess->get('emMemberId');
 
-$memberId = $sess->get('emMemberId');
-
-$meetDet = new Meet;
-$meetId = $sess->get('emMeetId');
-$meetDet->loadMeet($meetId);
-$meetName = $meetDet->getName();
-
-$clubDet = new Club;
-$clubId = $sess->get('emClubId');
-$clubDet->load($clubId);
-$clubName = $clubDet->getName();
+//$meetDet = new Meet;
+//$meetId = $sess->get('emMeetId');
+//$meetDet->loadMeet($meetId);
+//$meetName = $meetDet->getName();
+//
+//$clubDet = new Club;
+//$clubId = $sess->get('emClubId');
+//$clubDet->load($clubId);
+//$clubName = $clubDet->getName();
 
 // Load entry details
 $entry = new MeetEntry();
 $entryId = $sess->get("emEntryId");
-//echo "entryid = $entryId<br />\n";
+
+echo "entry id = $entryId";
 
 if ($entry->loadId($entryId)) {
-//    echo "Loaded Entry<br />\n";
+    echo "Loaded Entry<br />\n";
 } else {
-//    echo "Unable to Load Entry<br />\n";
+    header("/entry-manager-new");
 }
 
 $entrant = new Member();
 $entrant->loadId($entry->getMemberId());
 $entrantName = $entrant->getFullname();
 
-$amountPaid = 0;
-$paymentStatus = false;
+if ($sess->get('emPaidAmount') > 0) {
 
-	
+    $paymentStatus = true;
+
+} else {
+
+    $paymentStatus = false;
+
+}
+
 echo "<style type=\"text/css\">\n";
 echo "label {\n";
 echo "	font-weight: bold;\n";
@@ -93,7 +100,7 @@ if ($sess->get('emEntryEdit') ==  "true") {
 
 } else {
 
-    echo "<h3 style='color: green'>>&#x2714 Entry Created</h3>\n";
+    echo "<h3 style='color: green'>&#x2714 Entry Created</h3>\n";
     echo "<p>\n";
     echo "Your entry has been created. Please see the details listed below.\n";
     echo "</p>\n";
@@ -136,12 +143,12 @@ echo "<label>Swimmer: </label>\n";
 echo "$entrantName<br />\n";
 echo "<label>Club: </label>\n";
 $clubDet = new Club;
-$clubDet->load($sess->get('emClubId'));
+$clubDet->load($entry->getClubId());
 echo $clubDet->getName();
 echo "<br />\n";
 echo "<label>Meet: </label>\n";
 $meetDet = new Meet;
-$meetId = $sess->get('emMeetId');
+$meetId = $entry->getMeetId();
 $meetDet->loadMeet($meetId);
 echo $meetDet->getName() . "(" . date('d/m/Y', strtotime($meetDet->getStartDate()));
 
@@ -343,5 +350,6 @@ $sess->clear('emMeetId');
 $sess->clear('emClubId');
 $sess->clear('emEntryEdit');
 $sess->clear('emEntryId');
+$sess->clear('emAmountPaid');
 
 ?>
