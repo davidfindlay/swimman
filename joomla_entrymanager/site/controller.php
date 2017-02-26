@@ -534,7 +534,7 @@ class EntryManagerController extends JController {
                     $paymentType = $jinput->get('paymentType');
 
                     // Confirm payment choice is available
-                    if (!in_array($meetDetails->getPaymentTypes())) {
+                    if (!in_array(array_column($meetDetails->getPaymentTypes(), 2))) {
 
                         // TODO Return error
                         JRequest::setVar('view', 'step3', 'method', true);

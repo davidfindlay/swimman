@@ -457,7 +457,16 @@ class Meet {
         $this->programFee = $programFee;
     }
 
+    // TODO: make this better
+    public function getPaymentTypes() {
 
+        $paymentTypes = $GLOBALS['db']->getAll("SELECT * FROM meet_paymet_methods WHERE meet_id = ?;",
+            array($this->id));
+        db_checkerrors($paymentTypes);
+
+        return $paymentTypes;
+
+    }
 
 }
 

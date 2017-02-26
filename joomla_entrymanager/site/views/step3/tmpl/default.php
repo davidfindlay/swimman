@@ -305,51 +305,67 @@ echo "</p>\n";
 echo "<form method=\"post\" action=\"";
 echo JRoute::_('index.php?option=com_entrymanager&view=my-entries');
 echo "\">\n";
-echo "<p style=\"clear: left;\" >\n";
-//echo "<label>Select a Payment Method:</label>\n";
+
+$meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods, payment_types WHERE
+                            payment_types.id = meet_payment_methods.payment_type_id AND meet_id = ?;",
+    array($meetId));
+db_checkerrors($meetPaymentDetails);
+
+if (count($meetPaymentDetails) > 1) {
+
+    echo "<fieldset>\n";
+    echo "<h3>Select a Payment Method:</h3>\n";
+    echo "<p style=\"clear: left;\">Only payment methods accepted by this meet are shown. </p>\n";
 
 // Get list of payment methods for this meet
 
-$meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods WHERE
-                            meet_id = ?;", array($meetId));
-db_checkerrors($meetPaymentDetails);
 
-// Check if only one type of payment is available
-$payPalOnly = false;
-if ($meetPaymentDetails[0][3] == 1) {
+// Step through available payment methods
+    foreach ($meetPaymentDetails as $p) {
 
-    $payPalOnly = true;
+        $methodId = $p[4];
+        $methodName = $p[5];
+        $methodLogo = $p[6];
+        $methodWarning = $p[7];
 
-    echo "<p>Payments for this meet are accepted via PayPal or Credit/Debit card. ";
-    echo "Click Submit to lodge your entry and proceed to the checkout</p>\n";
+        echo "<p style=\"clear: left;\">\n";
+        echo "<input type=\"radio\" name=\"paymentType\" id=\"paymentType_$methodId\" value=\"$methodId\" />";
 
-    echo "<p><strong>IMPORTANT NOTE WHEN PAYING BY CREDIT CARD: </strong> When entering ";
-    echo "customer details in the PayPal Checkout, the billing details of the Credit Card";
-    echo "or Debit Card holder should be entered! If you are paying with someone else's credit ";
-    echo "or debit card, that person should enter their own details in Paypal, not the entrant's ";
-    echo "details. See <a href=\"http://forum.mastersswimmingqld.org.au/e-ref/index.php?title=Nationals_2017_FAQ#Can_someone_else_pay_for_my_entry_using_their_credit_card.3F\">this FAQ for details</a>.</p>";
+        if ($methodLogo != "") {
 
-    echo "<p>\n";
-    echo "<img src=\"https://www.paypalobjects.com/webstatic/en_US/i/btn/png/blue-pill-paypalcheckout-60px.png\" alt=\"PayPal Checkout\">";
-    echo "<br />Click Submit to lodge entry and proceed to pay via PayPal, Credit or Debit Card(scroll to bottom of PayPal page).\n";
-    echo "</p>\n";
+            // Decorative image only so don't include alt tags
+            echo "<img src=\"$methodLogo\" />";
+
+        }
+
+        echo "<label for=\"paymentType_$methodId\">$methodName</label>\n";
+        echo "</p>\n";
+
+//    // Allows a HTML
+//    if ($methodWarning != "") {
+//
+//        echo "<p style=\"clear: left;\">\n";
+//        echo "$methodWarning\n";
+//        echo "</p>\n";
+//
+//    }
+
+    }
+
+    echo "</fieldset>\n";
+
+} else {
+
+    // TODO: Explain how payments are being taken for this meet
 
 
 }
-
-echo "</p>\n";
 
 // Submit entry
 echo "<p style=\"clear: left;\">\n";
 echo "<input type=\"submit\" name=\"emSubmit3\" value=\"Back\" /> ";
 
-//if ($payPalOnly) {
-//
-//    echo "<input type=\"submit\" name=\"emSubmitPay\" value=\"Pay\" />";
-//
-//} else {
-
-    echo "<input type=\"submit\" name=\"emSubmit3\" value=\"Submit\" />";
+echo "<input type=\"submit\" name=\"emSubmit3\" value=\"Submit\" />";
 
 //}
 

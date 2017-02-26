@@ -38,7 +38,7 @@ class MeetEntry {
 
         $this->logger = new \Monolog\Logger('MeetEntry');
         $this->logger->pushProcessor(new \Monolog\Processor\WebProcessor);
-        $this->logger->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'meetentry.log', $GLOBALS['log_level']));
+        $this->logger->pushHandler(new \Monolog\Handler\StreamHandler($GLOBALS['log_dir'] . 'meetentry.log', $GLOBALS['log_level']));
 
     }
 

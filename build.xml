@@ -8,6 +8,7 @@
         <echo msg="Making directory ./build" />
         <mkdir dir="./build/swimman" />
         <mkdir dir="./build/joomla_entrymanager_site" />
+        <mkdir dir="./build/joomla_entrymanager_admin" />
     </target>
 
     <!-- ============================================  -->
@@ -16,8 +17,30 @@
     <target name="build" depends="prepare">
         <echo msg="Copying files to build directory..." />
 
-        <echo msg="Copying files to ./build directory..." />
-        <copy file="./*" tofile="./build/" />
+        <echo msg="Copying files to ./build/swimman directory..." />
+        <copy todir="./build/swimman/">
+            <fileset dir=".">
+                <include name="**" />
+                <exclude name="**/joomla*" />
+                <exclude name="**/joomla*/**" />
+                <exclude name="**/vendor/**" />
+                <exclude name="**/node_modules/**" />
+            </fileset>
+        </copy>
+
+        <echo msg="Copying files to ./build/joomla_entrymanager_site directory..." />
+        <copy todir="./build/joomla_entrymanager_site/">
+            <fileset dir="./joomla_entrymanager/site/">
+                <include name="**" />
+            </fileset>
+        </copy>
+
+        <echo msg="Copying files to ./build/joomla_entrymanager_admin directory..." />
+        <copy todir="./build/joomla_entrymanager_admin/">
+            <fileset dir="./joomla_entrymanager/admin/">
+                <include name="**" />
+            </fileset>
+        </copy>
 
     </target>
 
@@ -25,15 +48,41 @@
     <!-- (DEFAULT)  Target: dist                       -->
     <!-- ============================================  -->
     <target name="dist" depends="build">
-        <echo msg="Creating archive..." />
+        <echo msg="Creating archives..." />
 
-        <tar destfile="./build/build.tar.gz" compression="gzip">
-            <fileset dir="./build">
+        <tar destfile="./build/build_swimman.tar.bz2" compression="bzip2">
+            <fileset dir="./build/swimman">
+                <include name="*" />
+            </fileset>
+        </tar>
+
+        <tar destfile="./build/build_joomla_entrymanager_site.tar.bz2" compression="bzip2">
+            <fileset dir="./build/joomla_entrymanager_site">
+                <include name="*" />
+            </fileset>
+        </tar>
+
+        <tar destfile="./build/build_joomla_entrymanager_admin.tar.bz2" compression="bzip2">
+            <fileset dir="./build/joomla_entrymanager_admin">
                 <include name="*" />
             </fileset>
         </tar>
 
         <echo msg="Files copied and compressed in build directory OK!" />
+    </target>
+
+    <!-- ============================================  -->
+    <!-- (DEFAULT)  Target: deploy-dev                 -->
+    <!-- ============================================  -->
+    <target name="deploy-dev" depends="dist">
+        <echo msg="Transfering files..." />
+
+        <scp username="david" host="10.2.69.5" todir="/var/www/swimman"
+            file="./build/build_swimman.tar.gz" />
+
+        <scp username="david" host="10.2.69.5" todir="/var/www/components/com_entrymanager"
+             file="./build/build_swimman.tar.gz" />
+
     </target>
 
 </project>
