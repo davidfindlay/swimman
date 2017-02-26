@@ -498,7 +498,7 @@ if (isset($psMeetId)) {
 		}
 
 		// If this is a future event, allow adding an entry
-		if (strtotime($meetStart) > time()) {
+		if (strtotime($meetDeadline . " 23:59:59") > time()) {
 		
 			echo "<p><a href=\"index.php?option=com_entrymanager&view=step1c\">Add an Individual Entry</a></p>\n";
 			
@@ -579,14 +579,14 @@ if (isset($psMeetId)) {
 		}
 
 		// If this is a future event, allow adding an entry
-		if (strtotime($meetStart) > time()) {
+		if (strtotime($meetDeadline . " 23:59:59") > time()) {
 		
 			echo "<p><a href=\"index.php?option=com_entrymanager&view=createrelay&meet=$meetId&club=$clubId\">Add a Relay Team</a></p>\n";
 			
 		}
 		
 		// If this is a future event, allow adding an entry
-		if (strtotime($meetStart) > time()) {
+		if (strtotime($meetDeadline . " 23:59:59") > time()) {
 		
 			echo "<p><a href=\"index.php?option=com_entrymanager&view=entrytool\">Import Team Manager Entries</a></p>\n";
 				

@@ -12,36 +12,28 @@ class MeetEvent {
 	private $distance; 	// Distance per leg
 	private $eventName; // Does this event have a name
 	private $eventFee;	// Does this event have a fee on top of the meet fee
+    private $deadline;  // Does this event have it's own deadline - MySQL date time format
 	
 	// Create this new event in database
 	public function create() {
-		
-		$meetId = mysql_real_escape_string($this->meet_id);
-		$progNum = mysql_real_escape_string($this->progNum);
-		$progSuf = mysql_real_escape_string($this->progSuf);
-		$type = mysql_real_escape_string($this->type);
-		$discipline = mysql_real_escape_string($this->discipline);
-		$legs = mysql_real_escape_string($this->legs);
-		$distance = mysql_real_escape_string($this->distance);
-		$eventName = mysql_real_escape_string($this->eventName);
-		$eventFee = mysql_real_escape_string($this->eventFee);
 	
 		// Check if MeetEvent has already been created
-		$check = $GLOBALS['db']->getRow("SELECT * FROM meet_events WHERE meet_id = '$meetId' AND prognumber = '$progNum' AND progsuffix = '$progSuf';");
+		$check = $GLOBALS['db']->getRow("SELECT * FROM meet_events WHERE meet_id = ? 
+                  AND prognumber = ? AND progsuffix = ?;",
+            array($this->meetId, $this->progNum, $this->progSuf));
 		db_checkerrors($check);
 		
 		if (!isset($check)) {
 		
 			$insert = $GLOBALS['db']->query("INSERT INTO meet_events 
 					(meet_id, type, discipline, legs, distance, eventname, prognumber, progsuffix, eventfee) 
-					VALUES ('$meetId', '$type', '$discipline', '$legs', '$distance', '$eventName', '$progNum', '$progSuf', 
-					'$eventFee');");
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                array($this->meet_id, $this->type, $this->discipline, $this->legs, $this->distance,
+                    $this->eventName, $this->progNum, $this->progSuf, $this->eventFee, $this->deadline));
 			db_checkerrors($insert);
 		
 			$this->id = mysql_insert_id();
-		
-			// echo "INSERT INTO meet_events (meet_id, type, discipline, legs, distance, eventname, prognumber, progsuffix, eventfee) VALUES ('$meetId', '$type', '$discipline', '$legs', '$distance', '$eventName', '$progNum', '$progSuf', '$eventFee')";
-		
+
 			return $this->id;
 			
 		} else {
@@ -55,12 +47,13 @@ class MeetEvent {
 	// Update this event in database
 	public function update() {
 		
-		$progNum = mysql_real_escape_string($this->progNum);
-		$progSuf = mysql_real_escape_string($this->progSuf);
-		$eventName = mysql_real_escape_string($this->eventName);
-		$eventFee = mysql_real_escape_string($this->eventFee);
-		
-		$update = $GLOBALS['db']->query("UPDATE meet_events SET prognumber = '$progNum', progsuffix = '$progSuf', eventname = '$eventName', eventfee = '$eventfee' WHERE id = '$this->id';");
+		$update = $GLOBALS['db']->query("UPDATE meet_events SET prognumber = ?, 
+              progsuffix = ?, 
+              eventname = ?, 
+              eventfee = ?,
+              deadline = ?
+              WHERE id = ?;",
+            array($this->progNum, $this->progSuf, $this->eventName, $this->deadline, $this->id));
 		db_checkerrors($update);
 		
 	}
@@ -84,10 +77,11 @@ class MeetEvent {
 	
 	// Load the event from the database
 	public function load($eventId) {
+
+	    $this->id = $eventId;
 		
-		$this->id = mysql_real_escape_string($eventId);
-		
-		$eventData = $GLOBALS['db']->getRow("SELECT * FROM meet_events WHERE id = '$this->id';");
+		$eventData = $GLOBALS['db']->getRow("SELECT * FROM meet_events WHERE id = ?;",
+            array($this->id));
 		db_checkerrors($eventData);
 		
 		$this->meet_id = $eventData[1];
@@ -99,6 +93,7 @@ class MeetEvent {
 		$this->distance = $eventData[5];
 		$this->eventName = $eventData[6];
 		$this->eventFee = $eventData[9];
+		$this->deadline = $eventData[10];
 		
 		
 	}
@@ -325,6 +320,25 @@ class MeetEvent {
     {
         return $this->discipline;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDeadline() {
+
+        return $this->deadline;
+    }
+
+    /**
+     * @param mixed $deadline
+     */
+    public function setDeadline($deadline) {
+
+        // TODO check format
+        $this->deadline = $deadline;
+
+    }
+
 
 
 }
