@@ -465,7 +465,7 @@ class EntryManagerController extends JController {
                     $paymentType = $jinput->get('paymentType');
 
                     // Confirm payment choice is available
-                    if (!in_array($meetDetails->getPaymentTypes())) {
+                    if (!in_array($paymentType, $meetDetails->getPaymentTypes())) {
 
                         // TODO Return error
                         JRequest::setVar('view', 'step3', 'method', true);
@@ -532,8 +532,6 @@ class EntryManagerController extends JController {
                     // Check payment method selected
                     // Get payment choice
                     $paymentType = $jinput->get('paymentType');
-
-                    echo "made it to here";
 
                     // Confirm payment choice is available
                     if (!in_array($paymentType, array_column($meetDetails->getPaymentTypes(), 2))) {
@@ -1279,16 +1277,6 @@ class EntryManagerController extends JController {
                 $entryId = $pp->getEntryId();
 
                 addlog("Entry Manager", "PayPal Payment", "User paid $amountPaid for entry $entryId");
-
-            } elseif($jinput->get('success') == 'false') {
-
-                $amountPaid = $pp->finalisePayment($paymentId, $payerID);
-                $entryId = $pp->getEntryId();
-
-                $sess->set('emPaidAmount', $amountPaid);
-
-                // payment not made
-                addlog("Entry Manager", "PayPal Payment Failed", "Entrant did not pay for $entryId.");
 
             }
 

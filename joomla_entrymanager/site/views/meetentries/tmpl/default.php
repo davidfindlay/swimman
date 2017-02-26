@@ -180,14 +180,14 @@ if (count($meetList) == 0) {
 			echo "<td colspan=\"4\">\n";
 			echo "<h4>Club Contact Details:</h4>\n";
 			
-			// Get a list of club recorders for this club
-			$clubRoles = $clubDetails->getRoles();
-			
-			foreach ($clubRoles as $r) {
-				
-				
-				
-			}
+//			// Get a list of club recorders for this club
+//			$clubRoles = $clubDetails->getRoles();
+//
+//			foreach ($clubRoles as $r) {
+//
+//
+//
+//			}
 			
 			echo "</td>\n";
 			echo "</tr>\n";

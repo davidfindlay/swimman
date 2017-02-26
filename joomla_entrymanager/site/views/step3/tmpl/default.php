@@ -306,40 +306,42 @@ echo "<form method=\"post\" action=\"";
 echo JRoute::_('index.php?option=com_entrymanager&view=my-entries');
 echo "\">\n";
 
-$meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods, payment_types WHERE
+if ($amountToPay > 0) {
+
+    $meetPaymentDetails = $GLOBALS['db']->getAll("SELECT * FROM meet_payment_methods, payment_types WHERE
                             payment_types.id = meet_payment_methods.payment_type_id AND meet_id = ?;",
-    array($meetId));
-db_checkerrors($meetPaymentDetails);
+        array($meetId));
+    db_checkerrors($meetPaymentDetails);
 
-if (count($meetPaymentDetails) > 1) {
+    if (count($meetPaymentDetails) > 1) {
 
-    echo "<fieldset>\n";
-    echo "<h3>Select a Payment Method:</h3>\n";
-    echo "<p style=\"clear: left;\">Only payment methods accepted by this meet are shown. </p>\n";
+        echo "<fieldset>\n";
+        echo "<h3>Select a Payment Method:</h3>\n";
+        echo "<p style=\"clear: left;\">Only payment methods accepted by this meet are shown. </p>\n";
 
 // Get list of payment methods for this meet
 
 
 // Step through available payment methods
-    foreach ($meetPaymentDetails as $p) {
+        foreach ($meetPaymentDetails as $p) {
 
-        $methodId = $p[4];
-        $methodName = $p[5];
-        $methodLogo = $p[6];
-        $methodWarning = $p[7];
+            $methodId = $p[4];
+            $methodName = $p[5];
+            $methodLogo = $p[6];
+            $methodWarning = $p[7];
 
-        echo "<p style=\"clear: left;\">\n";
-        echo "<input type=\"radio\" name=\"paymentType\" id=\"paymentType_$methodId\" value=\"$methodId\" />";
+            echo "<p style=\"clear: left;\">\n";
+            echo "<input type=\"radio\" name=\"paymentType\" id=\"paymentType_$methodId\" value=\"$methodId\" />";
 
-        if ($methodLogo != "") {
+            if ($methodLogo != "") {
 
-            // Decorative image only so don't include alt tags
-            echo "<img src=\"$methodLogo\" />";
+                // Decorative image only so don't include alt tags
+                echo "<img src=\"$methodLogo\" />";
 
-        }
+            }
 
-        echo "<label for=\"paymentType_$methodId\">$methodName</label>\n";
-        echo "</p>\n";
+            echo "<label for=\"paymentType_$methodId\">$methodName</label>\n";
+            echo "</p>\n";
 
 //    // Allows a HTML
 //    if ($methodWarning != "") {
@@ -350,14 +352,16 @@ if (count($meetPaymentDetails) > 1) {
 //
 //    }
 
+        }
+
+        echo "</fieldset>\n";
+
+    } else {
+
+        // TODO: Explain how payments are being taken for this meet
+
+
     }
-
-    echo "</fieldset>\n";
-
-} else {
-
-    // TODO: Explain how payments are being taken for this meet
-
 
 }
 

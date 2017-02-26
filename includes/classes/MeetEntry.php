@@ -188,7 +188,7 @@ class MeetEntry {
             $clubDetails = new Club();
             $clubDetails->load($this->clubId);
 
-			$message = "New entry to " . $this->meet->getName() . " by " . $memDetails->getFullname() . " for "
+			$message = "New entry " . $this->id . " to " . $this->meet->getName() . " by " . $memDetails->getFullname() . " for "
                 . $clubDetails->getName() . ".";
 
             $slack = new SlackNotification();
@@ -739,6 +739,12 @@ class MeetEntry {
 		} else {
             addlog("Entry Manager", "Payment Received", "Member $this->memberId paid $paid for $this->id - status not updated due money still owed");
         }
+
+        $message = "Payment received for entry " . $this->id . " for " . $this->meet->getName() . ".";
+
+        $slack = new SlackNotification();
+        $slack->setMessage($message);
+        $slack->send();
 		
 	}
 	

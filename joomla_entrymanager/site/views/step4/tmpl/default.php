@@ -117,7 +117,7 @@ if ($sess->get("emRefundAmount") > 0) {
 
 } else {
 
-    if (!$paymentStatus) {
+    if ($jinput->get('success') == 'false') {
 
         echo "<h3 style='color: red'>&#x2718 Payment Cancelled or Failed</h3>\n";
         echo "<p>\n";
@@ -125,7 +125,7 @@ if ($sess->get("emRefundAmount") > 0) {
         echo "queries please <a href=\"mailto:recorder@mastersswimmingqld.org.au\">email the State Recorder</a>.";
         echo "</p>\n";
 
-    } else {
+    } elseif ($jinput->get('success') == 'true') {
 
         echo "<h3 style='color: green'>&#x2714 Payment Received</h3>\n";
         echo "<p>\n";
