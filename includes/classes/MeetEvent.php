@@ -270,29 +270,36 @@ class MeetEvent {
 		db_checkerrors($distName);
 		$strokeName = $GLOBALS['db']->getOne("SELECT discipline FROM event_disciplines WHERE id = '$this->discipline';");
 		db_checkerrors($strokeName);
-		
-		$gender = $this->getGender();
-		if ($gender != 3) {
+
+		if ($this->getGender() != 3) {
 			
-			if ($gender == 1) {
+			if ($this->getGender() == 1) {
 				
-				$genderText = "Mens' ";
+				$genderText = "Men's ";
 				
 			} else {
 				
-				$genderText = "Womens' ";
+				$genderText = "Women's ";
 				
 			}
 			
 		} else {
-			
-			$genderText = "";
+
+		    if (($this->legs > 1)) {
+
+		        $genderText = "Mixed ";
+
+            } else {
+
+                $genderText = "";
+
+            }
 			
 		}
 		
 		if ($this->legs > 1) {
 		
-			return $this->legs . "x" . $distName . " $genderText" . $strokeName;
+			return $this->legs . "x" . $distName . " $genderText" . $strokeName . " Relay";
 		
 		} else {
 		

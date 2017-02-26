@@ -125,19 +125,23 @@ echo "</select>\n";
 echo "</p>\n";
 
 echo "<p>\n";
-echo "<label>Letter</label>\n";
-echo "<select name=\"letter\">\n";
+echo "<label for='letter'>Letter</label>\n";
+echo "<select name=\"letter\" id='letter'>\n";
+echo "<option value=\"\">Auto</option>\n";
 echo "<option value=\"A\">A</option>\n";
 echo "<option value=\"B\">B</option>\n";
 echo "<option value=\"C\">C</option>\n";
 echo "<option value=\"D\">D</option>\n";
+echo "<option value=\"E\">E</option>\n";
+echo "<option value=\"F\">F</option>\n";
+echo "<option value=\"G\">G</option>\n";
 echo "</select>\n";
 echo "</p>\n";
 
 echo "<p>\n";
 echo "<label>Age Group</label>\n";
 echo "<select name=\"agegroup\">\n";
-echo "<option value=\"na\"></option>\n";
+echo "<option value=\"na\">Auto</option>\n";
 
 // Get age group list
 $relayLegs = 4;

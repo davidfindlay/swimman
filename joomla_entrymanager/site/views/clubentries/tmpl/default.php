@@ -579,7 +579,9 @@ if (isset($psMeetId)) {
 		}
 
 		// If this is a future event, allow adding an entry
-		if (strtotime($meetDeadline . " 23:59:59") > time()) {
+        $eventsOpen = $meetDet->getOpenEvents();
+
+		if ($eventsOpen > 0) {
 		
 			echo "<p><a href=\"index.php?option=com_entrymanager&view=createrelay&meet=$meetId&club=$clubId\">Add a Relay Team</a></p>\n";
 			

@@ -468,6 +468,27 @@ class Meet {
 
     }
 
+    /**
+     * Returns an array of open event ids
+     */
+    public function getOpenEvents() {
+
+        $eventId = $GLOBALS['db']->getAll("SELECT id FROM meet_events 
+            WHERE meet_id = ? 
+            AND deadline > NOW();",
+            array($this->id));
+        db_checkerrors($eventId);
+
+        $eventList = array();
+
+        foreach ($eventId as $e) {
+            $eventList[] = $e[0];
+        }
+
+        return $eventList;
+
+    }
+
 }
 
 
