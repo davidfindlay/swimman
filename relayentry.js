@@ -48,30 +48,36 @@ function getRelayEvents(meetId) {
 
         var url2 = "/swimman/json/relayclubs.php?meetId=" + meetId;
 
-        $.getJSON(url2, {
-            format: "json"
-        })
-            .done(function (data) {
+        // Load magic select
+        $('#newTeamClubmS').magicSuggest({
+            data: url2
+        });
 
-                $('select[name=newTeamClub]')
-                    .find('option')
-                    .remove();
 
-                $('select[name=newTeamClub]')
-                    .append('<option value=""></option>');
-
-                $.each(data, function (key, value) {
-
-                    // Populate the events drop down
-                    var clubId = value.id;
-                    var clubName = value.clubname;
-                    var clubCode = value.code;
-
-                    $('select[name=newTeamClub]')
-                        .append('<option value="' + clubId + '">' + clubName + ' (' + clubCode + ')</option>');
-
-                })
-            });
+        // $.getJSON(url2, {
+        //     format: "json"
+        // })
+        //     .done(function (data) {
+        //
+        //         $('select[name=newTeamClub]')
+        //             .find('option')
+        //             .remove();
+        //
+        //         $('select[name=newTeamClub]')
+        //             .append('<option value=""></option>');
+        //
+        //         $.each(data, function (key, value) {
+        //
+        //             // Populate the events drop down
+        //             var clubId = value.id;
+        //             var clubName = value.clubname;
+        //             var clubCode = value.code;
+        //
+        //             $('select[name=newTeamClub]')
+        //                 .append('<option value="' + clubId + '">' + clubName + ' (' + clubCode + ')</option>');
+        //
+        //         })
+        //     });
 
     }
 
@@ -161,6 +167,7 @@ function getTeams(meetId, eventId) {
         $('#data').DataTable( {
             "ajax": url,
             "sAjaxDataProp": "",
+            "destroy": "true",
             "columns": [
                 { "defaultContent": "Delete Edit" },
                 { "data": function (json) {
@@ -171,10 +178,14 @@ function getTeams(meetId, eventId) {
                 { "data": 'groupname' },
                 { "data": 'letter' },
                 { "data": 'teamname' },
-                { "data": 'swimmer1name' },
-                { "data": 'swimmer2name' },
-                { "data": 'swimmer3name' },
-                { "data": 'swimmer4name' }
+                { "data": 'swimmer1name',
+                    "defaultContent": 'n/a' },
+                { "data": 'swimmer2name',
+                    "defaultContent": 'n/a'  },
+                { "data": 'swimmer3name',
+                    "defaultContent": 'n/a'  },
+                { "data": 'swimmer4name',
+                    "defaultContent": 'n/a'  }
             ]
         } );
 

@@ -323,6 +323,8 @@ if ($amountToPay > 0) {
 
 
 // Step through available payment methods
+        $first = true;
+
         foreach ($meetPaymentDetails as $p) {
 
             $methodId = $p[4];
@@ -331,7 +333,16 @@ if ($amountToPay > 0) {
             $methodWarning = $p[7];
 
             echo "<p style=\"clear: left;\">\n";
-            echo "<input type=\"radio\" name=\"paymentType\" id=\"paymentType_$methodId\" value=\"$methodId\" />";
+            echo "<input type=\"radio\" name=\"paymentType\" id=\"paymentType_$methodId\" value=\"$methodId\" ";
+
+            if ($first) {
+
+                echo "checked=\"checked\" ";
+                $first = false;
+
+            }
+
+            echo "/>";
 
             if ($methodLogo != "") {
 

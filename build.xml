@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="swimman" default="dist">
+
+    <!-- ============================================  -->
+    <!-- Target: clean                                 -->
+    <!-- ============================================  -->
+    <target name="clean">
+        <echo msg="Cleaning ./build" />
+        <delete dir="./build" includeemptydirs="true" failonerror="false" />
+    </target>
+
     <!-- ============================================  -->
     <!-- Target: prepare                               -->
     <!-- ============================================  -->
-    <target name="prepare">
+    <target name="prepare" depends="clean">
         <echo msg="Making directory ./build" />
         <mkdir dir="./build/swimman" />
         <mkdir dir="./build/joomla_entrymanager_site" />
@@ -21,6 +30,7 @@
         <copy todir="./build/swimman/">
             <fileset dir=".">
                 <include name="**" />
+                <exclude name="**/build/**" />
                 <exclude name="**/joomla*" />
                 <exclude name="**/joomla*/**" />
                 <exclude name="**/vendor/**" />
@@ -77,10 +87,10 @@
     <target name="deploy-dev" depends="dist">
         <echo msg="Transfering files..." />
 
-        <scp username="david" host="10.2.69.5" todir="/var/www/swimman"
+        <scp username="david" host="storm.woodypointcomms.com.au" todir="/var/www/swimman"
             file="./build/build_swimman.tar.gz" />
 
-        <scp username="david" host="10.2.69.5" todir="/var/www/components/com_entrymanager"
+        <scp username="david" host="storm.woodypointcomms.com.au" todir="/var/www/components/com_entrymanager"
              file="./build/build_swimman.tar.gz" />
 
     </target>

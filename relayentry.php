@@ -24,6 +24,9 @@ if (isset($_POST['eventId'])) {
 //echo "<script type=\"text/javascript\" src=\"includes/jquery-1.11.2.min.js\"></script>\n";
 echo "<script type=\"text/javascript\" src=\"relayentry.js\"></script>\n";
 
+echo "<link href=\"/swimman/vendor/nicolasbize/magicsuggest/magicsuggest-min.css\" rel=\"stylesheet\">";
+echo "<script src=\"/swimman/vendor/nicolasbize/assets/magicsuggest/magicsuggest-min.js\"></script>";
+
 htmlHeaders("Relay Entries");
 
 sidebarMenu();
@@ -125,82 +128,6 @@ echo "</th>\n";
 echo "</tr>\n";
 echo "</thead>\n";
 echo "<tbody class=\"list\" id=\"relayTeams\">\n";
-//
-//// Get list of relay entries for this meet
-//if (isset($meetId) && isset($eventId)) {
-//    $relayEntries = $GLOBALS['db']->getAll("SELECT a.id, b.meetname, c.code, d.prognumber,
-//			d.progsuffix, e.groupname, a.letter, a.teamname
-//			FROM meet_entries_relays AS a, meet AS b, clubs AS c, meet_events AS d, age_groups AS e
-//			WHERE b.id = a.meet_id AND c.id = a.club_id AND a.meetevent_id = d.id
-//			AND e.set = 1 AND a.agegroup = e.id
-//			AND a.meet_id = ? AND a.meetevent_id = ?;", array($meetId, $eventId));
-//    db_checkerrors($relayEntries);
-//
-//    foreach ($relayEntries as $r) {
-//
-//        $clubCode = $r[2];
-//        $ageGroup = $r[5];
-//        $letter = $r[6];
-//        $teamname = $r[7];
-//
-//        // Get relay members
-//        $relayMembers = $GLOBALS['db']->getAll("SELECT member.firstname, member.lastname, member.gender, member.dob
-//                    FROM meet_entries_relays_members, member
-//                    WHERE relay_team = ? AND meet_entries_relays_members.member_id = member.id
-//                    ORDER BY leg ASC;");
-//        db_checkerrors($relayMembers);
-//
-//        $arrMembers = array();
-//
-//        foreach ($relayMembers as $m) {
-//
-//            $member = new Member();
-//            $member->setFirstname($m[0]);
-//            $member->setLastname($m[1]);
-//
-//            if ($m2 == 1) {
-//                $member->setGender("M");
-//            } else {
-//                $member->setGender("F");
-//            }
-//            $member->setDob($m[3]);
-//
-//            $arrMembers[] = $member;
-//
-//        }
-//
-//        echo "<tr class=\"list\">\n";
-//
-//        echo "<td>\n";
-//        echo $clubCode;
-//        echo "</td>\n";
-//
-//        echo "<td>\n";
-//        echo $ageGroup;
-//        echo "</td>\n";
-//
-//        echo "<td>\n";
-//        echo $letter;
-//        echo "</td>\n";
-//
-//        echo "<td>\n";
-//        echo $teamname;
-//        echo "</td>\n";
-//
-//        for ($x = 0; $x > 4; $x++) {
-//
-//            echo "<td>\n";
-//            echo $arrMembers[x]->getFullname() . "(" . $arrMembers[x]->getGender() . $arrMembers[x]->getAge() . ")";
-//            echo "</td>\n";
-//
-//        }
-//
-//
-//        echo "</tr>\n";
-//
-//    }
-//
-//}
 
 echo "</tbody>\n";
 echo "</table>\n";
@@ -219,32 +146,34 @@ echo "</p>\n";
 echo "<p>\n";
 echo "<label>Club Team:</label>\n";
 
-echo "<select name=\"newTeamClub\" id=\"newTeamClub\">\n";
+echo "<div id=\"newTeamClubMS\"></div>\n";
 
-echo "<option value=\"\"></option>\n";
-
-if (isset($meetId)) {
-
-// Get list of clubs
-    $clubs = $GLOBALS['db']->getAll("SELECT * FROM clubs WHERE id IN
-                          (SELECT club_id FROM meet_entries WHERE meet_id = ? AND
-                          club_id IN (SELECT club_id FROM meet_entries GROUP BY club_id HAVING count(*) > 3))
-  ORDER BY clubname ASC;",
-        array($meetId));
-    db_checkerrors($clubs);
-
-    foreach ($clubs as $c) {
-
-        $cId = $c[0];
-        $cCode = trim($c[1]);
-        $cName = trim($c[2]);
-        echo "<option value=\"$cId\">$cName($cCode)</option>\n";
-
-    }
-
-}
-
-echo "</select>\n";
+//echo "<select name=\"newTeamClub\" id=\"newTeamClub\">\n";
+//
+//echo "<option value=\"\"></option>\n";
+//
+//if (isset($meetId)) {
+//
+//// Get list of clubs
+//    $clubs = $GLOBALS['db']->getAll("SELECT * FROM clubs WHERE id IN
+//                          (SELECT club_id FROM meet_entries WHERE meet_id = ? AND
+//                          club_id IN (SELECT club_id FROM meet_entries GROUP BY club_id HAVING count(*) > 3))
+//  ORDER BY clubname ASC;",
+//        array($meetId));
+//    db_checkerrors($clubs);
+//
+//    foreach ($clubs as $c) {
+//
+//        $cId = $c[0];
+//        $cCode = trim($c[1]);
+//        $cName = trim($c[2]);
+//        echo "<option value=\"$cId\">$cName($cCode)</option>\n";
+//
+//    }
+//
+//}
+//
+//echo "</select>\n";
 
 echo "</p>\n";
 
@@ -359,7 +288,7 @@ htmlFooters();
             getAvailableSwimmers(meetId, eventId, eventGender, clubCode);
             getTeams(meetId, eventId);
 
-            var teamClubComboBox = $("#newTeamClub").data("custom-  combobox");
+            var teamClubComboBox = $("#newTeamClub").data("custom-combobox");
             teamClubComboBox.resize();
 
         });
