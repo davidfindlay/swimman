@@ -1144,7 +1144,7 @@ class EntryManagerController extends JController {
 			$swimmer2 = mysql_real_escape_string($_POST['swimmer2']);
 			$swimmer3 = mysql_real_escape_string($_POST['swimmer3']);
 			$swimmer4 = mysql_real_escape_string($_POST['swimmer4']);
-			$seedtime = mysql_real_escape_string($_POST['seedTime']);
+			$seedtime = mysql_real_escape_string($_POST['st_1']);
 			
 			// Basic errors checking
 			$error = "";
@@ -1165,6 +1165,7 @@ class EntryManagerController extends JController {
 				$rEntry->setClub($clubId);
 				$rEntry->setEvent($eventId);
 				$rEntry->setLetter($letter);
+				$rEntry->setSeedTime(sw_timeToSecs($seedtime));
 
 				// Check that each swimmer has an individual entry
 				if ($swimmer1 != "") {
