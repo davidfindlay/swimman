@@ -1,7 +1,9 @@
 {
     "require": {
         "nicolasbize/magicsuggest": "^2.1",
-      "monolog/monolog": "^1.22"
+      "monolog/monolog": "^1.22",
+        "setasign/fpdf": "^1.8",
+        "bacon/bacon-qr-code": "1.0.1"
     },
 
     "require-dev": {
