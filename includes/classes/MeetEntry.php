@@ -740,7 +740,15 @@ class MeetEntry {
             addlog("Entry Manager", "Payment Received", "Member $this->memberId paid $paid for $this->id - status not updated due money still owed");
         }
 
-        $message = "Payment of \$" . number_format($paid, 2) . " received for entry " . $this->id . " for " . $this->meet->getName() . ".";
+        if ($paid > 0) {
+
+	        $message = "Payment of \$" . number_format( $paid, 2 ) . " received for entry " . $this->id . " for " . $this->meet->getName() . ".";
+
+        } else if ($paid < 0) {
+
+	        $message = "Refund of \$" . number_format( $paid, 2 ) . " issued for entry " . $this->id . " for " . $this->meet->getName() . ".";
+
+        }
 
         $slack = new SlackNotification();
         $slack->setMessage($message);
