@@ -11,12 +11,33 @@ checkLogin();
 // Set up the Associative Array fetch mode
 $GLOBALS['db']->setFetchMode(DB_FETCHMODE_ASSOC);
 
-$meetId = $_GET['meetId'];
-$eventId = $_GET['eventId'];
+$meetId = intval($_GET['meetId']);
+$eventId = intval($_GET['eventId']);
+$clubId = intval($_GET['clubId']);
+
+// if clubId is set
+if ($clubId != 0) {
+
+    $clubClause = " AND meet_entries.club_id = $clubId ";
+
+} else {
+
+    $clubClause = "";
+
+}
 
 // Get list of available entrants
 $entrants = $GLOBALS['db']->getAll("SELECT member.id, member.firstname, member.surname, IF(member.gender = 1, 'M', 'F') as gender, 
-                member.dob, TIMESTAMPDIFF(YEAR,member.dob,DATE(CONCAT(YEAR(CURRENT_DATE()), \"-12-31\"))) as age, clubs.id as clubId, clubs.code, clubs.clubname
+                member.dob, TIMESTAMPDIFF(YEAR,member.dob,DATE(CONCAT(YEAR(CURRENT_DATE()), \"-12-31\"))) as age, clubs.id as clubId, clubs.code, clubs.clubname,
+                CASE WHEN (
+                  SELECT id
+                  FROM meet_events_entries
+                  WHERE meet_id = ?
+                  AND member_id = member.id
+                  AND event_id = ?
+                ) IS NOT NULL THEN true
+                              ELSE false
+                  END AS nominated
                 FROM member, clubs, meet_entries 
                 WHERE meet_entries.meet_id = ?
                 AND meet_entries.club_id = clubs.id
@@ -25,8 +46,9 @@ $entrants = $GLOBALS['db']->getAll("SELECT member.id, member.firstname, member.s
                     WHERE meet_id = ? AND meetevent_id = ?
                     AND meet_entries_relays_members.relay_team = meet_entries_relays.id
                 )
-                ORDER BY member.surname, member.firstname;",
-    array($meetId, $meetId, $eventId));
+                $clubClause
+                ORDER BY nominated DESC, member.surname, member.firstname;",
+    array($meetId, $eventId, $meetId, $meetId, $eventId));
 db_checkerrors($entrants);
 
 // Send JSON Response
