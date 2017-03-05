@@ -21,13 +21,12 @@ if (isset($_POST['eventId'])) {
 
 }
 
-//echo "<script type=\"text/javascript\" src=\"includes/jquery-1.11.2.min.js\"></script>\n";
+htmlHeaders("Relay Entries");
+
 echo "<script type=\"text/javascript\" src=\"relayentry.js\"></script>\n";
 
 echo "<link href=\"/swimman/vendor/nicolasbize/magicsuggest/magicsuggest-min.css\" rel=\"stylesheet\">";
-echo "<script src=\"/swimman/vendor/nicolasbize/assets/magicsuggest/magicsuggest-min.js\"></script>";
-
-htmlHeaders("Relay Entries");
+echo "<script src=\"/swimman/includes/magicsuggest.js\"></script>";
 
 sidebarMenu();
 
@@ -148,7 +147,7 @@ echo "<label>Club Team:</label>\n";
 
 echo "<div id=\"newTeamClubMS\"></div>\n";
 
-//echo "<select name=\"newTeamClub\" id=\"newTeamClub\">\n";
+echo "<select name=\"newTeamClub\" id=\"newTeamClub\">\n";
 //
 //echo "<option value=\"\"></option>\n";
 //
@@ -173,7 +172,7 @@ echo "<div id=\"newTeamClubMS\"></div>\n";
 //
 //}
 //
-//echo "</select>\n";
+echo "</select>\n";
 
 echo "</p>\n";
 

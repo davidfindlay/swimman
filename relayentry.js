@@ -48,36 +48,42 @@ function getRelayEvents(meetId) {
 
         var url2 = "/swimman/json/relayclubs.php?meetId=" + meetId;
 
-        // Load magic select
-        $('#newTeamClubmS').magicSuggest({
-            data: url2
-        });
+        // // Load magic select
+        // $('#newTeamClubMS').magicSuggest({
+        //     data: url2,
+        //     valueField: 'clubname',
+        //     placeholder: 'Select a club',
+        //     renderer: function(data){
+        //         return data.clubname + ' (' + data.code + ')';
+        //     },
+        //     resultAsString: true
+        // });
 
 
-        // $.getJSON(url2, {
-        //     format: "json"
-        // })
-        //     .done(function (data) {
-        //
-        //         $('select[name=newTeamClub]')
-        //             .find('option')
-        //             .remove();
-        //
-        //         $('select[name=newTeamClub]')
-        //             .append('<option value=""></option>');
-        //
-        //         $.each(data, function (key, value) {
-        //
-        //             // Populate the events drop down
-        //             var clubId = value.id;
-        //             var clubName = value.clubname;
-        //             var clubCode = value.code;
-        //
-        //             $('select[name=newTeamClub]')
-        //                 .append('<option value="' + clubId + '">' + clubName + ' (' + clubCode + ')</option>');
-        //
-        //         })
-        //     });
+        $.getJSON(url2, {
+            format: "json"
+        })
+            .done(function (data) {
+
+                $('select[name=newTeamClub]')
+                    .find('option')
+                    .remove();
+
+                $('select[name=newTeamClub]')
+                    .append('<option value=""></option>');
+
+                $.each(data, function (key, value) {
+
+                    // Populate the events drop down
+                    var clubId = value.id;
+                    var clubName = value.clubname;
+                    var clubCode = value.code;
+
+                    $('select[name=newTeamClub]')
+                        .append('<option value="' + clubId + '">' + clubName + ' (' + clubCode + ')</option>');
+
+                })
+            });
 
     }
 

@@ -245,7 +245,7 @@ foreach ($meetList as $m) {
 		$fileTitle = $f[4];
 		$filename = $f[3];
 		
-		echo "<a href=\"meets/$meetId/$filename\">$fileTitle</a><br />\n";
+		echo "<a href=\"masters-data/meets/$meetId/$filename\">$fileTitle</a><br />\n";
 		
 	}
 	

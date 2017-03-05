@@ -10,15 +10,6 @@ class MeetProgram {
 	private $url;
 	private $qldMemberOnly = false;
 
-	private $logger;
-
-	public function __construct() {
-
-        $this->logger = new \Monolog\Logger('meetprogram');
-        $this->logger->pushHandler(new \Monolog\Handler\StreamHandler($GLOBALS['log_dir'] . 'meetprogram.log', $GLOBALS['log_level']));
-
-    }
-
 	public function load() {
 
 		$getProgram = $GLOBALS['db']->getRow("SELECT * FROM meet_programs WHERE meet_id = '$this->meetId';");
@@ -152,613 +143,385 @@ class MeetProgram {
 
 		}
 
-		$starttime = time();
-
-
-		if ($this->exportCsv()) {
-
-            $this->update();
-
-        }
-
-        $finishtime = time();
-        $duration = $finishtime - $starttime;
-
-        $this->logger->info("MeetProgram update took $duration secs.");
+		$this->exportCsv();
+		$this->update();
 
 	}
 
 	private function exportCsv() {
 
-	    $this->logger->debug("exportCsv() begin");
-
 		$filePath = $this->uploaddir . $this->filename;
+		$athleteCsv = $this->uploaddir . $this->meetId . '-athlete.csv';
+		$eventCsv = $this->uploaddir . $this->meetId . '-event.csv';
+		$teamCsv = $this->uploaddir . $this->meetId . '-team.csv';
+		$entryCsv = $this->uploaddir . $this->meetId . '-entry.csv';
+		$relayCsv = $this->uploaddir . $this->meetId . '-relay.csv';
+		$relaynamesCsv = $this->uploaddir . $this->meetId . '-relaynames.csv';
 
-		// Specify tables to export
-        $tableList = array("athlete", "event", "team", "entry", "relay", "relaynames");
+		exec("mdb-export -H '$filePath' athlete > $athleteCsv");
 
-        $tableCsvFile = array();
-        $fileCheck = true;
+		$athleteFile = fopen($athleteCsv, "r");
 
-        foreach ($tableList as $t) {
+		while (!feof($athleteFile)) {
 
-            // Store the table file name to the list
-            $tableFile = $this->uploaddir . $this->meetId . "-" . $t . ".csv";
-            $tableCsvFile["$t"] = $tableFile;
+			$csvEntry = fgetcsv($athleteFile);
 
-            // Convert the table
-            exec("mdb-export -H '$filePath' " . $t . " > " . $tableFile);
+			if (count($csvEntry) > 1) {
 
-            if (!file_exists($tableFile)) {
+				$ath_no = mysql_real_escape_string(trim($csvEntry[0]));
 
-                $fileCheck = false;
-                $this->logger->error("Table CSV file not created for table: " . $t);
+				// Has ath_no been loaded already?
+				$athTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_athletes WHERE meet_id = '$this->meetId' AND ath_no = '$ath_no';");
+				db_checkerrors($athTest);
 
-            } else {
+				if (isset($athTest)) {
 
-                $this->logger->info("Table CSV file create for table: " . $t);
+					// Athlete already dataloaded,
+					//echo "Athlete already matched.<br />\n";
+					continue;
 
-            }
+				}
 
-        }
+				$last_name = mysql_real_escape_string(trim($csvEntry[1]));
+				$first_name = mysql_real_escape_string(trim($csvEntry[2]));
+				$team_no = mysql_real_escape_string(trim($csvEntry[6]));
+				$reg_no = mysql_real_escape_string(trim($csvEntry[9]));
+				$dob = mysql_real_escape_string(substr($csvEntry[5], 0, 8));
 
-        // Abort if any of the table files weren't created
-        if (!$fileCheck) {
+				// CSV file outputs in american date format
+				$dobYear = '19' . substr($dob, 6, 2);
+				$dobDay = substr($dob, 3, 2);
+				$dobMonth = substr($dob, 0, 2);
+				$dob = $dobYear . '-' . $dobMonth . '-' . $dobDay;
 
-            $this->logger->error("exportCsv() aborted due to failed table export.");
-            return false;
+				// echo "$dob <br />\n";
 
-        }
+				$age = mysql_real_escape_string(trim($csvEntry[8]));
 
-        $meetIdArray = array($this->meetId);
+				if ($csvEntry[4] == 'M') {
 
-        // Get a copy of the eProgram Athletes table
-        $eprogram_athletes = $GLOBALS['db']->getAll("SELECT * FROM eprogram_athletes 
-            WHERE meet_id = ?;",$meetIdArray);
-        db_checkerrors($eprogram_athletes);
+					$gender = 1;
 
-        // Get a copy of the SWS Member Table
-        $members = $GLOBALS['db']->getAll("SELECT * FROM member ORDER BY number;");
-        db_checkerrors($members);
+				} else {
 
-        // Get a copy of the SWS Clubs Table
-        $clubs = $GLOBALS['db']->getAll("SELECT * FROM clubs ORDER BY code;");
-        db_checkerrors($clubs);
+					$gender = 2;
 
-        // Get a copy of the SWS Meet Events Table
-        $meet_events = $GLOBALS['db']->getAll("SELECT * FROM meet_events WHERE meet_id = ?",
-            $meetIdArray);
-        db_checkerrors($meet_events);
+				}
 
-        // Get a copy of the eProgram Events table
-        $eprogram_events = $GLOBALS['db']->getAll("SELECT * FROM eprogram_events WHERE meet_id = ? 
-                ORDER BY event_ptr;",
-            $meetIdArray);
-        db_checkerrors($eprogram_events);
+				// Datamatch with Member table
+				// Match only membership number, due prefered name issue
+				$memberConfirm = $GLOBALS['db']->getOne("SELECT id FROM member WHERE number = '$reg_no';");
+				db_checkerrors($memberConfirm);
 
-        // Get a copy of the eProgram Teams table
-        $eprogram_teams = $GLOBALS['db']->getAll("SELECT * FROM eprogram_teams WHERE meet_id = ?;",
-            $meetIdArray);
-        db_checkerrors($eprogram_teams);
+				if (isset($memberConfirm)) {
 
-        // Get a copy of the eProgram Entries table
-        $eprogram_entries = $GLOBALS['db']->getAll("SELECT * FROM eprogram_entry WHERE meet_id = ?;",
-            $meetIdArray);
-        db_checkerrors($eprogram_entries);
+					$insert = $GLOBALS['db']->query("INSERT INTO eprogram_athletes (meet_id, member_id, ath_no, team_no, gender, age) VALUES ('$this->meetId', '$memberConfirm', '$ath_no', '$team_no', '$gender', '$age');");
+					db_checkerrors($insert);
+					// echo "Member $reg_no found!<br />\n";
 
-        // Process Athletes table
-        if ($athleteFile = fopen($tableCsvFile['athlete'], "r")) {
+				} else {
 
-            $this->logger->debug("Athlete file processing: start");
+					// Handle unmatched members
 
-            while (!feof($athleteFile)) {
+					if ($reg_no == '') {
 
-                $csvEntry = fgetcsv($athleteFile);
+						// Guest member or otherwise unregistered member
+						//echo "Guest member or no MSA number. <br />\n";
 
-                if (count($csvEntry) > 1) {
 
-                    $ath_no = trim($csvEntry[0]);
+					} else {
 
-                    // Has ath_no been loaded already?
-                    //$athTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_athletes
-                    //    WHERE meet_id = ? AND ath_no = ?;",
-                    //    array($this->meetId, $ath_no));
-                    //db_checkerrors($athTest);
+						// Registered but unfinancial or otherwise unknown member
+						//echo "Member $reg_no not found!<br />\n";
 
-                    // TODO: use a binary search or something
-                    $athTest = false;
-//                foreach ($eprogram_athletes as $row) {
-//
-//                    if ($row[2] == $ath_no) {
-//                        $athTest = true;
-//                        break;
-//                    }
-//
-//                }
+					}
 
-                    if (array_search($ath_no, array_column($eprogram_athletes, 2)) !== false) {
+					$insert = $GLOBALS['db']->query("INSERT INTO eprogram_athletes (meet_id, ath_no, team_no, firstname, surname, dob, msanumber, gender, age) VALUES ('$this->meetId', '$ath_no', '$team_no', '$first_name', '$last_name', '$dob', '$reg_no', '$gender', '$age');");
+					db_checkerrors($insert);
 
-                        // Athlete already dataloaded,
-                        //echo "Athlete already matched.<br />\n";
-                        continue;
+				}
 
-                    }
+			}
 
-                    $last_name = trim($csvEntry[1]);
-                    $first_name = trim($csvEntry[2]);
-                    $team_no = trim($csvEntry[6]);
-                    $reg_no = trim($csvEntry[9]);
-                    $dob = substr($csvEntry[5], 0, 8);
+		}
 
-                    // CSV file outputs in american date format
-                    $dobYear = '19' . substr($dob, 6, 2);
-                    $dobDay = substr($dob, 3, 2);
-                    $dobMonth = substr($dob, 0, 2);
-                    $dob = $dobYear . '-' . $dobMonth . '-' . $dobDay;
+		//echo "Processed Athletes File!<br />\n";
 
-                    // echo "$dob <br />\n";
+		// print_r($athleteArray);
 
-                    $age = trim($csvEntry[8]);
+		exec("mdb-export -H '$filePath' event > $eventCsv");
 
-                    if ($csvEntry[4] == 'M') {
+		$eventFile = fopen($eventCsv, "r");
 
-                        $gender = 1;
+		while (!feof($eventFile)) {
 
-                    } else {
+			$csvEntry = fgetcsv($eventFile);
 
-                        $gender = 2;
+			if (count($csvEntry) > 1) {
 
-                    }
+				$event_ptr = mysql_real_escape_string(trim($csvEntry[2]));
+				$event_no = mysql_real_escape_string(trim($csvEntry[0]));
+				$event_ltr = mysql_real_escape_string(trim($csvEntry[1]));
 
-                    // Datamatch with Member table
-                    // Match only membership number, due prefered name issue
-                    //$memberConfirm = $GLOBALS['db']->getOne("SELECT id FROM member WHERE number = '$reg_no';");
-                    //db_checkerrors($memberConfirm);
+				// Check if event already exists
+				$eventTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_events WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr';");
+				db_checkerrors($eventTest);
 
-                    $memberKey = array_search($reg_no, array_column($members, 1));
+				if (isset($eventTest)) {
 
-                    if ($memberKey !== FALSE) {
+					// Already exists
+					//echo "Event has already been dataloaded! <br />\n";
+					continue;
 
-                        $memberConfirm = $members[$memberKey][0];
+				}
 
-                        // echo "memberKey = $memberKey memberConfirm = $memberConfirm<br />\n";
+				$progNum = $event_no;
+				$progSuf = $event_ltr;
 
-                        $insert = $GLOBALS['db']->query("INSERT INTO eprogram_athletes 
-                        (meet_id, member_id, ath_no, team_no, gender, age) 
-                        VALUES (?, ?, ?, ?, ?, ?);",
-                            array($this->meetId, $memberConfirm, $ath_no, $team_no, $gender, $age));
-                        db_checkerrors($insert);
-                        // echo "Member $reg_no found!<br />\n";
+				//echo "Searching for $progNum - $progSuf\n";
 
-                    } else {
+				$eventId = $GLOBALS['db']->getOne("SELECT id FROM meet_events WHERE meet_id = '$this->meetId' AND prognumber = '$progNum' AND progsuffix = '$progSuf';");
+				db_checkerrors($eventId);
 
-                        // Handle unmatched members
+				if ($eventId) {
 
-                        if ($reg_no == '') {
+					$insert2 = $GLOBALS['db']->query("INSERT INTO eprogram_events (meet_id, event_id, event_ptr) VALUES ('$this->meetId', '$eventId', '$event_ptr');");
+					db_checkerrors($insert2);
 
-                            // Guest member or otherwise unregistered member
-                            // echo "Guest member or no MSA number. <br />\n";
+					//echo " found<br />\n";
 
+				} else {
 
-                        } else {
+					//echo " Error event $event_no not found!<br />\n";
 
-                            // Registered but unfinancial or otherwise unknown member
-                            // echo "Member $reg_no not found!<br />\n";
+				}
 
-                        }
 
-                        $insert = $GLOBALS['db']->query("INSERT INTO eprogram_athletes 
-                        (meet_id, ath_no, team_no, firstname, surname, dob, msanumber, gender, age) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                            array($this->meetId, $ath_no, $team_no, $first_name, $last_name, $dob, $reg_no, $gender, $age));
-                        db_checkerrors($insert);
+			}
 
-                    }
+		}
 
-                }
+		//echo "Processed Events File!<br />\n";
 
-            }
+		exec("mdb-export -H '$filePath' team > $teamCsv");
 
-            $this->logger->debug("Athlete file processing: end");
+		$teamFile = fopen($teamCsv, "r");
 
-        }
+		while (!feof($teamFile)) {
 
-        // Process Events table
-        if ($eventFile = fopen($tableCsvFile['event'], "r")) {
+			$csvEntry = fgetcsv($teamFile);
 
-            $this->logger->debug("Events file processing: start");
+			if (count($csvEntry) > 1) {
 
-            while (!feof($eventFile)) {
+				$team_no = mysql_real_escape_string(trim($csvEntry[0]));
 
-                $csvEntry = fgetcsv($eventFile);
+				// Check if team has already been loaded
+				$teamTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_teams WHERE meet_id = '$this->meetId' AND team_no = '$team_no';");
+				db_checkerrors($teamTest);
 
-                if (count($csvEntry) > 1) {
+				if (isset($teamTest)) {
 
-                    $event_ptr = trim($csvEntry[2]);
-                    $event_no = trim($csvEntry[0]);
-                    $event_ltr = trim($csvEntry[1]);
+					// Team already loaded
+					//echo "Team already matched.<br />\n";
+					continue;
 
-                    // Check if event already exists
-                    //$eventTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_events WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr';");
-                    //db_checkerrors($eventTest);
+				}
 
-                    if (array_search($event_ptr, array_column($eprogram_events, 2)) !== false) {
+				$team_code = trim($csvEntry[3]);
+				$team_name = trim($csvEntry[1]);
 
-                        // Already exists
-                        //echo "Event has already been dataloaded! <br />\n";
-                        continue;
+				$clubId = $GLOBALS['db']->getOne("SELECT id FROM clubs WHERE code = '$team_code';");
+				db_checkerrors($clubId);
 
-                    }
+				if (! isset($clubId)) {
 
-                    $progNum = $event_no;
-                    $progSuf = $event_ltr;
+					// Add new club
+					// $newClub = new Club();
+					// $newClub->create($team_code, $team_name);
 
-                    //echo "Searching for $progNum - $progSuf\n";
+					$tempClubCode = $team_code;
+					$tempClubName = $team_name;
 
-                    //$eventId = $GLOBALS['db']->getOne("SELECT id FROM meet_events
-                    //      WHERE meet_id = ? AND prognumber = ? AND progsuffix = ?;",
-                    //    array($this->meetId, $progNum, $progSuf));
-                    //db_checkerrors($eventId);
+					//echo "Club $team_code not found, created temporary!<Br />\n";
 
-                    foreach ($meet_events as $row) {
+				} else {
 
-                        if ($row[7] == $progNum) {
-                            if ($row[8] == $progSuf) {
-                                $eventId = $row[0];
-                            }
-                        }
+					$tempClubCode = NULL;
+					$tempClubName = NULL;
 
-                    }
+				}
 
-                    if (isset($eventId)) {
+				// Link club id to team_no in eprogram
+				$insert1 = $GLOBALS['db']->query("INSERT INTO eprogram_teams (meet_id, club_id, team_no, clubcode, clubname) VALUES ('$this->meetId', '$clubId', '$team_no', '$tempClubCode', '$tempClubName');");
+				db_checkerrors($insert1);
 
-                        $insert2 = $GLOBALS['db']->query("INSERT INTO eprogram_events (meet_id, event_id, event_ptr) 
-                      VALUES (?, ?, ?);",
-                            array($this->meetId, $eventId, $event_ptr));
-                        db_checkerrors($insert2);
+			}
 
-                        //echo " found<br />\n";
+		}
 
-                    } else {
+		//echo "Processed Team File!<br />\n";
 
-                        //echo " Error event $event_no not found!<br />\n";
+		exec("mdb-export -H '$filePath' entry > $entryCsv");
 
-                    }
+		$entryFile = fopen($entryCsv, "r");
 
-                }
+		while (!feof($entryFile)) {
 
-            }
+			$csvEntry = fgetcsv($entryFile);
 
-            $this->logger->debug("Events file processing: end");
+			if (count($csvEntry) > 1) {
 
-        }
+				$event_ptr = mysql_real_escape_string($csvEntry[0]);
+				$ath_no = mysql_real_escape_string($csvEntry[1]);
+				$heatnumber = mysql_real_escape_string($csvEntry[35]);
+				$heatlane = mysql_real_escape_string($csvEntry[36]);
+				$seedtime = mysql_real_escape_string($csvEntry[5]);
+				$heatplace = mysql_real_escape_string($csvEntry[40]);
+				$finaltime = mysql_real_escape_string($csvEntry[38]);
+				$finalplace = mysql_real_escape_string($csvEntry[42]);
+				$evscore = mysql_real_escape_string($csvEntry[12]);
 
-        // Process Team file
-		if ($teamFile = fopen($tableCsvFile['team'], "r")) {
+				// Check if entry already recorded
+				$entryTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_entry WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr' AND ath_no = '$ath_no';");
+				db_checkerrors($entryTest);
 
-            $this->logger->debug("Team file processing: start");
+				if (isset($entryTest)) {
 
-            while (!feof($teamFile)) {
+					// Check for updates
+					$update4 = $GLOBALS['db']->query("UPDATE eprogram_entry SET heatnumber = '$heatnumber', lanenumber = '$heatlane', seedtime = '$seedtime', heatplace = '$heatplace', finalplace = '$finalplace', finaltime = '$finaltime', ev_score = '$evscore' WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr' AND ath_no = '$ath_no';");
+					db_checkerrors($update4);
 
-                $csvEntry = fgetcsv($teamFile);
+					//echo "Updating $event_ptr for $ath_no.<br />";
 
-                if (count($csvEntry) > 1) {
+				} else {
 
-                    $team_no = trim($csvEntry[0]);
+					$insert4 = $GLOBALS['db']->query("INSERT INTO eprogram_entry (meet_id, event_ptr, ath_no, heatnumber, lanenumber, seedtime, heatplace, finalplace, finaltime, ev_score) VALUES ('$this->meetId', '$event_ptr', '$ath_no', '$heatnumber', '$heatlane', '$seedtime', '$heatplace', '$finalplace', '$finaltime', '$evscore');");
+					db_checkerrors($insert4);
 
-                    // Check if team has already been loaded
-                    //$teamTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_teams WHERE meet_id = '$this->meetId' AND team_no = '$team_no';");
-                    //db_checkerrors($teamTest);
+					//echo "Inserting $event_ptr for $ath_no.<br />";
 
-                    if (array_search($team_no, array_column($eprogram_teams, 2)) !== false) {
+				}
 
-                        // Team already loaded
-                        //echo "Team already matched.<br />\n";
-                        continue;
+			}
 
-                    }
+		}
 
-                    $team_code = trim($csvEntry[3]);
-                    $team_name = trim($csvEntry[1]);
+		//echo "Processed Entries File!<br />\n";
 
-                    // $clubId = $GLOBALS['db']->getOne("SELECT id FROM clubs WHERE code = '$team_code';");
-                    // db_checkerrors($clubId);
+		// Update heat numbers
+		$eventList = $GLOBALS['db']->getAll("SELECT * FROM eprogram_events WHERE meet_id = '$this->meetId';");
+		db_checkerrors($eventList);
 
-                    $clubId = array_search($team_code, array_column($eprogram_teams, 1));
+		foreach ($eventList as $l) {
 
-                    if (isset($clubId)) {
+			$event_ptr = $l[2];
 
-                        // Add new club
-                        // $newClub = new Club();
-                        // $newClub->create($team_code, $team_name);
-
-                        $tempClubCode = $team_code;
-                        $tempClubName = $team_name;
-
-                        //echo "Club $team_code not found, created temporary!<Br />\n";
-
-                    } else {
-
-                        $tempClubCode = NULL;
-                        $tempClubName = NULL;
-
-                    }
-
-                    // Link club id to team_no in eprogram
-                    $insert1 = $GLOBALS['db']->query("INSERT INTO eprogram_teams 
-                  (meet_id, club_id, team_no, clubcode, clubname) 
-                  VALUES (?, ?, ?, ?, ?);",
-                        array($this->meetId, $clubId, $team_no, $tempClubCode, $tempClubName));
-                    db_checkerrors($insert1);
-
-                }
-
-            }
-
-            $this->logger->debug("Team file processing: end");
-
-            // Refresh the eProgram Events table
-            $eprogram_events = $GLOBALS['db']->getAll("SELECT * FROM eprogram_events WHERE meet_id = ?;",
-                array($this->meetId));
-            db_checkerrors($eprogram_events);
-
-            $this->logger->debug("Refreshed in memory eprogram_events table");
-
-        }
-
-        // Process entry table
-		if ($entryFile = fopen($tableCsvFile['entry'], "r")) {
-
-            $this->logger->debug("Entry file processing: start");
-
-            while (!feof($entryFile)) {
-
-                $csvEntry = fgetcsv($entryFile);
-
-                if (count($csvEntry) > 1) {
-
-                    $event_ptr = $csvEntry[0];
-                    $ath_no = $csvEntry[1];
-                    $heatnumber = $csvEntry[35];
-                    $heatlane = $csvEntry[36];
-                    $seedtime = $csvEntry[5];
-                    $heatplace = $csvEntry[40];
-                    $finaltime = $csvEntry[38];
-                    $finalplace = $csvEntry[42];
-                    $evscore = $csvEntry[12];
-
-
-                    // Check if entry already exists in database
-                    $entryTest = false;
-                    foreach ($eprogram_entries as $row) {
-
-                        if ($row[1] == $event_ptr) {
-                            if ($row[2] == $ath_no) {
-                                $entryTest = true;
-                                break;
-                            }
-                        }
-
-                    }
-
-                    if ($entryTest) {
-
-                        // Check if there is a change
-                        $curHeatNumber = $row[3];
-                        $curLaneNumber = $row[4];
-                        $curSeedTime = $row[5];
-                        $curHeatPlace = $row[6];
-
-                        if ($curHeatPlace == 0)
-                            $curHeatPlace = "";
-
-                        $curFinalPlace = $row[7];
-
-                        if ($curFinalPlace == 0)
-                            $curFinalPlace = "";
-
-                        $curFinalTime = $row[8];
-
-                        if ($curFinalTime == 0)
-                            $curFinalTime = "";
-
-                        $curEvScore = $row[9];
-
-                        if ($curEvScore == 0)
-                            $curEvScore = "";
-
-                        $updateNeeded = false;
-
-                        if ($curHeatNumber != $heatnumber)
-                            $updateNeeded = true;
-
-                        if ($curLaneNumber != $heatlane)
-                            $updateNeeded = true;
-
-                        if ($curSeedTime != round(((float) $seedtime), 2))
-                            $updateNeeded = true;
-
-                        if ($curHeatPlace != $heatplace)
-                            $updateNeeded = true;
-
-                        if ($curFinalPlace != $finalplace)
-                            $updateNeeded = true;
-
-                        if ($curFinalTime != round(((float) $finaltime), 2))
-                            $updateNeeded = true;
-
-                        if ($curEvScore != $evscore)
-                            $updateNeeded = true;
-
-//                        echo "Current row = ";
-//                        print_r($row);
-//                        echo "<br />Current csv = ";
-//                        echo $heatnumber . ", " . $heatlane . ", " . round(((float) $seedtime), 2) . ", " . $heatplace .
-//                            ", " . round(((float) $finaltime), 2) . ", " . $finalplace . ", " . $evscore . "<br />";
-
-                        // Check for updates
-                        if ($updateNeeded) {
-
-                            $update4 = $GLOBALS['db']->query("UPDATE eprogram_entry 
-                        SET heatnumber = ?, 
-                        lanenumber = ?, 
-                        seedtime = ?, 
-                        heatplace = ?, 
-                        finalplace = ?, 
-                        finaltime = ?, 
-                        ev_score = ? 
-                        WHERE meet_id = ? 
-                        AND event_ptr = ? AND ath_no = ?;",
-                                array($heatnumber, $heatlane, $seedtime, $heatplace,
-                                    $finalplace, $finaltime, $evscore, $this->meetId,
-                                    $event_ptr, $ath_no));
-                            db_checkerrors($update4);
-
-                            $this->logger->debug("Updated $event_ptr for $ath_no");
-
-                        }
-
-                        //echo "Updating $event_ptr for $ath_no.<br />";
-
-                    } else {
-
-                        $insert4 = $GLOBALS['db']->query("INSERT INTO eprogram_entry 
-                        (meet_id, event_ptr, ath_no, heatnumber, lanenumber, seedtime, heatplace, 
-                        finalplace, finaltime, ev_score) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                            array($this->meetId, $event_ptr, $ath_no, $heatnumber, $heatlane,
-                                $seedtime, $heatplace, $finalplace, $finaltime, $evscore));
-                        db_checkerrors($insert4);
-
-                        //echo "Inserting $event_ptr for $ath_no.<br />";
-
-                    }
-
-                }
-
-            }
-
-            $this->logger->debug("Entry file processing: end");
-
-            // Update heat numbers
-            foreach ($eprogram_events as $l) {
-
-                $event_ptr = $l[2];
-
-                $numIndHeats = $GLOBALS['db']->getOne("SELECT MAX(heatnumber) 
+			$numIndHeats = $GLOBALS['db']->getOne("SELECT MAX(heatnumber) 
 					FROM eprogram_entry WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr'");
-                db_checkerrors($numIndHeats);
+			db_checkerrors($numIndHeats);
 
-                $numRelHeats = $GLOBALS['db']->getOne("SELECT MAX(heatnumber) FROM eprogram_relay 
+			$numRelHeats = $GLOBALS['db']->getOne("SELECT MAX(heatnumber) FROM eprogram_relay 
 					WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr'");
-                db_checkerrors($numRelHeats);
+			db_checkerrors($numRelHeats);
 
-                $numTotalHeats = $numIndHeats + $numRelHeats;
+			$numTotalHeats = $numIndHeats + $numRelHeats;
 
-                $numHeats = $GLOBALS['db']->query("UPDATE eprogram_events SET numheats = '$numTotalHeats' 
+			$numHeats = $GLOBALS['db']->query("UPDATE eprogram_events SET numheats = '$numTotalHeats' 
 					WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr';");
-                db_checkerrors($numHeats);
+			db_checkerrors($numHeats);
 
-                $this->logger->debug("Updating number of heats for event_ptr $event_ptr to $numTotalHeats");
+			//echo "Updating number of heats for event_ptr $event_ptr to $numTotalHeats<br />\n";
 
-            }
+		}
 
-        }
+		//echo "Updated heats list.<br />";
 
-        // Handle relay names table
-		if ($relayNameFile = fopen($tableCsvFile['relaynames'], "r")) {
+		exec("mdb-export -H '$filePath' relaynames > $relaynamesCsv");
 
-            // Delete relays
-            $deleteRelay = $GLOBALS['db']->query("DELETE FROM eprogram_relaynames
+		$relayNameFile = fopen($relaynamesCsv, "r");
+
+		$deleteRelay = $GLOBALS['db']->query("DELETE FROM eprogram_relaynames
 				WHERE meet_id = '$this->meetId';");
-            db_checkerrors($deleteRelay);
+		db_checkerrors($deleteRelay);
 
-            $this->logger->debug("Deleted eprogram_relaynames rows for this meet");
-            $this->logger->debug("Relay names file processing: start");
 
-            while (!feof($relayNameFile)) {
+		while (!feof($relayNameFile)) {
 
-                $csvEntry = fgetcsv($relayNameFile);
+			$csvEntry = fgetcsv($relayNameFile);
 
-                if (count($csvEntry) > 1) {
+			if (count($csvEntry) > 1) {
 
-                    $event_ptr = $csvEntry[0];
-                    $team_no = $csvEntry[1];
-                    $team_ltr = $csvEntry[2];
-                    $ath_no = $csvEntry[3];
-                    $pos_no = $csvEntry[4];
-                    $event_round = $csvEntry[5];
-                    $relay_no = $csvEntry[6];
+				$event_ptr = $csvEntry[0];
+				$team_no = $csvEntry[1];
+				$team_ltr = $csvEntry[2];
+				$ath_no = $csvEntry[3];
+				$pos_no = $csvEntry[4];
+				$event_round = $csvEntry[5];
+				$relay_no = $csvEntry[6];
 
-                    if ($event_round == 'F') {
+				if ($event_round == 'F') {
 
-                        //echo "Found relay team $relay_no for event $event_ptr team member $pos_no is $ath_no.";
+					//echo "Found relay team $relay_no for event $event_ptr team member $pos_no is $ath_no.";
 
-                        $insert = $GLOBALS['db']->query("INSERT INTO eprogram_relaynames (meet_id, event_ptr, 
+					$insert = $GLOBALS['db']->query("INSERT INTO eprogram_relaynames (meet_id, event_ptr, 
 							relay_no, team_no, ath_no, pos_no, team_ltr) 
 							VALUES ('$this->meetId', '$event_ptr', '$relay_no', '$team_no', '$ath_no', 
 							'$pos_no', '$team_ltr');");
-                        db_checkerrors($insert);
+					db_checkerrors($insert);
 
-                        //echo "created.<br />\n";
+					//echo "created.<br />\n";
 
-                    }
-                }
+				}
+			}
 
-            }
+		}
 
-            $this->logger->debug("Relay names file processing: end");
+		//echo "Updated Relay Names.<br />\n";
 
-        }
+		exec("mdb-export -H '$filePath' relay > $relayCsv");
 
-        // Handle relay table
-		if ($relayFile = fopen($tableCsvFile['relay'], "r")) {
+		$relayFile = fopen($relayCsv, "r");
 
-            $deleteRelay = $GLOBALS['db']->query("DELETE FROM eprogram_relay WHERE meet_id = '$this->meetId';");
-            db_checkerrors($deleteRelay);
+		$deleteRelay = $GLOBALS['db']->query("DELETE FROM eprogram_relay WHERE meet_id = '$this->meetId';");
+		db_checkerrors($deleteRelay);
 
-            while (!feof($relayFile)) {
+		while (!feof($relayFile)) {
 
-                $csvEntry = fgetcsv($relayFile);
+			$csvEntry = fgetcsv($relayFile);
 
-                if (count($csvEntry) > 1) {
+			if (count($csvEntry) > 1) {
 
-                    $event_ptr = $csvEntry[0];
-                    $relay_no = $csvEntry[1];
-                    $team_no = $csvEntry[2];
-                    $team_ltr = $csvEntry[3];
-                    $rel_age = $csvEntry[4];
-                    $rel_sex = $csvEntry[5];
-                    $seedtime = $csvEntry[9];
-                    $ev_score = $csvEntry[16];
-                    $fin_heat = $csvEntry[38];
-                    $fin_lane = $csvEntry[39];
-                    $fin_time = $csvEntry[41];
-                    $heatplace = $csvEntry[43];
-                    $finplace = $csvEntry[45];
+				$event_ptr = $csvEntry[0];
+				$relay_no = $csvEntry[1];
+				$team_no = $csvEntry[2];
+				$team_ltr = $csvEntry[3];
+				$rel_age = $csvEntry[4];
+				$rel_sex = $csvEntry[5];
+				$seedtime = $csvEntry[9];
+				$ev_score = $csvEntry[16];
+				$fin_heat = $csvEntry[38];
+				$fin_lane = $csvEntry[39];
+				$fin_time = $csvEntry[41];
+				$heatplace = $csvEntry[43];
+				$finplace = $csvEntry[45];
 
-                    $insert = $GLOBALS['db']->query("INSERT INTO eprogram_relay (event_ptr, meet_id, relay_no, team_no, 
+				$insert = $GLOBALS['db']->query("INSERT INTO eprogram_relay (event_ptr, meet_id, relay_no, team_no, 
 						team_ltr, rel_age, rel_sex, seedtime, heatnumber, lanenumber, finaltime, heatplace, finalplace, 
 						ev_score) VALUES ('$event_ptr', '$this->meetId', '$relay_no', '$team_no', '$team_ltr', '$rel_age', '$rel_sex', 
 						'$seedtime', '$fin_heat', '$fin_lane', '$fin_time',' $heatplace', '$finplace', '$ev_score');");
-                    db_checkerrors($insert);
+				db_checkerrors($insert);
 
-                    //echo "Added new relay<br />\n";
+				//echo "Added new relay<br />\n";
 
-                }
+			}
 
-            }
+		}
 
-        }
+		//echo "Updated relays.<br />";
+		flush();
 
 		// Check if all entries already exist in Meet Entry system
 		$this->updateEntryManager();
-
-        $this->logger->debug("exportCsv() end");
-
-        // Indicate success
-        $this->logger->info("Meet Data successfully imported");
-        return true;
 
 	}
 
@@ -775,24 +538,19 @@ class MeetProgram {
 		echo "Updating entry manager... <br />\n";
 		flush();
 
-        // Get a copy of the eProgram Teams table
-        $eprogram_teams = $GLOBALS['db']->getAll("SELECT * FROM eprogram_teams 
-                  WHERE meet_id = ?", array($this->meetId));
-        db_checkerrors($eprogram_teams);
-
 		foreach ($athList as $l) {
 
 			$memberId = $l[0];
 			$ath_no = $l[1];
 			$team_no = $l[2];
-
-            // Find the SWS clubId matching the team_no from eProgram
-			$clubId = $eprogram_teams[array_search($team_no, array_column($eprogram_teams, 2))][1];
+			$clubId = $GLOBALS['db']->getOne("SELECT club_id FROM eprogram_teams WHERE meet_id = '$this->meetId' AND
+					team_no = '$team_no';");
+			db_checkerrors($clubId);
 
 			// Ignore non Swimming Management System members and guests
 			if (isset($memberId)) {
 
-				echo "Creating/Updating Meet Entry for $memberId... <br />\n";
+				//echo "Creating Meet Entry for $memberId... \n";
 
 				$nEntry = new MeetEntry($memberId, $clubId, $this->meetId);
 
@@ -813,7 +571,7 @@ class MeetProgram {
 
 					//print_r($entryManList);
 
-					echo "updating existing entry.<br />\n";
+					//echo "updating existing entry.<br />\n";
 
 					foreach ($eProgEvents as $e) {
 
@@ -826,13 +584,13 @@ class MeetProgram {
 							// mark this event as confirmed, and update seed time and status.
 							$nEntry->updateEvent($eventId, $seedTime, 8);
 
-							echo "update event $eventId entry<br />\n";
+							//echo "update event $eventId entry<br />\n";
 
 						} else {
 
 							$nEntry->addEvent($eventId, $seedTime, 8);  // Add the event to the entry as confirmed
 
-							echo "adding event $eventId entry<br />\n";
+							//echo "adding event $eventId entry<br />\n";
 
 						}
 
@@ -842,7 +600,7 @@ class MeetProgram {
 
 					// Create new entry
 
-					echo "creating new entry.<br />\n";
+					//echo "creating new entry.<br />\n";
 
 					foreach ($eProgEvents as $p) {
 
@@ -1291,20 +1049,20 @@ class MeetProgram {
 							echo "<a href=\"$this->url?id=$this->meetId&individualProg=1&ath_no=$ath_no\">\n";
 							echo "$swimmerName\n";
 							echo "</a>\n";
-							
+
 						}
 						echo "</td>\n";
 						echo "<td>\n";
-						
+
 						if ($clubCode == "") {
-							
+
 							// Must be out of state member, look up club code from team_no
 							$clubCode = $GLOBALS['db']->getOne("SELECT clubcode FROM eprogram_teams WHERE 
 									meet_id = ? AND team_no = ?", array($this->meetId, $team_no));
 							db_checkerrors($clubCode);
-							
+
 						}
-						
+
 						echo "<a href=\"$this->url?id=$this->meetId&teamProg=1&team=$team_no\">\n";
 						echo "$clubCode\n";
 						echo "</a>\n";
@@ -1326,7 +1084,7 @@ class MeetProgram {
 						echo "<div class=\"programCentre\">\n";
 						if ($notRun != 1) {
 							echo "$heatplace\n";
-						}					
+						}
 						echo "</div>";
 						echo "</td>\n";
 						echo "<td>\n";
@@ -1349,49 +1107,49 @@ class MeetProgram {
 						}
 						echo "</td>\n";
 						echo "</tr>\n";
-							
-						
+
+
 					}
-					
+
 					echo "</tbody>\n";
-					
+
 					echo "</table>\n";
-				
+
 				}
 			}
-			
+
 			if ($method == 'byage') {
-				
+
 				$ageGroupList = $GLOBALS['db']->getAll("SELECT * FROM age_groups WHERE age_groups.set = '1'
 						AND swimmers = '$eventLegs';");
 				db_checkerrors($ageGroupList);
-									
+
 				foreach ($ageGroupList as $a) {
-					
+
 					$aId = $a[0];
 					$min = $a[2];
 					$max = $a[3];
 					$gender = $a[4];
-					
+
 					switch($gender) {
-						
-						case 1: 
+
+						case 1:
 							$genderCode = 'M';
 							break;
-						case 2: 
+						case 2:
 							$genderCode = 'F';
 							break;
 						case 3:
 							$genderCode = 'X';
 							break;
-						
+
 					}
-					
-					
+
+
 					$groupName = $a[5];
-					
+
 					if ($eventLegs == 1) {
-					
+
 						$ageGroupSwimmers = $GLOBALS['db']->getAll("SELECT * FROM eprogram_entry, eprogram_athletes 
 							WHERE eprogram_athletes.ath_no = eprogram_entry.ath_no 
 							AND eprogram_entry.meet_id = '$this->meetId' AND eprogram_athletes.meet_id = '$this->meetId' 
@@ -1399,23 +1157,23 @@ class MeetProgram {
 							AND eprogram_athletes.age <= '$max' AND eprogram_athletes.gender = '$gender' 
 							ORDER BY eprogram_entry.finalplace ASC;");
 						db_checkerrors($ageGroupSwimmers);
-						
+
 					} else {
-						
+
 						$ageGroupSwimmers = $GLOBALS['db']->getAll("SELECT * FROM eprogram_relay
 								WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr' AND
 								rel_age >= '$min' AND rel_age <= '$max' AND rel_sex = '$genderCode';");
-						
+
 					}
-					
+
 					if (count($ageGroupSwimmers) >= 1) {
-						
+
 						echo "<div id=\"agegroup_$aId\" class=\"agegroups\">\n";
-						
+
 						echo "<h4>$groupName</h4>";
-					
+
 						echo "<table border=\"0\" width=\"100%\">\n";
-						
+
 						echo "<thead class=\"list\">\n";
 						echo "<tr>\n";
 						echo "<th>\n";
@@ -1441,64 +1199,64 @@ class MeetProgram {
 						echo "</th>\n";
 						echo "</tr>\n";
 						echo "</thead>\n";
-						
+
 						echo "<tbody>\n";
-						
+
 						foreach ($ageGroupSwimmers as $s) {
-							
+
 							if ($eventLegs == 1) {
-							
+
 								$ath_no = $s[2];
 								$finalplace = $s[7];
 								$seedTime = $s[5];
 								$finalTime = $s[8];
 								$points = $s[9];
-								
+
 								$memberDetails = $GLOBALS['db']->getRow("SELECT * FROM eprogram_athletes WHERE meet_id = '$this->meetId' AND ath_no = '$ath_no';");
 								db_checkerrors($memberDetails);
-									
+
 								$memberId = $memberDetails[1];
-									
+
 								if (isset($memberId)) {
-										
+
 									$memberObj = new Member();
 									$memberObj->loadId($memberId);
 									$swimmerName = $memberObj->getFullname();
 									$swimmerAge = $memberObj->getAge();
 									$swimmerAgeGroup = $memberObj->getAgeGroup();
-										
+
 								} else {
-										
+
 									$swimmerName = $memberDetails[4] . ' ' . $memberDetails[5];
 									$swimmerDob = $memberDetails[6];
-										
+
 									// Get unknown swimmer age
 									$dobDT = new DateTime($swimmerDob);
-									
+
 									// Test the age up date of the end of the year
 									$curYearTest = date('Y', time());
 									$testDateDT = new DateTime($curYearTest . "-12-31 23:59:59");
-										
+
 									$ageInt = $dobDT->diff($testDateDT);
 									$swimmerAge = $ageInt->format('%y');
-										
+
 									$genderCode = $memberDetails[8];
-										
+
 									$swimmerAgeGroup = $GLOBALS['db']->getOne("SELECT groupname FROM age_groups 
 											WHERE '$swimmerAge' >= min AND max >= '$swimmerAge' 
 											AND gender = '$genderCode';");
 									db_checkerrors($swimmerAgeGroup);
-									
-									
-										
+
+
+
 								}
-								
+
 								$team_no = $memberDetails[3];
 								$clubCode = $GLOBALS['db']->getOne("SELECT clubs.code FROM eprogram_teams, clubs WHERE eprogram_teams.meet_id = '$this->meetId' AND eprogram_teams.club_id = clubs.id AND eprogram_teams.team_no = '$team_no';");
 								db_checkerrors($clubCode);
-							
+
 							} else {
-								
+
 								$finalplace = $s[12];
 								$seedTime = $s[7];
 								$finalTime = $s[10];
@@ -1507,114 +1265,114 @@ class MeetProgram {
 								$relay_no = $s[2];
 								$swimmerAge = '';
 								$swimmerName = '';
-								
+
 								$relayNames = $GLOBALS['db']->getAll("SELECT * FROM eprogram_relaynames
 										WHERE meet_id = '$this->meetId' AND relay_no = '$relay_no' AND
 										event_ptr = '$event_ptr' ORDER BY pos_no ASC;");
 								db_checkerrors($relayNames);
-									
+
 								foreach ($relayNames as $n) {
-								
+
 									$ath_no = $n[4];
 									$memberDetails = $GLOBALS['db']->getRow("SELECT * FROM eprogram_athletes
 											WHERE meet_id = '$this->meetId' AND ath_no = '$ath_no';");
 											db_checkerrors($memberDetails);
-												
+
 									$memberId = $memberDetails[1];
-								
+
 									if (isset($memberId)) {
-								
+
 										$memberObj = new Member();
 										$memberObj->loadId($memberId);
 										$swimmerNameTemp = $memberObj->getFullname();
 										$swimmerAgeTemp = $memberObj->getAge();
 										$swimmerAgeGroupTemp = $memberObj->getAgeGroup();
-								
+
 									} else {
-								
+
 										$swimmerNameTemp = $memberDetails[4] . ' ' . $memberDetails[5];
 										$swimmerDobTemp = $memberDetails[6];
-								
+
 										// Get unknown swimmer age
 										$dobDT = new DateTime($swimmerDobTemp);
 										$testDateDT = new DateTime();
-								
+
 										$ageInt = $dobDT->diff($testDateDT);
 										$swimmerAgeTemp = $ageInt->format('%y');
-								
+
 										$genderCodeTemp = $memberDetails[8];
-								
+
 									}
-								
+
 									$swimmerName = $swimmerName . $swimmerNameTemp . ", ";
 									$swimmerAge = $swimmerAge + $swimmerAgeTemp;
-								
+
 								}
-												
+
 								$swimmerName = substr($swimmerName, 0, (strlen($swimmerName) - 2));
 								$teamDetails = $GLOBALS['db']->getRow("SELECT * FROM eprogram_teams
 											WHERE meet_id = '$this->meetId' AND team_no = '$team_no';");
 								db_checkerrors($teamDetails);
-												
+
 								if ($teamDetails[1] == 0) {
-								
+
 									$clubCode = $teamDetails[3];
-												
+
 								} else {
-								
+
 									$clubDetails = new Club;
 									$clubDetails->load($teamDetails[1]);
 									$clubCode = $clubDetails->getCode();
-								
+
 								}
-								
-								
+
+
 							}
-								
+
 							if (!strpbrk($seedTime, '.')) {
-									
+
 								$seedTimeSecs = $seedTime;
 								$seedTimeMs = "00";
-									
+
 							} else {
-							
+
 								list($seedTimeSecs, $seedTimeMs) = explode('.', $seedTime);
-									
+
 								if (strlen($seedTimeMs) == 1) {
-							
+
 									$seedTimeMs = $seedTimeMs . '0';
-							
+
 								}
-									
+
 							}
-							
+
 							$seedTimeDisp = floor($seedTimeSecs / 60) . ':' . sprintf("%02d", ($seedTimeSecs % 60)) . '.' . $seedTimeMs;
-							
+
 							if ($seedTimeDisp == "0:00.00") {
-								
+
 								$seedTimeDisp = "NT";
-								
+
 							}
-							
+
 							if (!strpbrk($finalTime, '.')) {
-							
+
 								$finalTimeSecs = $finalTime;
 								$finalTimeMs = "00";
-							
+
 							} else {
-							
+
 								list($finalTimeSecs, $finalTimeMs) = explode('.', $finalTime);
-									
+
 								if (strlen($finalTimeMs) == 1) {
-										
+
 									$finalTimeMs = $finalTimeMs . '0';
-										
+
 								}
-							
+
 							}
-								
+
 							$finalTimeDisp = floor($finalTimeSecs / 60) . ':' . sprintf("%02d", ($finalTimeSecs % 60)) . '.' . $finalTimeMs;
-							
+
 							echo "<tr class=\"list\">\n";
 							echo "<td>\n";
 							echo "<div class=\"programCentre\">\n";
@@ -1625,29 +1383,29 @@ class MeetProgram {
 							echo "</td>\n";
 							echo "<td>\n";
 							if (isset($memberId) ) {
-						
+
 								echo "<a href=\"$this->url?id=$this->meetId&individualProg=1&member=$memberId\">\n";
 								echo "$swimmerName\n";
-							
+
 							} else {
-							
+
 								echo "<a href=\"$this->url?id=$this->meetId&individualProg=1&ath_no=$ath_no\">\n";
 								echo "$swimmerName\n";
 								echo "</a>\n";
-							
+
 							}
 							echo "</td>\n";
 							echo "<td>\n";
-							
+
 							if ($clubCode == "") {
-									
+
 								// Must be out of state member, look up club code from team_no
 								$clubCode = $GLOBALS['db']->getOne("SELECT clubcode FROM eprogram_teams WHERE
 									meet_id = ? AND team_no = ?", array($this->meetId, $team_no));
 								db_checkerrors($clubCode);
-									
+
 							}
-							
+
 							echo "<a href=\"$this->url?id=$this->meetId&teamProg=1&team=$team_no\">\n";
 							echo "$clubCode\n";
 							echo "</a>";
@@ -1677,32 +1435,32 @@ class MeetProgram {
 							echo "</div>\n";
 							echo "</td>\n";
 							echo "</tr>\n";
-							
+
 						}
 
 						echo "</tbody>\n";
 						echo "</table>\n";
 						echo "</div>\n";
-				
+
 					}
-					
+
 				}
-				
+
 			}
-			
+
 			echo "</div>\n";
-						
+
 		}
-		
+
 	}
-	
+
 	public function outputTeamScores() {
-		
+
 		echo "<h4>Team Point Scores</h4>\n";
-		
+
 		$teamList = $GLOBALS['db']->getAll("SELECT * FROM eprogram_teams WHERE meet_id = '$this->meetId';");
 		db_checkerrors($teamList);
-		
+
 		echo "<table border=\"0\" width=\"100%\">\n";
 		echo "<thead class=\"list\">\n";
 		echo "<tr>\n";
@@ -1730,8 +1488,8 @@ class MeetProgram {
 		echo "</tr>\n";
 		echo "</thead>";
 		echo "<tbody class=\"list\">";
-		
-		$teamPointsTally = 0;
+
+		$teamPointsTally;
 		$totalSwimmers = 0;
 		
 		foreach ($teamList as $t) {

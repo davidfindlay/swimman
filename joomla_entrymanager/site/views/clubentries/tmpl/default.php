@@ -571,6 +571,35 @@ if (isset($psMeetId)) {
 			
 			echo "</tbody>\n";
 			echo "</table>\n";
+
+			echo "<table width=\"100%\">\n";
+			echo "<tr>\n";
+
+			echo "<td>\n";
+			echo "Number of Relays: ";
+			echo "<br />\n";
+			echo count($relayTeams);
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "Paid Relays: ";
+
+
+
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "Unpaid Relays: ";
+
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "Amount Owed by Club: ";
+
+			echo "</td>\n";
+
+			echo "</tr>\n";
+			echo "</table>\n";
 				
 		} else {
 			
