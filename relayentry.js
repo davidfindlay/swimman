@@ -37,8 +37,6 @@ function getRelayEvents(meetId) {
                 $('select[name=eventId]').val($('select[name=eventId] option:first').val());
                 eventId = $('select[name=eventId] option:selected').val();
 
-                console.log("test" + eventId);
-
                 setEventGender();
 
                 getAvailableSwimmers(meetId, eventId, eventGender, clubId);
@@ -82,14 +80,15 @@ function getRelayEvents(meetId) {
                     $('select[name=newTeamClub]')
                         .append('<option value="' + clubId + '">' + clubName + ' (' + clubCode + ')</option>');
 
-                })
+                });
+
             });
 
     }
 
 }
 
-function getAvailableSwimmers(meetId, eventId, eventGender, clubId) {
+function getAvailableSwimmers(meetId, eventId, eventGender) {
 
     console.log('getAvailableSwimmers');
 
@@ -102,6 +101,8 @@ function getAvailableSwimmers(meetId, eventId, eventGender, clubId) {
             format: "json"
         })
             .done(function (data) {
+
+                console.log("clubId = " + clubId);
 
                 $('#newTeamSwimmer1')
                     .find('option')
@@ -136,23 +137,26 @@ function getAvailableSwimmers(meetId, eventId, eventGender, clubId) {
 
                     if ((eventGender == "X") || (eventGender == value.gender)) {
 
-                       // if (clubId == "" || clubId = value.clubcode)
+                        // If a clubId is set, then only show those members from selected club
+                        if ((clubId == '') || (value.clubId == clubId)) {
 
-                        $('#newTeamSwimmer1')
-                            .append('<option value="' + swimmerId + '">' + swimmerName + '</option>');
+                            $('#newTeamSwimmer1')
+                                .append('<option value="' + swimmerId + '">' + swimmerName + '</option>');
 
-                        $('#newTeamSwimmer2')
-                            .append('<option value="' + swimmerId + '">' + swimmerName + '</option>');
+                            $('#newTeamSwimmer2')
+                                .append('<option value="' + swimmerId + '">' + swimmerName + '</option>');
 
-                        $('#newTeamSwimmer3')
-                            .append('<option value="' + swimmerId + '">' + swimmerName + '</option>');
+                            $('#newTeamSwimmer3')
+                                .append('<option value="' + swimmerId + '">' + swimmerName + '</option>');
 
-                        $('#newTeamSwimmer4')
-                            .append('<option value="' + swimmerId + '">' + swimmerName + '</option>');
+                            $('#newTeamSwimmer4')
+                                .append('<option value="' + swimmerId + '">' + swimmerName + '</option>');
+
+                        }
 
                     }
 
-                })
+                });
 
             });
 

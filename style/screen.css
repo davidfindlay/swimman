@@ -299,7 +299,7 @@ body.loading .modal {
 }
 .custom-combobox-toggle {
 	position: absolute;
-	top: 0;
+	top: -1px;
 	bottom: 0;
 	margin-left: -1px;
 	padding: 0;

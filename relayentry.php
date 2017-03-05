@@ -25,9 +25,6 @@ htmlHeaders("Relay Entries");
 
 echo "<script type=\"text/javascript\" src=\"relayentry.js\"></script>\n";
 
-echo "<link href=\"/swimman/vendor/nicolasbize/magicsuggest/magicsuggest-min.css\" rel=\"stylesheet\">";
-echo "<script src=\"/swimman/includes/magicsuggest.js\"></script>";
-
 sidebarMenu();
 
 echo "<div id=\"main\">\n";
@@ -145,33 +142,8 @@ echo "</p>\n";
 echo "<p>\n";
 echo "<label>Club Team:</label>\n";
 
-echo "<div id=\"newTeamClubMS\"></div>\n";
-
 echo "<select name=\"newTeamClub\" id=\"newTeamClub\">\n";
-//
-//echo "<option value=\"\"></option>\n";
-//
-//if (isset($meetId)) {
-//
-//// Get list of clubs
-//    $clubs = $GLOBALS['db']->getAll("SELECT * FROM clubs WHERE id IN
-//                          (SELECT club_id FROM meet_entries WHERE meet_id = ? AND
-//                          club_id IN (SELECT club_id FROM meet_entries GROUP BY club_id HAVING count(*) > 3))
-//  ORDER BY clubname ASC;",
-//        array($meetId));
-//    db_checkerrors($clubs);
-//
-//    foreach ($clubs as $c) {
-//
-//        $cId = $c[0];
-//        $cCode = trim($c[1]);
-//        $cName = trim($c[2]);
-//        echo "<option value=\"$cId\">$cName($cCode)</option>\n";
-//
-//    }
-//
-//}
-//
+
 echo "</select>\n";
 
 echo "</p>\n";
@@ -233,7 +205,6 @@ htmlFooters();
     var eventId = "";
     var eventGender = "";
     var clubId = "";
-    var clubCode = "";
 
     var rowSelected = false;
 
@@ -284,12 +255,24 @@ htmlFooters();
 
             setEventGender();
 
-            getAvailableSwimmers(meetId, eventId, eventGender, clubCode);
+            getAvailableSwimmers(meetId, eventId, eventGender);
             getTeams(meetId, eventId);
 
             var teamClubComboBox = $("#newTeamClub").data("custom-combobox");
-            teamClubComboBox.resize();
 
+        });
+
+        $('#newTeamClub').combobox();
+        $('#newTeamSwimmer1').combobox();
+        $('#newTeamSwimmer2').combobox();
+        $('#newTeamSwimmer3').combobox();
+        $('#newTeamSwimmer4').combobox();
+
+        $('#newTeamClub').change(function() {
+            clubId = $('#newTeamClub').val();
+            getAvailableSwimmers(meetId, eventId, eventGender);
+
+            console.log ("Team Club change");
         });
 
         $('.newTeamSwimmers').change(function() {
@@ -343,12 +326,6 @@ htmlFooters();
         console.log("eventId initially set to " + eventId);
 
         getRelayEvents(meetId);
-
-        $('#newTeamClub').combobox();
-        $('#newTeamSwimmer1').combobox();
-        $('#newTeamSwimmer2').combobox();
-        $('#newTeamSwimmer3').combobox();
-        $('#newTeamSwimmer4').combobox();
 
         console.log( "ready!" );
 

@@ -6,7 +6,6 @@ $( function() {
                 .insertAfter( this.element );
 
             this.element.hide();
-            this.selectWidth = this.element.css("width");
             this._createAutocomplete();
             this._createShowAllButton();
         },
@@ -29,8 +28,7 @@ $( function() {
                     classes: {
                         "ui-tooltip": "ui-state-highlight"
                     }
-                })
-                .css("width", this.selectWidth);
+                });
 
             this._on( this.input, {
                 autocompleteselect: function( event, ui ) {
@@ -54,17 +52,16 @@ $( function() {
                 .tooltip()
                 .appendTo( this.wrapper )
                 .button({
-                    icons: {
-                        primary: "ui-icon-triangle-1-s"
-                    },
-                    text: false
+                    icon: "ui-icon-gear",
+                    showLabel: true
                 })
                 .removeClass( "ui-corner-all" )
-                .addClass( "custom-combobox-toggle ui-corner-right" )
+                .addClass( "custom-combobox-toggle ui-corner-right ui-button" )
                 .on( "mousedown", function() {
                     wasOpen = input.autocomplete( "widget" ).is( ":visible" );
                 })
                 .css("height", this.input.css("height"))
+                .css("width", this.input.css("height"))
                 .on( "click", function() {
                     input.trigger( "focus" );
 
@@ -117,8 +114,7 @@ $( function() {
             // Remove invalid value
             this.input
                 .val( "" )
-                .attr( "title", value + " didn't match any item" )
-                .tooltip( "open" );
+                .attr( "title", value + " didn't match any item" );
             this.element.val( "" );
             this._delay(function() {
                 this.input.tooltip( "close" ).attr( "title", "" );
@@ -132,10 +128,10 @@ $( function() {
         },
 
         resize: function() {
+            console.log("changed width to " + selectWidth);
+
             var selectWidth = this.element.css("width");
             this.input.css("width", selectWidth);
-
-            console.log("changed width to " + selectWidth);
         }
 
     });
