@@ -157,6 +157,7 @@ class MeetProgram {
 		$entryCsv = $this->uploaddir . $this->meetId . '-entry.csv';
 		$relayCsv = $this->uploaddir . $this->meetId . '-relay.csv';
 		$relaynamesCsv = $this->uploaddir . $this->meetId . '-relaynames.csv';
+        $splitCsv = $this->uploaddir . $this->meetId . '-split.csv';
 
 		exec("mdb-export -H '$filePath' athlete > $athleteCsv");
 
@@ -516,6 +517,77 @@ class MeetProgram {
 			}
 
 		}
+
+        exec("mdb-export -H '$filePath' split > $splitCsv");
+
+        $splitFile = fopen($splitCsv, "r");
+
+        while (!feof($splitFile)) {
+
+            $csvEntry = fgetcsv($splitFile);
+
+            if (count($csvEntry) > 1) {
+
+                $event_ptr = $csvEntry[0];
+                $ath_no = $csvEntry[1];
+                $team_no = $csvEntry[2];
+                $team_ltr = $csvEntry[3];
+                $split_no = $csvEntry[5];
+                $split_time = $csvEntry[6];
+                $relay_no = $csvEntry[7];
+
+                if ($relay_no == "") {
+                    $relay_no = 0;
+                }
+
+                if ($ath_no == "") {
+                    $ath_no = 0;
+                }
+
+                $splitTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_split WHERE meet_id = ? 
+                              AND event_ptr = ?
+                              AND ath_no = ?
+                              AND split_no = ?
+                              AND relay_no = ?;",
+                    array($this->meetId, $event_ptr, $ath_no, $split_no, $relay_no));
+                db_checkerrors($splitTest);
+
+                if ($splitTest) {
+
+                    // Only update if different
+                    if ($splitTest[7] != $split_time) {
+
+                        $update = $GLOBALS['db']->query("UPDATE eprogram_split SET split_time = ? WHERE meet_id = ?
+                                         AND event_ptr = ?
+                                         AND ath_no = ?
+                                         AND split_no = ?
+                                         AND relay_no = ?",
+                            array($split_time, $this->meetId, $event_ptr, $ath_no, $split_no, $relay_no));
+                        db_checkerrors($update);
+
+                        //echo "Updating split time $event_ptr, $ath_no, $split_no, $relay_no<br />\n";
+
+                    } else {
+
+                        //echo "Split update not required for $event_ptr, $ath_no, $split_no, $relay_no<br />\n";
+                        
+                    }
+
+                } else {
+
+                    $insert = $GLOBALS['db']->query("INSERT INTO eprogram_split (meet_id, event_ptr, ath_no, team_no, team_ltr, split_no, split_time, relay_no) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+                        array($this->meetId, $event_ptr, $ath_no, $team_no, $team_ltr, $split_no, $split_time, $relay_no));
+                    db_checkerrors($insert);
+
+                    //echo "Inserting split time $event_ptr, $ath_no, $split_no, $relay_no<br />\n";
+
+                }
+
+
+            }
+
+        }
 
 		//echo "Updated relays.<br />";
 		flush();

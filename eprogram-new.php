@@ -326,7 +326,9 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 						+agegroup+'</div><div class=\"swimmerAge\">('
 						+age+')</div><div class=\"clubName\">'
 						+clubname+'</div></td><td class=\"resultRow\"><div class=\"finalTime\">'
-						+finaltime+'</div></td>')
+						+finaltime+'</div></td>'
+                        +'<td><input type=\"button\" data-icon=\"delete\" data-iconpos=\"notext\" value=\"More\" />'
+                        +'</td>')
 						.appendTo("#heatDetails");
 
 					$('<tr></tr>').html(
