@@ -36,6 +36,8 @@ $( function() {
                     this._trigger( "select", event, {
                         item: ui.item.option
                     });
+                    console.log("club change");
+                    this.element.change();
                 },
 
                 autocompletechange: "_removeIfInvalid"

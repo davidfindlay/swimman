@@ -68,7 +68,7 @@ function getRelayEvents(meetId) {
                     .remove();
 
                 $('select[name=newTeamClub]')
-                    .append('<option value=""></option>');
+                    .append('<option value="0">Unattached</option>');
 
                 $.each(data, function (key, value) {
 
@@ -138,7 +138,7 @@ function getAvailableSwimmers(meetId, eventId, eventGender) {
                     if ((eventGender == "X") || (eventGender == value.gender)) {
 
                         // If a clubId is set, then only show those members from selected club
-                        if ((clubId == '') || (value.clubId == clubId)) {
+                        if ((clubId == '0') || (value.clubId == clubId)) {
 
                             $('#newTeamSwimmer1')
                                 .append('<option value="' + swimmerId + '">' + swimmerName + '</option>');
@@ -179,15 +179,27 @@ function getTeams(meetId, eventId) {
             "sAjaxDataProp": "",
             "destroy": "true",
             "columns": [
-                { "defaultContent": "Delete Edit" },
+                { "data": function (json) {
+                    var output = "<input type=\"image\" src=\"/swimman/images/delete.png\" alt='Delete Team' onclick='deleteTeam(" + json.id + ")'>" +
+                    "<input type=\"image\" src=\"/swimman/images/edit.png\" alt='Edit Team' onclick='editTeam(" + json.id + ")'>";
+                    return output;
+                } },
                 { "data": function (json) {
                     var clubInfo;
                     clubInfo = "<abbr title=\"" + json.clubname + "\">" + json.code + "</abbr>";
                     return clubInfo;
-                } },
-                { "data": 'groupname' },
-                { "data": 'letter' },
-                { "data": 'teamname' },
+                }, className : "dt-center" },
+                { "data": function (json) {
+                    var groupName = json.groupname.split(' ');
+                    return "<abbr title=\"" + json.groupname + "\">" + groupName[1] + "</abbr>";
+                }, className : "dt-center" },
+                { "data": function (json) {
+                    var teamNameOut = json.letter;
+                    if (json.teamname != null) {
+                        teamNameOut += ' - ' + json.teamname;
+                    }
+                    return teamNameOut;
+                }, className : "dt-center"  },
                 { "data": 'swimmer1name',
                     "defaultContent": 'n/a' },
                 { "data": 'swimmer2name',

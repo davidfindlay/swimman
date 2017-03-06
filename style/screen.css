@@ -310,3 +310,8 @@ body.loading .modal {
 	padding: 5px 10px;
 	background-color: white;
 }
+
+.ui-autocomplete {
+	max-height: 150px;
+    overflow: auto;
+}

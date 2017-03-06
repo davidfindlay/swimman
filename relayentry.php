@@ -101,13 +101,10 @@ echo "<th>\n";
 echo "Club\n";
 echo "</th>\n";
 echo "<th>\n";
-echo "Age Group\n";
+echo "Age\n";
 echo "</th>\n";
 echo "<th>\n";
-echo "Letter\n";
-echo "</th>\n";
-echo "<th>\n";
-echo "Team Name\n";
+echo "Team\n";
 echo "</th>\n";
 echo "<th>\n";
 echo "1st Swimmer\n";
@@ -275,39 +272,39 @@ htmlFooters();
             console.log ("Team Club change");
         });
 
-        $('.newTeamSwimmers').change(function() {
-            var dropDownId = $(this).attr('id');
-            var selected = $(this).val();
-
-            console.log("dropDownId=" + dropDownId + " selected=" + selected);
-
-            if (dropDownId != "newTeamSwimmer1") {
-                console.log("not newTeamSwimmer1");
-                if ($('#newTeamSwimmer1').val() == selected) {
-                    console.log("clear newTeamSwimmer1");
-                    $('#newTeamSwimmer1').val("");
-                }
-            }
-
-            if (dropDownId != "newTeamSwimmer2") {
-                if ($('#newTeamSwimmer2').val() == selected) {
-                    $('#newTeamSwimmer2').val("");
-                }
-            }
-
-            if (dropDownId != "newTeamSwimmer3") {
-                if ($('#newTeamSwimmer3').val() == selected) {
-                    $('#newTeamSwimmer3').val("");
-                }
-            }
-
-            if (dropDownId != "newTeamSwimmer4") {
-                if ($('#newTeamSwimmer4').val() == selected) {
-                    $('#newTeamSwimmer4').val("");
-                }
-            }
-
-        })
+//        $('.newTeamSwimmers').change(function() {
+//            var dropDownId = $(this).attr('id');
+//            var selected = $(this).val();
+//
+//            console.log("dropDownId=" + dropDownId + " selected=" + selected);
+//
+//            if (dropDownId != "newTeamSwimmer1") {
+//                console.log("not newTeamSwimmer1");
+//                if ($('#newTeamSwimmer1').val() == selected) {
+//                    console.log("clear newTeamSwimmer1");
+//                    $('#newTeamSwimmer1').val("");
+//                }
+//            }
+//
+//            if (dropDownId != "newTeamSwimmer2") {
+//                if ($('#newTeamSwimmer2').val() == selected) {
+//                    $('#newTeamSwimmer2').val("");
+//                }
+//            }
+//
+//            if (dropDownId != "newTeamSwimmer3") {
+//                if ($('#newTeamSwimmer3').val() == selected) {
+//                    $('#newTeamSwimmer3').val("");
+//                }
+//            }
+//
+//            if (dropDownId != "newTeamSwimmer4") {
+//                if ($('#newTeamSwimmer4').val() == selected) {
+//                    $('#newTeamSwimmer4').val("");
+//                }
+//            }
+//
+//        });
 
         $('#newTeamCreate').click(function() {
             createTeam();

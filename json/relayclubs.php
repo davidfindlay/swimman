@@ -20,9 +20,9 @@ if (isset($_GET['meetId'])) {
 // Get list of available events
 $clubs = $GLOBALS['db']->getAll("SELECT * FROM clubs WHERE id IN
                           (SELECT club_id FROM meet_entries WHERE meet_id = ? AND
-                          club_id IN (SELECT club_id FROM meet_entries GROUP BY club_id HAVING count(*) > 3))
+                          club_id IN (SELECT club_id FROM meet_entries WHERE meet_id = ? GROUP BY club_id HAVING count(*) > 3))
   ORDER BY clubname ASC;",
-    array($meetId));
+    array($meetId, $meetId));
 db_checkerrors($clubs);
 
 // Send JSON Response
