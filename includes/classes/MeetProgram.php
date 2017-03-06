@@ -168,7 +168,7 @@ class MeetProgram {
 
 			if (count($csvEntry) > 1) {
 
-				$ath_no = mysql_real_escape_string(trim($csvEntry[0]));
+				$ath_no = trim($csvEntry[0]);
 
 				// Has ath_no been loaded already?
 				$athTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_athletes WHERE meet_id = '$this->meetId' AND ath_no = '$ath_no';");
@@ -182,11 +182,11 @@ class MeetProgram {
 
 				}
 
-				$last_name = mysql_real_escape_string(trim($csvEntry[1]));
-				$first_name = mysql_real_escape_string(trim($csvEntry[2]));
-				$team_no = mysql_real_escape_string(trim($csvEntry[6]));
-				$reg_no = mysql_real_escape_string(trim($csvEntry[9]));
-				$dob = mysql_real_escape_string(substr($csvEntry[5], 0, 8));
+				$last_name = trim($csvEntry[1]);
+				$first_name = trim($csvEntry[2]);
+				$team_no = trim($csvEntry[6]);
+				$reg_no = trim($csvEntry[9]);
+				$dob = substr($csvEntry[5], 0, 8);
 
 				// CSV file outputs in american date format
 				$dobYear = '19' . substr($dob, 6, 2);
@@ -196,7 +196,7 @@ class MeetProgram {
 
 				// echo "$dob <br />\n";
 
-				$age = mysql_real_escape_string(trim($csvEntry[8]));
+				$age = trim($csvEntry[8]);
 
 				if ($csvEntry[4] == 'M') {
 
@@ -259,9 +259,9 @@ class MeetProgram {
 
 			if (count($csvEntry) > 1) {
 
-				$event_ptr = mysql_real_escape_string(trim($csvEntry[2]));
-				$event_no = mysql_real_escape_string(trim($csvEntry[0]));
-				$event_ltr = mysql_real_escape_string(trim($csvEntry[1]));
+				$event_ptr = trim($csvEntry[2]);
+				$event_no = trim($csvEntry[0]);
+				$event_ltr = trim($csvEntry[1]);
 
 				// Check if event already exists
 				$eventTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_events WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr';");
@@ -313,7 +313,7 @@ class MeetProgram {
 
 			if (count($csvEntry) > 1) {
 
-				$team_no = mysql_real_escape_string(trim($csvEntry[0]));
+				$team_no = trim($csvEntry[0]);
 
 				// Check if team has already been loaded
 				$teamTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_teams WHERE meet_id = '$this->meetId' AND team_no = '$team_no';");
@@ -371,15 +371,15 @@ class MeetProgram {
 
 			if (count($csvEntry) > 1) {
 
-				$event_ptr = mysql_real_escape_string($csvEntry[0]);
-				$ath_no = mysql_real_escape_string($csvEntry[1]);
-				$heatnumber = mysql_real_escape_string($csvEntry[35]);
-				$heatlane = mysql_real_escape_string($csvEntry[36]);
-				$seedtime = mysql_real_escape_string($csvEntry[5]);
-				$heatplace = mysql_real_escape_string($csvEntry[40]);
-				$finaltime = mysql_real_escape_string($csvEntry[38]);
-				$finalplace = mysql_real_escape_string($csvEntry[42]);
-				$evscore = mysql_real_escape_string($csvEntry[12]);
+				$event_ptr = $csvEntry[0];
+				$ath_no = $csvEntry[1];
+				$heatnumber = $csvEntry[35];
+				$heatlane = $csvEntry[36];
+				$seedtime = $csvEntry[5];
+				$heatplace = $csvEntry[40];
+				$finaltime = $csvEntry[38];
+				$finalplace = $csvEntry[42];
+				$evscore = $csvEntry[12];
 
 				// Check if entry already recorded
 				$entryTest = $GLOBALS['db']->getRow("SELECT * FROM eprogram_entry WHERE meet_id = '$this->meetId' AND event_ptr = '$event_ptr' AND ath_no = '$ath_no';");
@@ -521,7 +521,7 @@ class MeetProgram {
 		flush();
 
 		// Check if all entries already exist in Meet Entry system
-		$this->updateEntryManager();
+		//$this->updateEntryManager();
 
 	}
 

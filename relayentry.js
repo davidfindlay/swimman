@@ -180,8 +180,10 @@ function getTeams(meetId, eventId) {
             "destroy": "true",
             "columns": [
                 { "data": function (json) {
-                    var output = "<input type=\"image\" src=\"/swimman/images/delete.png\" alt='Delete Team' onclick='deleteTeam(" + json.id + ")'>" +
-                    "<input type=\"image\" src=\"/swimman/images/edit.png\" alt='Edit Team' onclick='editTeam(" + json.id + ")'>";
+                    var output = "<a href='#' onclick='deleteTeam(" + json.id + ")'>" +
+                            "<img src=\"/swimman/images/delete.png\" alt='Delete Team' /></a>" +
+                            "<a href='#' onclick='editTeam(" + json.id + ")'>" +
+                            "<img src=\"/swimman/images/edit.png\" alt='Edit Team' /></a>";
                     return output;
                 } },
                 { "data": function (json) {
@@ -195,7 +197,7 @@ function getTeams(meetId, eventId) {
                 }, className : "dt-center" },
                 { "data": function (json) {
                     var teamNameOut = json.letter;
-                    if (json.teamname != null) {
+                    if (json.teamname != null && json.teamname != '') {
                         teamNameOut += ' - ' + json.teamname;
                     }
                     return teamNameOut;
@@ -270,6 +272,58 @@ function deleteTeam(teamId) {
                 getAvailableSwimmers(meetId, eventId, eventGender, clubId);
             });
     }
+
+}
+
+/**
+ * Loads a team for editing
+ *
+ * @param teamId to edit
+ */
+function editTeam(teamId) {
+
+    // Change header
+    $('#createTeamHeader').text("Edit a Team");
+
+    // Set the existing team id
+    $('#teamId').val(teamId);
+
+    console.log("editTeam= " + teamId);
+
+    // Get team details
+    var team;
+    $.ajax({
+        type: 'GET',
+        url: "/swimman/json/relayteams.php?meetId=" + meetId + "&eventId=" + eventId + "&teamId=" + teamId,
+        dataType: 'json',
+        success : function(data) {
+            team = data;
+
+            console.log("Loaded " + team[0].clubname + ' ' + team[0].letter);
+
+            $('#newTeamClub').val(team[0].clubid);
+            $('#newTeamClub').change();
+            $('#newTeamClub')._source();
+            $('#newTeamName').val(team[0].teamname);
+            $('#newTeamName').change();
+            $('#newTeamName')._source();
+            $('#newTeamSwimmer1').val(team[0].swimmer1id);
+            $('#newTeamSwimmer1').change();
+            $('#newTeamSwimmer1')._source();
+            $('#newTeamSwimmer2').val(team[0].swimmer2id);
+            $('#newTeamSwimmer2').change();
+            $('#newTeamSwimmer2')._source();
+            $('#newTeamSwimmer3').val(team[0].swimmer3id);
+            $('#newTeamSwimmer3').change();
+            $('#newTeamSwimmer3')._source();
+            $('#newTeamSwimmer4').val(team[0].swimmer4id);
+            $('#newTeamSwimmer4').change();
+            $('#newTeamSwimmer4')._source();
+
+        }
+    });
+
+
 
 }
 

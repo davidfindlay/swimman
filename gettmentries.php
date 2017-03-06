@@ -28,7 +28,21 @@ $tmEntries->setMeet($meetId);
 if (isset($_GET['event'])) {
 
 	$eventId = $_GET['event'];
-	$tmEntries->setEvents($eventId);
+	$tmEntries->setEvent($eventId);
+
+}
+
+if (isset($_GET['relaysonly'])) {
+
+    if ($_GET['relaysonly'] == "true" || $_GET['relaysonly'] == "1") {
+
+        $tmEntries->setRelayOnly(true);
+
+    } else {
+
+        $tmEntries->setRelayOnly(false);
+
+    }
 
 }
 

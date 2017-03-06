@@ -8,6 +8,8 @@ class TMEntryFile {
 	private $entries;  // Array of MeetEntries
 
     private $event = "";      // Set if we just want one event
+
+    private $relayOnly = "";
 	
 	private $filename;
 	
@@ -24,6 +26,14 @@ class TMEntryFile {
 
 	public function setEvent($eventId) {
         $this->event = $eventId;
+    }
+
+    /**
+     * @param string $relayOnly
+     */
+    public function setRelayOnly($relayOnly)
+    {
+        $this->relayOnly = $relayOnly;
     }
 
 	public function setClub($c) {
@@ -179,7 +189,8 @@ class TMEntryFile {
 					$lineE = "D1" .  $memberDetails->getGender();
 					$lineE = $lineE . str_pad($entryCount, 5, ' ', STR_PAD_LEFT);
 					$lineE = $lineE . str_pad($memberDetails->getSurname(), 20);
-					$lineE = $lineE . str_pad($memberDetails->getFirstname(), 60);
+					$lineE = $lineE . str_pad($memberDetails->getFirstname(), 41);
+					$lineE = $lineE . str_pad($memberDetails->getMSANumber(), 19);
 					$lineE = $lineE . date('mdY', strtotime($memberDetails->getDob()));
 					
 					// Update map for potential relay entries
@@ -225,6 +236,19 @@ class TMEntryFile {
                                 if ($eventId != $this->event) {
                                     continue;
                                 }
+                            }
+
+                            // Handle if only exporting relays
+                            if ($this->relaysOnly) {
+
+                                // Get event details
+                                $eventDetails = new MeetEvent();
+                                $eventDetails->load($eventId);
+
+                                if ($eventDetails->getLegs() == 1) {
+                                    continue;
+                                }
+
                             }
 							
 							$eventDet = new MeetEvent();

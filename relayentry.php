@@ -129,7 +129,7 @@ echo "<p>\n";
 echo "<input type=\"button\" id=\"downloadRelays\" value=\"Download Entries\" />\n";
 echo "</p>\n";
 
-echo "<h2>Create a Team</h2>\n";
+echo "<h2 id='createTeamHeader'>Create a Team</h2>\n";
 
 echo "<p>\n";
 echo "For club relay teams, select the correct club from the Club Team drop down list. Only club members ";
@@ -138,6 +138,8 @@ echo "</p>\n";
 
 echo "<p>\n";
 echo "<label>Club Team:</label>\n";
+
+echo "<input type=\"hidden\" name=\"teamId\" id=\"teamId\" value=\"\" />\n";
 
 echo "<select name=\"newTeamClub\" id=\"newTeamClub\">\n";
 
@@ -190,7 +192,28 @@ echo "</form>\n";
 
 echo "</div>\n";  // Main Div
 
-echo "<div class=\"modal\"><!-- Place at bottom of page --></div>\n";
+?>
+
+<div id="deleteModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this relay team?</p>
+                <p class="text-warning"><small>This can not be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary">Yes, delete the team</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
 
 htmlFooters();
 
