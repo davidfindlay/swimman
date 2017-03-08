@@ -351,7 +351,7 @@ class TMEntryFile {
 
 					// Line start and club code
 					$lineR = "";
-					$lineR = "F1" . $clubCode . "  " . $relayLetter . " ";
+					$lineR = "F1" . str_pad(trim($clubCode), 5, ' ') . $relayLetter . " ";
 					
 					$ageGroupMin = $GLOBALS['db']->getOne("SELECT min FROM age_groups WHERE id = ?;",
 						array($ageGroupId));
@@ -523,12 +523,10 @@ class TMEntryFile {
 		
 		$clubDetails = new Club();
 		$clubDetails->load($clubId);
-		$clubCode = $clubDetails->getCode();
-		$clubName = substr($clubDetails->getNameShortened(), 0, 30);
+		$clubCode = trim($clubDetails->getCode());
+		$clubName = substr(trim($clubDetails->getNameShortened()), 0, 30);
 
-        $clubLength = 115 - strlen($clubCode);
-
-		$tmpLine = "C1" . $clubCode . "  " . str_pad($clubName, $clubLength, ' ') . str_pad("MAS", 9, ' ');
+		$tmpLine = "C1" . str_pad($clubCode,5, ' ') . str_pad($clubName, 112, ' ') . str_pad("MAS", 9, ' ');
 		$tmpLine = $tmpLine . $this->HY3checksum($tmpLine) . "\r\n";
 		
 		// Start Club line 2
