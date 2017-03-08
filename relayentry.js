@@ -82,6 +82,8 @@ function getRelayEvents(meetId) {
 
                 });
 
+                $('#newTeamClub').combobox("resize");
+
             });
 
     }
@@ -157,6 +159,11 @@ function getAvailableSwimmers(meetId, eventId, eventGender) {
                     }
 
                 });
+
+                $('#newTeamSwimmer1').combobox("resize");
+                $('#newTeamSwimmer2').combobox("resize");
+                $('#newTeamSwimmer3').combobox("resize");
+                $('#newTeamSwimmer4').combobox("resize");
 
             });
 
@@ -234,6 +241,12 @@ function createTeam() {
             $("#newTeamSwimmer2").val("");
             $("#newTeamSwimmer3").val("");
             $("#newTeamSwimmer4").val("");
+
+            $('#newTeamClub').combobox("reset");
+            $('#newTeamSwimmer1').combobox("reset");
+            $('#newTeamSwimmer2').combobox("reset");
+            $('#newTeamSwimmer3').combobox("reset");
+            $('#newTeamSwimmer4').combobox("reset");
 
         });
 
@@ -329,8 +342,8 @@ function editTeam(teamId) {
 
 function downloadEntries(meetId, eventId) {
 
-    console.log("Download request for meetid=" + meetId + " eventId=" + eventId);
+    console.log("Download request for meetid=" + meetId + " eventid=" + eventId);
 
-    window.location.href = "gettmentries.php?meet=" + meetId + "&eventId=" + eventId;
+    window.location.href = "gettmentries.php?meet=" + meetId + "&event=" + eventId + "&relaysonly=1";
 
 }

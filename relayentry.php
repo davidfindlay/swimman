@@ -213,6 +213,8 @@ echo "</div>\n";  // Main Div
     </div>
 </div>
 
+<div class="modal"></div>
+
 <?php
 
 htmlFooters();
@@ -351,5 +353,14 @@ htmlFooters();
 
     });
 
+
+    $.ajaxSetup({
+        beforeSend:function(){
+            $('body').addClass('loading');
+        },
+        complete:function(){
+            $('body').removeClass('loading');
+        }
+    });
 
 </script>

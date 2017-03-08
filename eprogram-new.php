@@ -303,10 +303,12 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 				+ "<img src=\"/swimman/images/down.png\" height=\"20\" width=\"20\" /></a>";
 			
 			$('#heatLabel').html(heatLabel);
-			
+
+			var resultCount = 0;
+
 			$(data).find('entry').each(function(){
 
-				var lane = $(this).find('lane').text();
+			    var lane = $(this).find('lane').text();
 				var swimmer = $(this).find('fullname').text();
 				var agegroup = $(this).find('agegroup').text();
 				var age = $(this).find('age').text();
@@ -317,6 +319,39 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 				var ageplace = Number.getOrdinalFor($(this).find('ageplace').text(), true);
 				var points = $(this).find('points').text();
 
+				var splits = $(this).find('splits').children();
+
+				console.log(splits);
+
+				var splitTable = "<table width=\"80%\" >\n";
+				splitTable += "<thead><tr><th colspan=\"4\">Splits</th><tr><th class=\"splitsheader\">No</th><th class=\"splitsheader\">Distance</th><th class=\"splitsheader\">Split</th><th class=\"splitsheader\">Time</th></tr></thead>\n";
+
+				var lastSplit = 0;
+
+				splits.each(function() {
+
+				    console.log($(this));
+
+				    var split_no = $(this).attr('no');
+				    var split_time = parseFloat($(this).text());
+				    var split = split_time - lastSplit;
+				    lastSplit = split_time;
+
+				    splitTable += "<tr>";
+
+                    splitTable += "<td class=\"splitscell\">" + split_no + "</td>\n";
+                    splitTable += "<td class=\"splitscell\">" + (split_no * 50) + "m</td>\n";
+                    splitTable += "<td class=\"splitscell\">" + formatTime(split) + "</td>\n";
+                    splitTable += "<td class=\"splitscell\">" + formatTime(split_time) + "</td>\n";
+
+				    splitTable += "</tr>";
+
+                });
+
+                splitTable += "</table>\n";
+
+				console.log(splitTable);
+
 				if (finaltime != "") {
 
 					$('<tr></tr>').html(
@@ -326,13 +361,13 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 						+agegroup+'</div><div class=\"swimmerAge\">('
 						+age+')</div><div class=\"clubName\">'
 						+clubname+'</div></td><td class=\"resultRow\"><div class=\"finalTime\">'
-						+finaltime+'</div></td>'
-                        +'<td><input type=\"button\" data-icon=\"delete\" data-iconpos=\"notext\" value=\"More\" />'
-                        +'</td>')
+						+finaltime+'</div></td><td>'
+                        + '<a href=\"#\" class=\"ui-btn ui-icon-bullets ui-btn-icon-notext ui-corner-all\" '
+                        + 'onclick=\"showMore(' + resultCount +')\">More</a></td>')
 						.appendTo("#heatDetails");
 
 					$('<tr></tr>').html(
-							'<td class=\"placeCell\" colspan=\"3\">' +
+							'<td class=\"placeCell\" colspan=\"4\">' +
                                 '<strong>Seed Time: </strong>' + seedtime +
 							'<strong>&nbsp;&nbsp;Heat: </strong>'
 							+heatplace+'<strong>&nbsp;&nbsp;Age: </strong>'
@@ -341,7 +376,13 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 							'</td>')
 							.appendTo("#heatDetails");
 
-					
+
+                    $('<tr class=\"splitrow\" id=\"splits_' + resultCount + '\"></tr>').html(
+                        '<td id=\"splitscell_' + resultCount + '\" colspan=\"4\" class=\"splitscontainer\"></td>\n'
+                    ).appendTo("#heatDetails");
+
+                    $('#splitscell_' + resultCount).html(splitTable);
+
 
 				} else {
 
@@ -362,6 +403,8 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
                         .appendTo("#heatDetails");
 					
 				}
+
+				resultCount++;
 				
 			});	
 
@@ -521,6 +564,70 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 		}
 		
 	}
+
+	function showMore(id) {
+
+	    // Display selected splits
+        if(!$('#splits_' + id).is(':visible')) {
+
+            $('#splits_' + id).show();
+
+        } else {
+
+            $('#splits_' + id).hide();
+
+        }
+
+    }
+
+    function formatTime(seconds) {
+
+        var timeMin = Math.floor(seconds / 60);
+        var timeHours = 0;
+
+        if (timeMin > 60) {
+
+            timeHours = Math.floor(timeMin / 60);
+            timeMin = timeMin - (timeHours * 60);
+
+
+        }
+
+        var timeSecs = seconds % 60;
+        timeSecs = timeSecs.toFixed(2);
+        var secString = timeSecs.toString();
+
+        if (secString.length == 4) {
+
+            secString = "0" + secString;
+
+        }
+
+        if (timeHours > 0) {
+
+            var minString = timeMin.toString();
+
+            if (minString.length == 1) {
+
+                minString = "0" + minString;
+
+            }
+
+            var nTimeString = timeHours.toString() + ":" + minString + ":" + secString;
+
+        } else {
+
+            var nTimeString = timeMin.toString() + ":" + secString;
+
+        }
+
+        if (nTimeString == "NaN:NaN") {
+            nTimeString = "0:00.00";
+        }
+
+        return nTimeString;
+
+    }
 	
     $(document).ready(function() {
 
@@ -557,6 +664,15 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 		
 		refreshEvents();
                 
+    });
+
+    $.ajaxSetup({
+        beforeSend:function(){
+            $('body').addClass('loading');
+        },
+        complete:function(){
+            $('body').removeClass('loading');
+        }
     });
  
 </script>
@@ -622,5 +738,7 @@ Go
 </div>
 
 </div>
+
+<div class="modal"></div>
 </body>
 </html>

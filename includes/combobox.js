@@ -36,7 +36,7 @@ $( function() {
                     this._trigger( "select", event, {
                         item: ui.item.option
                     });
-                    console.log("club change");
+                    console.log("")
                     this.element.change();
                 },
 
@@ -130,10 +130,21 @@ $( function() {
         },
 
         resize: function() {
-            console.log("changed width to " + selectWidth);
-
-            var selectWidth = this.element.css("width");
+            var selectWidth = this.element.width();
             this.input.css("width", selectWidth);
+
+            console.log("combobox: changed width to " + selectWidth);
+        },
+
+        reset: function() {
+
+            console.log("combobox: reset()");
+
+            var selected = this.element.children( ":selected" ),
+                value = selected.val() ? selected.text() : "";
+
+            this.input.val(value);
+
         }
 
     });

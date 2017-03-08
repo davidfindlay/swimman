@@ -553,7 +553,10 @@ MSQTime(a.seedtime) as seedtime,
 IF(a.heatplace = 0, '', a.heatplace) as heatplace, 
 IF(a.finalplace = 0, '', a.finalplace) as finalplace, 
 MSQTime(a.finaltime) as finaltime, 
-IF(a.ev_score = 0, '', a.ev_score) as points
+IF(a.ev_score = 0, '', a.ev_score) as points,
+a.ath_no as ath_no,
+a.event_ptr as event_ptr,
+a.finaltime as finalseconds
 FROM eprogram_entry as a, eprogram_teams as e left outer join clubs as f on e.club_id = f.id, age_groups as d, eprogram_athletes as c left outer join member as b on c.member_id = b.id
 WHERE a.meet_id = ?
 AND a.meet_id = c.meet_id
@@ -602,6 +605,10 @@ ORDER BY a.lanenumber ASC"
 			$currentFinalPlace = $h['finalplace'];
 			$currentFinalTime = $h['finaltime'];
 			$currentPoints = $h['points'];
+			$currentFinalSeconds = $h['finalseconds'];
+
+			$ath_no = $h['ath_no'];
+			$event_ptr = $h['event_ptr'];
 			
 			$currentEntry = $domtree->createElement("entry");
 			$currentHeat->appendChild($currentEntry);
@@ -684,6 +691,40 @@ ORDER BY a.lanenumber ASC"
 				$swimmerResultsTag->appendChild($pointsTag);
 				
 			}
+
+			// Check if splits are available
+			$splits = $GLOBALS['db']->getAll("SELECT * FROM eprogram_split WHERE meet_id = ?
+									AND event_ptr = ?
+									AND ath_no = ?
+									ORDER by split_no ASC;",
+				array($this->meetId, $event_ptr, $ath_no));
+			db_checkerrors($splits);
+
+			if (count($splits) > 0) {
+
+				$splitsTag = $domtree->createElement("splits");
+				$currentEntry->appendChild($splitsTag);
+
+				foreach ($splits as $s) {
+
+					$split_no = $s[6];
+					$splitTime = $s[7];
+
+					$splitTag = $domtree->createElement("split", $splitTime);
+					$splitTag->setAttribute("no", $split_no);
+
+					$splitsTag->appendChild($splitTag);
+
+				}
+
+				$finalSplitNo = count($splits) + 1;
+				$finalSplitTag = $domtree->createElement("split", $currentFinalSeconds);
+				$finalSplitTag->setAttribute("no", $finalSplitNo);
+				$splitsTag->appendChild($finalSplitTag);
+
+			}
+
+
 			
 		}
 		

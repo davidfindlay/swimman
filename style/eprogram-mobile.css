@@ -287,6 +287,30 @@ body {
 
 }
 
+    .splitrow {
+        font-size: 0.8em;
+        font-weight: normal;
+        text-align: center;
+    }
+
+    .splitscell {
+        font-size: 0.8em;
+        font-weight: normal;
+        text-align: center;
+    }
+
+    .splitsheader {
+        font-size: 0.8em;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .splitscontainer {
+        text-align: center;
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+
 .lblPoints {
 
 	width: 3em;
@@ -310,6 +334,11 @@ body {
 	display: inline;
 
 }
+
+	.splitrow {
+		display: none;
+	}
+
 }
 
 /* Start by setting display:none to make this hidden.
