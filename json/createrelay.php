@@ -34,6 +34,10 @@ if($newTeamClub == "") {
 
     $relayEntry->setClubCode("UNAT");
 
+} elseif ($newTeamClub == "0") {
+
+	$relayEntry->setClubCode("UNAT");
+
 } else {
 
     $relayEntry->setClub($newTeamClub);
