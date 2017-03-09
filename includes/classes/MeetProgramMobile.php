@@ -391,7 +391,8 @@ AND c.age >= e.min
 AND c.age <= e.max
 AND c.gender = e.gender
 AND e.id = ? 
-ORDER BY finalplace ASC;", array($this->meetId, $progNumber, $progSuffix, $ageGroupId));
+ORDER BY if(finalplace = '' or finalplace is null,1,0), CAST(finalplace as SIGNED INTEGER) ASC;",
+			array($this->meetId, $progNumber, $progSuffix, $ageGroupId));
 		db_checkerrors($ageGroupResults);
 		
 		$ageGroupDetails = $GLOBALS['db']->getRow("SELECT * FROM age_groups WHERE id = ?;", array($ageGroupId));
