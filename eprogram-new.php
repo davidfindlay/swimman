@@ -321,8 +321,6 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 
 				var splits = $(this).find('splits').children();
 
-				console.log(splits);
-
 				var splitTable = "<table width=\"80%\" >\n";
 				splitTable += "<thead><tr><th colspan=\"4\">Splits</th><tr><th class=\"splitsheader\">No</th><th class=\"splitsheader\">Distance</th><th class=\"splitsheader\">Split</th><th class=\"splitsheader\">Time</th></tr></thead>\n";
 
@@ -349,8 +347,6 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
                 });
 
                 splitTable += "</table>\n";
-
-				console.log(splitTable);
 
 				if (finaltime != "") {
 
@@ -477,6 +473,8 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 				+ groupName;
 			
 			$('#heatLabel').html(heatLabel);
+
+            var resultCount = 0;
 			
 			$(data).find('entry').each(function(){
 
@@ -492,6 +490,35 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 				var ageplace = Number.getOrdinalFor($(this).find('ageplace').text(), true);
 				var points = $(this).find('points').text();
 
+                var splits = $(this).find('splits').children();
+
+                var splitTable = "<table width=\"80%\" >\n";
+                splitTable += "<thead><tr><th colspan=\"4\">Splits</th><tr><th class=\"splitsheader\">No</th><th class=\"splitsheader\">Distance</th><th class=\"splitsheader\">Split</th><th class=\"splitsheader\">Time</th></tr></thead>\n";
+
+                var lastSplit = 0;
+
+                splits.each(function() {
+
+                    console.log($(this));
+
+                    var split_no = $(this).attr('no');
+                    var split_time = parseFloat($(this).text());
+                    var split = split_time - lastSplit;
+                    lastSplit = split_time;
+
+                    splitTable += "<tr>";
+
+                    splitTable += "<td class=\"splitscell\">" + split_no + "</td>\n";
+                    splitTable += "<td class=\"splitscell\">" + (split_no * 50) + "m</td>\n";
+                    splitTable += "<td class=\"splitscell\">" + formatTime(split) + "</td>\n";
+                    splitTable += "<td class=\"splitscell\">" + formatTime(split_time) + "</td>\n";
+
+                    splitTable += "</tr>";
+
+                });
+
+                splitTable += "</table>\n";
+
 				if (finaltime != "") {
 
 					$('<tr></tr>').html(
@@ -501,7 +528,9 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 						+agegroup+'</div><div class=\"swimmerAge\">('
 						+age+')</div><div class=\"clubName\">'
 						+clubname+'</div></td><td class=\"resultRow\"><div class=\"finalTime\">'
-						+finaltime+'</div></td>')
+						+finaltime+'</div></td><td>'
+                        + '<a href=\"#\" class=\"ui-btn ui-icon-bullets ui-btn-icon-notext ui-corner-all\" '
+                        + 'onclick=\"showMore(' + resultCount +')\">More</a></td>')
 						.appendTo("#heatDetails");
 
 					$('<tr></tr>').html(
@@ -514,7 +543,11 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
 							'</td>')
 							.appendTo("#heatDetails");
 
-					
+                    $('<tr class=\"splitrow\" id=\"splits_' + resultCount + '\"></tr>').html(
+                        '<td id=\"splitscell_' + resultCount + '\" colspan=\"4\" class=\"splitscontainer\"></td>\n'
+                    ).appendTo("#heatDetails");
+
+                    $('#splitscell_' + resultCount).html(splitTable);
 
 				} else {
 
@@ -534,6 +567,8 @@ $latestMeet = $GLOBALS['db']->getOne("SELECT meet_id FROM meet_programs ORDER BY
                         .appendTo("#heatDetails");
 					
 				}
+
+                resultCount++;
 				
 			});	
 

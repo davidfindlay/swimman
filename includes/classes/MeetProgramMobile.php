@@ -372,7 +372,10 @@ MSQTime(a.seedtime) as seedtime,
 IF(a.heatplace = 0, '', a.heatplace) as heatplace, 
 IF(a.finalplace = 0, '', a.finalplace) as finalplace, 
 MSQTime(a.finaltime) as finaltime, 
-IF(a.ev_score = 0, '', a.ev_score) as points
+IF(a.ev_score = 0, '', a.ev_score) as points,
+a.ath_no as ath_no,
+a.event_ptr as event_ptr,
+a.finaltime as finalseconds
 FROM eprogram_entry as a, eprogram_events as b, 
 eprogram_athletes AS c LEFT OUTER JOIN member AS f on c.member_id = f.id, 
 meet_events as d, age_groups as e,
@@ -413,6 +416,10 @@ ORDER BY if(finalplace = '' or finalplace is null,1,0), CAST(finalplace as SIGNE
 		$xmlRoot->appendChild($ageGroupTag);
 		
 		foreach($ageGroupResults as $r) {
+
+			$ath_no = $r['ath_no'];
+			$event_ptr = $r['event_ptr'];
+			$currentFinalSeconds = $r['finalseconds'];
 		
 			$entryTag = $domtree->createElement("entry");
 			$ageGroupTag->appendChild($entryTag);
@@ -496,6 +503,38 @@ ORDER BY if(finalplace = '' or finalplace is null,1,0), CAST(finalplace as SIGNE
 				$pointsTag = $domtree->createElement("points", $r['points']);
 				$swimmerResultsTag->appendChild($pointsTag);
 			
+			}
+
+			// Check if splits are available
+			$splits = $GLOBALS['db']->getAll("SELECT * FROM eprogram_split WHERE meet_id = ?
+									AND event_ptr = ?
+									AND ath_no = ?
+									ORDER by split_no ASC;",
+				array($this->meetId, $event_ptr, $ath_no));
+			db_checkerrors($splits);
+
+			if (count($splits) > 0) {
+
+				$splitsTag = $domtree->createElement("splits");
+				$entryTag->appendChild($splitsTag);
+
+				foreach ($splits as $s) {
+
+					$split_no = $s[6];
+					$splitTime = $s[7];
+
+					$splitTag = $domtree->createElement("split", $splitTime);
+					$splitTag->setAttribute("no", $split_no);
+
+					$splitsTag->appendChild($splitTag);
+
+				}
+
+				$finalSplitNo = count($splits) + 1;
+				$finalSplitTag = $domtree->createElement("split", $currentFinalSeconds);
+				$finalSplitTag->setAttribute("no", $finalSplitNo);
+				$splitsTag->appendChild($finalSplitTag);
+
 			}
 		}
 		
