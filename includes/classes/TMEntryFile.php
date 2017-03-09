@@ -336,7 +336,7 @@ class TMEntryFile {
 					
 					$clubDet = new Club();
 					$clubDet->load($cId);
-					$clubCode = $clubDet->getCode();
+					$clubCode = substr($clubDet->getCode(), 0, 5);
 					
 					// Get Event Details
 					$eventDet = new MeetEvent();
@@ -523,7 +523,7 @@ class TMEntryFile {
 		
 		$clubDetails = new Club();
 		$clubDetails->load($clubId);
-		$clubCode = trim($clubDetails->getCode());
+		$clubCode = substr(trim($clubDetails->getCode()), 0, 5);
 		$clubName = substr(trim($clubDetails->getNameShortened()), 0, 30);
 
 		$tmpLine = "C1" . str_pad($clubCode,5, ' ') . str_pad($clubName, 112, ' ') . str_pad("MAS", 9, ' ');
