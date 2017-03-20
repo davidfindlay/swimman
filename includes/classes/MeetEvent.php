@@ -26,8 +26,8 @@ class MeetEvent {
 		if (!isset($check)) {
 		
 			$insert = $GLOBALS['db']->query("INSERT INTO meet_events 
-					(meet_id, type, discipline, legs, distance, eventname, prognumber, progsuffix, eventfee) 
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+					(meet_id, type, discipline, legs, distance, eventname, prognumber, progsuffix, eventfee, deadline) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
                 array($this->meet_id, $this->type, $this->discipline, $this->legs, $this->distance,
                     $this->eventName, $this->progNum, $this->progSuf, $this->eventFee, $this->deadline));
 			db_checkerrors($insert);
