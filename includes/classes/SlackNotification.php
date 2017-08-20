@@ -24,7 +24,7 @@ class SlackNotification {
      */
     public function setMessage($message) {
 
-        $this->message = $message;
+        $this->message = htmlspecialchars($message);
     }
 
     /**
