@@ -30,7 +30,6 @@ $GLOBALS['authLog'] = new \Monolog\Logger('auth');
 $GLOBALS['authLog']->pushProcessor(new \Monolog\Processor\WebProcessor);
 $GLOBALS['authLog']->pushHandler(new StreamHandler($GLOBALS['log_dir'] . 'auth.log', $GLOBALS['log_level']));
 
-
 if (isset($_GET['logout'])) {
 	
 	$logOutUser = $_SESSION['swuname'];
@@ -135,10 +134,19 @@ function database_connect() {
 	$dbport = $GLOBALS['dbport'];
 	$dbname = $GLOBALS['dbname'];
 	
- 	$dsn = "mysql://$dbuser:$dbpass@$dbhost:$dbport/$dbname";
+ 	$dsn = "mysql:host=$dbhost;dbname=$dbname";
 
-	$GLOBALS['db'] = DB::connect($dsn);
-	db_checkerrors($GLOBALS['db']);
+ 	try {
+
+	    $GLOBALS['db'] = new PDO( $dsn, $dbuser, $dbpass );
+
+    } catch (Exception $e) {
+
+	    echo 'Caught exception: ',  $e->getMessage(), "\n";
+
+    }
+
+	//db_checkerrors($GLOBALS['db']);
 	
 	// Set correct timezone for all operations
 	$result = $GLOBALS['db']->query("SET time_zone = '+10:00';");
@@ -507,7 +515,10 @@ function addlog($logName, $shortText, $longText = '', $jUser = '') {
 	$longT = $longText;
 
 	// Does log name already exist?
-	$logId = $GLOBALS['db']->getOne("SELECT id FROM log_type WHERE logname = ?;", array($logN));
+	$stmt = $GLOBALS['db']->prepare("SELECT id FROM log_type WHERE logname = ?;");
+	$stmt->execute(array($logN));
+	$logId = $stmt->fetch()[0];
+
 	//db_checkerrors($logId);
 
 	if (!isset($logId)) {
