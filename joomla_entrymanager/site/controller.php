@@ -929,8 +929,12 @@ class EntryManagerController extends JController {
 			$newGuestClub = $jinput->get('emGuestClubId');
 			
 			if ($newGuestClub == '') {
-				
-				$newGuestClub = $memberClubs[0];
+
+				// FIXME: This isn't a complete solution and will fail if a member has a role in more than one club
+				// however no one does at present.
+				$newGuestClub = $GLOBALS['db']->getOne("SELECT club_id FROM club_roles WHERE member_id = ?;",
+					array($memberId));
+				db_checkerrors($newGuestClub);
 				
 			}
 			
