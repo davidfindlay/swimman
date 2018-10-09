@@ -1,0 +1,116 @@
+<div class="container-fluid">
+    <div class="content col-sm-12">
+        <div class="row">
+            <h1>Entry Manager Users</h1>
+
+        </div>
+        <form [formGroup]="joomlaUserFilterForm">
+            <div class="row col-sm-12">
+
+                <div class="col-sm-6 form-group row">
+                    <label for="filterSearch" class="col-sm-3 col-form-label">Search Users:</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" id="filterSearch"
+                               placeholder="Search Joomla Users" type="text"
+                               formControlName="filterSearch"/>
+                    </div>
+                </div>
+
+                <div class="com-sm-6 form-group row">
+                    <div class="btn-group btn-group-toggle" ngbRadioGroup name="filterOption"
+                          aria-label="User filter option" formControlName="filterOption">
+                        <label ngbButtonLabel class="btn-primary">
+                            <input ngbButton type="radio" [value]="'registered7days'">Registered Last 7 Days
+                        </label>
+                        <label ngbButtonLabel class="btn-primary">
+                            <input ngbButton type="radio" [value]="'unlinked'">Unlinked Users
+                        </label>
+                        <label ngbButtonLabel class="btn-primary">
+                            <input ngbButton type="radio" [value]="'linked'">Linked Users
+                        </label>
+                        <label ngbButtonLabel class="btn-primary">
+                            <input ngbButton type="radio" [value]="'allusers'">All Users
+                        </label>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </form>
+        <ngx-datatable
+                class="bootstrap ngx-datatable"
+                [rows]="rows"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [loadingIndicator]="loadingIndicator"
+                [rowHeight]="'auto'"
+                [externalPaging]="true"
+                [externalSorting]="true"
+                [count]="page.totalElements"
+                [offset]="page.pageNumber"
+                [limit]="page.size"
+                [sortType]="'single'"
+                (page)='setPage($event)'
+                (sort)='setSort($event)'
+                id="userTable"
+                #joomlaDataTable>
+            <ngx-datatable-column name="Username" sortable="true" prop="jUsername"></ngx-datatable-column>
+            <ngx-datatable-column name="Display Name" sortable="true" prop="jName"
+                                  [canAutoResize]="true"></ngx-datatable-column>
+            <ngx-datatable-column name="Registered" sortable="true">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{getDate(row.jRegisterDate) | date:'dd/MM/yyyy'}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Linked Member" sortable="true">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row.mFirstName}} {{row.mSurname}}
+                    <ng-template *ngIf="row.mMsaNumber != ''">({{row.mMsaNumber}})</ng-template>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Actions" sortable="false" prop="id" [minWidth]="400">
+                <ng-template let-column="column" let-sort="sortFn" minlength="450" ngx-datatable-header-template>
+                        <span class="text-right">
+                        {{column.name}}
+                            </span>
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <div class="row">
+                        <div class="col-sm text-center">
+                            <button class="btn btn-primary" (click)="link_member(row)" routerLink="" *ngIf="row.mId == null">
+                                <fa-icon [icon]="faLink"></fa-icon>
+                                Link</button>
+                            <button class="btn btn-secondary" (click)="refresh(row)" routerLink="" *ngIf="row.mId != null">
+                                <fa-icon [icon]="faSyncAlt"></fa-icon>
+                                Refresh</button>
+                        </div>
+                        <div class="col-sm text-center" *ngIf="row.mId != null">
+                            <button class="btn btn-warning" (click)="link_member(row)" routerLink="">
+                                <fa-icon [icon]="faUnlink"></fa-icon>
+                                Unlink</button>
+                        </div>
+                        <div class="col-sm text-center">
+                            <button class="btn btn-secondary" routerLink="joomla-user-edit">
+                                <fa-icon [icon]="faEdit"></fa-icon>
+                                Edit</button>
+                        </div>
+                        <div class="col-sm text-center" *ngIf="row.mId == null">
+                            <button class="btn btn-danger" (click)="delete_member(row)" routerLink="">
+                                <fa-icon [icon]="faTrash"></fa-icon>
+                                Delete</button>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>
+
+<ngx-spinner
+        bdColor = "rgba(51, 51, 51, 0.8)"
+        size = "medium"
+        color = "#fff"
+        type = "ball-newton-cradle"
+></ngx-spinner>

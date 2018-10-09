@@ -1,0 +1,9 @@
+
+.modal-table-header {
+    background-color: darkblue;
+    color: white;
+}
+
+.modal-table-header th {
+    font-weight: normal;
+}

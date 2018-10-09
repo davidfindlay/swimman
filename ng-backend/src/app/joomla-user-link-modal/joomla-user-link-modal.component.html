@@ -1,0 +1,84 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title-link" *ngIf="userdata.mId == null">Link Entry Manager User</h4>
+    <h4 class="modal-title" id="modal-basic-title-unlink" *ngIf="userdata.mId != null">Unlink Entry Manager User</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <p *ngIf="userdata.mId == null">
+        Do you want to link this Entry Manager user to the Member shown below?
+    </p>
+    <p *ngIf="userdata.mId != null">
+        Do you want to unlink this Entry Manager user to the Member shown below?
+    </p>
+    <table class="table table-striped table-responsive-md">
+        <thead class="modal-table-header">
+        <th></th>
+        <th>Entry Manager</th>
+        <th>Member Details</th>
+        </thead>
+        <tbody>
+        <tr>
+            <th>
+                Name:
+            </th>
+            <td>{{userdata.jName}}</td>
+            <td>{{userdata.mFirstName}} {{userdata.mSurname}}</td>
+        </tr>
+        <tr>
+            <th>
+                Date of Birth:
+            </th>
+            <td>
+                <span *ngIf="userdata.jDob != null">
+                    {{getDate(userdata.jDob) | date:'dd/MM/yyyy'}}
+                </span>
+            </td>
+            <td>
+                <span *ngIf="userdata.mDob != null">
+                    {{getDate(userdata.mDob) | date:'dd/MM/yyyy'}}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Membership Number:
+            </th>
+            <td>{{userdata.jMsaNumber}}</td>
+            <td>{{userdata.mMsaNumber}}</td>
+        </tr>
+        <tr>
+            <th>
+                Club(s):
+            </th>
+            <td>{{userdata.jClub}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>
+                Registered:
+            </th>
+            <td>{{getDate(userdata.jRegisterDate) | date:'dd/MM/yyyy'}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>
+                Last Visited:
+            </th>
+            <td>{{getDate(userdata.jLastVisitDate) | date:'dd/MM/yyyy'}}</td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="modal.close('Yes click')"
+            *ngIf="userdata.mId == null">Yes, link user</button>
+    <button type="button" class="btn btn-danger" (click)="modal.close('Yes click')"
+            *ngIf="userdata.mId != null">Yes, unlink user</button>
+    <button type="button" class="btn btn-danger" (click)="modal.close('No click')"
+            *ngIf="userdata.mId == null">No, don't link</button>
+    <button type="button" class="btn btn-success" (click)="modal.close('No click')"
+            *ngIf="userdata.mId != null">No, don't unlink</button>
+</div>
