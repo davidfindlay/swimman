@@ -38,73 +38,100 @@
             </div>
 
         </form>
-        <ngx-datatable
-                class="bootstrap ngx-datatable"
-                [rows]="rows"
-                [columnMode]="'force'"
-                [headerHeight]="50"
-                [footerHeight]="50"
-                [loadingIndicator]="loadingIndicator"
-                [rowHeight]="'auto'"
-                [externalPaging]="true"
-                [externalSorting]="true"
-                [count]="page.totalElements"
-                [offset]="page.pageNumber"
-                [limit]="page.size"
-                [sortType]="'single'"
-                (page)='setPage($event)'
-                (sort)='setSort($event)'
-                id="userTable"
-                #joomlaDataTable>
-            <ngx-datatable-column name="Username" sortable="true" prop="jUsername"></ngx-datatable-column>
-            <ngx-datatable-column name="Display Name" sortable="true" prop="jName"
-                                  [canAutoResize]="true"></ngx-datatable-column>
-            <ngx-datatable-column name="Registered" sortable="true">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                    {{getDate(row.jRegisterDate) | date:'dd/MM/yyyy'}}
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="Linked Member" sortable="true">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                    {{row.mFirstName}} {{row.mSurname}}
-                    <ng-template *ngIf="row.mMsaNumber != ''">({{row.mMsaNumber}})</ng-template>
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="Actions" sortable="false" prop="id" [minWidth]="400">
-                <ng-template let-column="column" let-sort="sortFn" minlength="450" ngx-datatable-header-template>
-                        <span class="text-right">
-                        {{column.name}}
+        <div class="row">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+        <div class="row card-group">
+            <div class="col-md-4 col-xs-12" *ngFor="let user of users">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2 *ngIf="user.mId != null"><fa-icon [icon]="faLink"></fa-icon>&nbsp;Linked</h2>
+                    <h2 *ngIf="user.mId == null"><fa-icon [icon]="faUnlink"></fa-icon>&nbsp;Not Linked</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-6 text-right">
+                            Username:
+                        </dt>
+                        <dd class="col-sm-6">
+                            {{user.jUsername}}
+                        </dd>
+                        <dt class="col-sm-6 text-right">
+                            Display Name:
+                        </dt>
+                        <dd class="col-sm-6">
+                            {{user.jName}}
+                        </dd>
+                        <dt class="col-sm-6 text-right">
+                            Linked Member:
+                        </dt>
+                        <dd class="col-sm-6">
+                            <span *ngIf="user.mId != null">
+                            {{user.mFirstName}} {{user.mSurname}} ({{user.mMsaNumber}})
                             </span>
-                </ng-template>
-                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                        </dd>
+                        <dt class="col-sm-6 text-right">
+                            Registered:
+                        </dt>
+                        <dd class="col-sm-6">
+                            {{getDate(user.jRegisterDate) | date:'dd/MM/yyyy'}}
+                        </dd>
+                        <dt class="col-sm-6 text-right">
+                            Last Visited:
+                        </dt>
+                        <dd class="col-sm-6">
+                            {{getDate(user.jLastVisitDate) | date:'dd/MM/yyyy'}}
+                        </dd>
+                    </dl>
                     <div class="row">
-                        <div class="col-sm text-center">
-                            <button class="btn btn-primary" (click)="link_member(row)" routerLink="" *ngIf="row.mId == null">
-                                <fa-icon [icon]="faLink"></fa-icon>
-                                Link</button>
-                            <button class="btn btn-secondary" (click)="refresh(row)" routerLink="" *ngIf="row.mId != null">
-                                <fa-icon [icon]="faSyncAlt"></fa-icon>
-                                Refresh</button>
-                        </div>
-                        <div class="col-sm text-center" *ngIf="row.mId != null">
-                            <button class="btn btn-warning" (click)="link_member(row)" routerLink="">
-                                <fa-icon [icon]="faUnlink"></fa-icon>
-                                Unlink</button>
-                        </div>
-                        <div class="col-sm text-center">
-                            <button class="btn btn-secondary" routerLink="joomla-user-edit">
-                                <fa-icon [icon]="faEdit"></fa-icon>
-                                Edit</button>
-                        </div>
-                        <div class="col-sm text-center" *ngIf="row.mId == null">
-                            <button class="btn btn-danger" (click)="delete_member(row)" routerLink="">
-                                <fa-icon [icon]="faTrash"></fa-icon>
-                                Delete</button>
-                        </div>
+                        <button class="btn btn-primary mx-auto" (click)="link_member(user)" routerLink=""
+                                *ngIf="user.mId == null">
+                            <fa-icon [icon]="faLink"></fa-icon>
+                            Link
+                        </button>
+                        <button class="btn btn-secondary mx-auto" (click)="refresh(user)" routerLink=""
+                                *ngIf="user.mId != null">
+                            <fa-icon [icon]="faSyncAlt"></fa-icon>
+                            Refresh
+                        </button>
+                        <button class="btn btn-warning mx-auto" (click)="link_member(user)" routerLink=""
+                                *ngIf="user.mId != null">
+                            <fa-icon [icon]="faUnlink"></fa-icon>
+                            Unlink
+                        </button>
+                        <button class="btn btn-secondary mx-auto" routerLink="joomla-user-edit">
+                            <fa-icon [icon]="faEdit"></fa-icon>
+                            Edit
+                        </button>
+                        <button class="btn btn-danger mx-auto" (click)="delete_member(user)" routerLink=""
+                                *ngIf="user.mId == null">
+                            <fa-icon [icon]="faTrash"></fa-icon>
+                            Delete
+                        </button>
                     </div>
-                </ng-template>
-            </ngx-datatable-column>
-        </ngx-datatable>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="row">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+        </div>
     </div>
 </div>
 

@@ -21,7 +21,7 @@ import {DatatableComponent} from "@swimlane/ngx-datatable";
 export class JoomlaUserListComponent implements OnInit {
 
     page = new Page();
-    rows = new Array<JoomlaUser>();
+    users = new Array<JoomlaUser>();
 
     faLink = faLink;
     faUnlink = faUnlink;
@@ -29,12 +29,8 @@ export class JoomlaUserListComponent implements OnInit {
     faSyncAlt = faSyncAlt;
     faTrash = faTrash;
 
-    loadingIndicator: boolean = true;
-
     filterOption: string = 'registered7days';
     filterSearch: string = '';
-
-    @ViewChild('joomlaDataTable') joomlaDataTable: DatatableComponent;
 
     public joomlaUserFilterForm: FormGroup;
 
@@ -103,11 +99,9 @@ export class JoomlaUserListComponent implements OnInit {
             .subscribe((response: PagedData<JoomlaUser>) => {
 
                 // this.page.size = response.data.length;
-                this.rows = response.data;
+                this.users = response.data;
                 this.page.totalElements = response.count;
                 this.spinner.hide();
-
-                this.joomlaDataTable.recalculate();
 
                 },
                 (error) => {
